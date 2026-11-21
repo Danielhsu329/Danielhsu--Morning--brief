@@ -17,5 +17,8 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo 視窗將於 5 秒後自動關閉（或按任意鍵立即關閉）...
-timeout /t 5 > nul
+echo 正在等待 GitHub Pages 部署更新（約 12 秒，按任意鍵可立即開啟）...
+timeout /t 12 > nul
+
+echo 正在開啟預設瀏覽器檢查最新晨報...
+start "" "https://danielhsu329.github.io/Danielhsu--Morning--brief/"
