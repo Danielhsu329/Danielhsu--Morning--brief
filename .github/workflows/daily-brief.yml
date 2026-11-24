@@ -1,0 +1,110 @@
+name: Daily Gemini Morning Brief
+on:
+  schedule:
+    - cron: '0 8 * * *'
+      timezone: Asia/Taipei
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Run Gemini and publish (otherwise offline validation only)
+        type: boolean
+        default: false
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'requirements.txt'
+      - '.github/workflows/daily-brief.yml'
+
+permissions:
+  contents: read
+concurrency:
+  group: morning-brief-publication
+  cancel-in-progress: false
+
+jobs:
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s scripts -p 'test_*.py' -v
+  generate:
+    needs: fixture
+    if: github.ref == 'refs/heads/main' && vars.MORNING_BRIEF_AUTOMATION_ENABLED == 'true' && (github.event_name == 'schedule' || inputs.publish)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    outputs:
+      issue: ${{ steps.commit.outputs.issue }}
+      sha: ${{ steps.commit.outputs.sha }}
+      digest: ${{ steps.commit.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify required configuration is present
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: |
+          if [[ -z "$GEMINI_API_KEY" || -z "$GEMINI_MODEL" ]]; then
+            echo "::error::Set GEMINI_API_KEY as an Actions secret and GEMINI_MODEL as an approved repository variable."
+            exit 1
+          fi
+      - run: python -m pip install --requirement requirements.txt
+      - name: Generate and validate one issue
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          MORNING_BRIEF_SEC_CONTACT: ${{ vars.MORNING_BRIEF_SEC_CONTACT }}
+        run: python scripts/generate_brief.py
+      - name: Commit only validated report files
+        id: commit
+        run: |
+          set -euo pipefail
+          ISSUE="$(python -c 'import json; print(json.load(open("data/latest.json",encoding="utf-8"))["meta"]["date"])')"
+          test "$(git branch --show-current)" = main
+          ARCHIVE="archive/${ISSUE//-/}.html"
+          git add -- index.html archive/index.html "$ARCHIVE" "data/$ISSUE.json" data/latest.json data/manifest.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 6
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Publish Gemini morning brief $ISSUE"
+          git push origin HEAD:main
+          echo "issue=$ISSUE" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "digest=$(sha256sum data/latest.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Stage explicit Pages artifact
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r archive data _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Read back exact public homepage, archive, JSON and manifest
+        env:
+          ISSUE: ${{ needs.generate.outputs.issue }}
+          COMMIT: ${{ needs.generate.outputs.sha }}
+          DIGEST: ${{ needs.generate.outputs.digest }}
+        run: python scripts/verify_public.py --issue "$ISSUE" --commit "$COMMIT" --expected-sha "$DIGEST"
