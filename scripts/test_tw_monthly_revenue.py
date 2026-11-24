@@ -19,7 +19,7 @@ class MonthRevenueTests(unittest.TestCase):
         self.assertEqual(d["3131.TW"]["period"],"2026-10")
 
     def test_not_same_day_stale_duplicate_or_conflicting(self):
-        for field,val in ((ISSUED,"1151124"),(PERIOD,"11509"),(YOY,"68.81643921026671")):
+        for field,val in ((ISSUED,"1151124"),(PERIOD,"11511"),(YOY,"68.81643921026671")):
             row=dict(self.rows[0],**{field:val})
             self.assertFalse(parse(json.dumps([row]),("3131",),self.now,self.url))
         self.assertFalse(parse(json.dumps([self.rows[0]]*2),("3131",),self.now,self.url))
@@ -28,3 +28,19 @@ class MonthRevenueTests(unittest.TestCase):
         d,gaps=collect(self.now,lambda url: json.dumps(self.rows) if url==self.url else "")
         self.assertEqual(len(d),2)
         self.assertEqual(set(gaps),{"2330.TW","3583.TW","3017.TW"})
+
+    def test_latest_available_at_report_cutoff_not_report_previous_month(self):
+        from datetime import timedelta
+        tw=timezone(timedelta(hours=8))
+        october=dict(self.rows[0],**{TICKER:"2330",REV:"586890000",PRIOR:"367473000",YOY:"59.7"})
+        nov=dict(october,**{PERIOD:"11511",ISSUED:"1151210"})
+        morning=datetime(2026,12,10,8,tzinfo=tw)
+        afternoon=morning.replace(hour=14)
+        for cutoff in (morning,afternoon):
+            result=parse(json.dumps([nov,october]),("2330",),cutoff,self.url)
+            self.assertEqual(result["2330.TW"]["period"],"2026-10")
+            self.assertEqual(result["2330.TW"]["revenue_twd_bn"],586.89)
+            self.assertEqual(result["2330.TW"]["revenue_twd_bn"]*10,5868.9)
+        self.assertFalse(parse(json.dumps([nov]),("2330",),morning,self.url))
+        result=parse(json.dumps([nov,october]),("2330",),morning+timedelta(days=1),self.url)
+        self.assertEqual(result["2330.TW"]["period"],"2026-11")

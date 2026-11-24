@@ -47,6 +47,11 @@ class TabbedTests(unittest.TestCase):
             if k!="note": data["taiwan_market_and_bottom_checklist"]["spot_and_futures"][k]=None
         for company in data["ai_supply_chain"]["core_companies"]:
             company["oct_rev_yoy"]=None
+        twsc=data["ai_supply_chain"]["core_companies"][0]
+        self.assertEqual(twsc["ticker"],"2330.TW")
+        e["tw_monthly_revenue"]={twsc["ticker"]:{"revenue_twd_bn":586.89,"period":"2026-10",
+             "yoy_display":"+59.7%","table_date":"2026-11-17","source":"https://pr.tsmc.com/english/news/3349"}}
+        twsc.update(oct_rev_twd_bn=586.89,oct_rev_yoy="+59.7%")
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
             shutil.copy(source_path,root/"index.html")
@@ -71,6 +76,10 @@ class TabbedTests(unittest.TestCase):
                 self.assertIn("dataBoundaryText",page)
                 self.assertIn("${briefHtml(item)}",page)
                 self.assertIn("assetCountLabel",page)
+                self.assertIn("586.89",page)
+                self.assertIn("月營收 2026-10",page)
+                self.assertIn("fmtNum(c.oct_rev_twd_bn, '', '十億元')",page)
+                self.assertNotIn("10 月營收 (YoY)",page)
             for historic in ("20261124.html","20261124-1045.html"):
                 self.assertIn(historic,archives_before)
                 self.assertIn(historic,out["archive/index.html"])

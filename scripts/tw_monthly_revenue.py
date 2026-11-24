@@ -1,5 +1,5 @@
 """Exchange-reported monthly revenue only; never quarterly coverage."""
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
 import json
 from brief_sources import SourceError
@@ -20,19 +20,30 @@ def parse(raw, codes, now, source):
     if not isinstance(rows,list):
         raise SourceError("monthly revenue feed not an array")
     observed={}
-    previous_month=(now.date().replace(day=1)-timedelta(days=1)).replace(day=1)
+    report_month=now.date().replace(day=1)
     for code in codes:
-        matched=[r for r in rows if isinstance(r,dict) and r.get(TICKER)==code]
-        if len(matched)!=1: continue
-        r=matched[0]
-        try:
-            period, issued = r[PERIOD], r[ISSUED]
-            if len(period)!=5 or len(issued)!=7 or not (period.isascii() and period.isdigit() and issued.isascii() and issued.isdigit()):
+        eligible={}
+        ambiguous=set()
+        for r in rows:
+            if not isinstance(r,dict) or r.get(TICKER)!=code: continue
+            try:
+                period, issued = r[PERIOD], r[ISSUED]
+                if len(period)!=5 or len(issued)!=7 or not (period.isascii() and period.isdigit() and issued.isascii() and issued.isdigit()):
+                    continue
+                start=date(1911+int(period[:3]),int(period[3:]),1)
+                filed=date(1911+int(issued[:3]),int(issued[3:5]),int(issued[5:]))
+                # Hourless exchange snapshots on the report day are not as-of evidence.
+                filing_month=filed.replace(day=1)
+                if not (start < report_month and start < filing_month and filed < now.date()): continue
+                if start in eligible: ambiguous.add(start)
+                eligible[start]=(r,filed)
+            except (ArithmeticError,TypeError,ValueError,KeyError):
                 continue
-            start=date(1911+int(period[:3]),int(period[3:]),1)
-            filed=date(1911+int(issued[:3]),int(issued[3:5]),int(issued[5:]))
-            # 出表日期 has no time. Do not use issue-day snapshots for an earlier morning cutoff.
-            if start!=previous_month or not start < filed < now.date(): continue
+        if not eligible: continue
+        start=max(eligible)
+        if start in ambiguous: continue
+        r,filed=eligible[start]
+        try:
             revenue, prior = (int(str(r[k]).replace(",","")) for k in (REV,PRIOR))
             yoy=Decimal(str(r[YOY]))
             if min(revenue,prior)<=0 or not yoy.is_finite(): continue
@@ -52,6 +63,6 @@ def collect(now,get):
         try: result.update(parse(get(source),codes,now,source))
         except (OSError,ValueError,TypeError,KeyError):
             continue
-    gaps={code+".TW":"Exact prior month and pre-cutoff exchange row unavailable" for _,codes in FEEDS
+    gaps={code+".TW":"No complete unambiguous pre-cutoff month in currently supplied official snapshot" for _,codes in FEEDS
           for code in codes if code+".TW" not in result}
     return result,gaps
