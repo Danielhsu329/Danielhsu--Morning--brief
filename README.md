@@ -7,6 +7,8 @@ This is a single GitHub Actions producer, scheduled at 08:00 Asia/Taipei after a
 
 Offline validation (no secret or Gemini): `python -B -m unittest discover -s scripts -p "test_*.py" -v`.
 
+The latest manually supplied 11/24 homepage has a tab-based DOM and revised metadata. The staged renderer still recognizes the 11/23 shape only; it blocks the 11/24 template before collection or generation, not by patching the manual edition. Next: use the 11/24 layout as the future render baseline and prove a date-split golden issue, archive navigation and public payload verification. The new Taiwan/Fed source adapter already binds up to six Taiwan fields, a TPEx closing row, and NY Fed EFFR with its effective date and corridor. It does not infer TPEx funding/flow or roll forward listed balances. These additions use exact public response-shaped fixtures; runner verification remains separate.
+
 Before activation, the repository owner must confirm:
 
 1. Pages **Settings → Pages → Build and deployment → Source → GitHub Actions**; the existing site URL does not change. Branch-source deployment cannot be relied on for the generator's `GITHUB_TOKEN` push.

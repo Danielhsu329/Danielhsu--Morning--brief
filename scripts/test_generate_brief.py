@@ -121,4 +121,33 @@ class BriefTests(unittest.TestCase):
         updated=g.bind(self.data,self.ex,self.e,self.now)
         self.assertIn("sec.gov",updated["us_cashflow_penetration"]["companies"][-1]["alert"])
 
+    def test_taiwan_and_fed_cannot_be_relabelled_or_fabricated(self):
+        self.e["fed_policy_facts"]={"target_range":"3.75%–4.00%","effective_ffr":3.88,
+            "date":"2026-11-20","source":"https://markets.newyorkfed.org/"}
+        self.e["tw_market_facts"]={"twse_inst_net_twd_bn":{"value":-52.103950743,"date":"2026-11-26",
+            "source":"https://www.twse.com.tw/","scope":"listed aggregate only"}}
+        fed=self.data["cross_assets_and_macro"]["fed_policy"]
+        spot=self.data["taiwan_market_and_bottom_checklist"]["spot_and_futures"]
+        fed.update(current_rate_range="3.75%–4.00%",effective_ffr=3.88)
+        spot["twse_inst_net_twd_bn"]=-52
+        with self.assertRaisesRegex(ValueError,"incorrect supplied Taiwan"):
+            g.bind(self.data,self.ex,self.e,self.now)
+        spot["twse_inst_net_twd_bn"]=-52.103950743
+        fed["effective_ffr"]=3.9
+        with self.assertRaisesRegex(ValueError,"Fed rate"):
+            g.bind(self.data,self.ex,self.e,self.now)
+        fed["effective_ffr"]=3.88
+        out=g.bind(self.data,self.ex,self.e,self.now)
+        self.assertIn("2026-11-20",out["cross_assets_and_macro"]["fed_policy"]["current_rate_range"])
+        self.assertIn("listed aggregate only",spot["margin_balance_note"])
+        self.assertIsNone(spot["tpex_foreign_net_twd_bn"])
+
+    def test_unsupported_manual_tab_layout_refused_without_modifying_it(self):
+        incompatible=self.src.replace('id="badgeSpot"','id="manual-tab-spot"')
+        page=self.root/"index.html"
+        page.write_text(incompatible,encoding="utf-8")
+        with self.assertRaisesRegex(ValueError,"not compatible"):
+            g.staging_contents(self.root,self.data)
+        self.assertEqual(page.read_text(encoding="utf-8"),incompatible)
+
 if __name__=="__main__": unittest.main()
