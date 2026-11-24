@@ -1,0 +1,117 @@
+name: Daily Gemini Morning Brief
+on:
+  schedule:
+    - cron: '0 8 * * *'
+      timezone: Asia/Taipei
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Run Gemini and publish (otherwise offline validation only)
+        type: boolean
+        default: false
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'requirements.txt'
+      - '.github/workflows/daily-brief.yml'
+
+permissions:
+  contents: read
+concurrency:
+  group: morning-brief-publication
+  cancel-in-progress: false
+
+jobs:
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s scripts -p 'test_*.py' -v
+  generate:
+    needs: fixture
+    if: github.ref == 'refs/heads/main' && vars.MORNING_BRIEF_AUTOMATION_ENABLED == 'true' && (github.event_name == 'schedule' || inputs.publish)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    outputs:
+      issue: ${{ steps.commit.outputs.issue }}
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify required configuration is present
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: |
+          if [[ -z "$GEMINI_API_KEY" || -z "$GEMINI_MODEL" ]]; then
+            echo "::error::Set GEMINI_API_KEY as an Actions secret and GEMINI_MODEL as an approved repository variable."
+            exit 1
+          fi
+      - run: python -m pip install --requirement requirements.txt
+      - name: Generate and validate one issue
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: python scripts/generate_brief.py
+      - name: Commit only validated report files
+        id: commit
+        run: |
+          set -euo pipefail
+          ISSUE="$(python -c 'import json; print(json.load(open("data/latest.json",encoding="utf-8"))["meta"]["date"])')"
+          test "$(git branch --show-current)" = main
+          ARCHIVE="archive/${ISSUE//-/}.html"
+          git add -- index.html archive/index.html "$ARCHIVE" "data/$ISSUE.json" data/latest.json data/manifest.json
+          test "$(git diff --cached --name-only | wc -l)" -eq 6
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Publish Gemini morning brief $ISSUE"
+          git push origin HEAD:main
+          echo "issue=$ISSUE" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Stage explicit Pages artifact
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r archive data _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Read back public homepage, archive and JSON
+        env:
+          ISSUE: ${{ needs.generate.outputs.issue }}
+          COMMIT: ${{ needs.generate.outputs.sha }}
+        run: |
+          set -euo pipefail
+          BASE=https://danielhsu329.github.io/Danielhsu--Morning--brief
+          for n in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 15 "$BASE/?v=$COMMIT" -o /tmp/brief-home.html &&
+              curl -fsS --max-time 15 "$BASE/archive/${ISSUE//-/}.html?v=$COMMIT" -o /tmp/brief-archive.html &&
+              curl -fsS --max-time 15 "$BASE/data/latest.json?v=$COMMIT" -o /tmp/brief-latest.json &&
+              python -c 'import json, os, pathlib; date=os.environ["ISSUE"]; assert json.load(open("/tmp/brief-latest.json"))["meta"]["date"] == date; assert all((""date": ""+date+""") in pathlib.Path("/tmp/"+name).read_text() for name in ("brief-home.html","brief-archive.html"))'; then
+              exit 0
+            fi
+            sleep 8
+          done
+          echo "::error::Public website does not yet confirm the released issue; check Pages deployment without regenerating Gemini."
+          exit 1

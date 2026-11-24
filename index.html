@@ -1457,8 +1457,10 @@
       document.title = `全球宏觀與產業策略晨報（Danielhsu Morning Brief）｜${meta.date}`;
       document.getElementById('headerTitle').textContent = `全球宏觀與產業策略晨報（Danielhsu Morning Brief）｜${meta.date}`;
       document.getElementById('badgeCutoff').textContent = `截止 ${meta.cutoff_taipei}`;
-      document.getElementById('badgeSpot').textContent = `美台現貨 ${meta.us_trade_date}`;
-      document.getElementById('badgeNight').textContent = `夜盤歸屬 ${meta.night_futures_official_date}`;
+      const usSpot = meta.us_trade_date, twSpot = meta.tw_trade_date;
+      document.getElementById('badgeSpot').textContent = usSpot && usSpot === twSpot
+        ? `美台現貨 ${usSpot}` : `美股現貨 ${usSpot || '未提供'}｜台股現貨 ${twSpot || '未提供'}`;
+      document.getElementById('badgeNight').textContent = `夜盤歸屬 ${meta.night_futures_official_date || '未確認'}`;
 
       document.getElementById('headlineThesisText').textContent = meta.headline_thesis;
       document.getElementById('stanceText').textContent = meta.stance;
