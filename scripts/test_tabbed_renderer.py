@@ -11,11 +11,10 @@ from verify_public import verify
 
 class TabbedTests(unittest.TestCase):
     def test_fresh_issue_renders_full_six_tabs_without_rewriting_manual_baseline(self):
-        source_path=g.ROOT/"index.html"
+        source_path=g.ROOT/"archive"/"20261124-1045.html"
         data_before=source_path.read_bytes()
         old_head, old, _=g.template(data_before.decode("utf-8"))
         self.assertEqual(old["meta"]["date"],"2026-11-24")
-        self.assertIn('href="./archive/"',old_head)
         self.assertIn("key_events_boundary",old["meta"])
         self.assertNotIn("executive_takeaways",old["meta"])
         fresh_date="2026-11-27"
@@ -80,7 +79,7 @@ class TabbedTests(unittest.TestCase):
                 self.assertIn("月營收 2026-10",page)
                 self.assertIn("fmtNum(c.oct_rev_twd_bn, '', '十億元')",page)
                 self.assertNotIn("10 月營收 (YoY)",page)
-            for historic in ("20261124.html","20261124-1045.html"):
+            for historic in ("20261124.html","20261124-1045.html","20261124-1136.html"):
                 self.assertIn(historic,archives_before)
                 self.assertIn(historic,out["archive/index.html"])
             self.assertIn('href="./archive/"',home)
@@ -97,3 +96,13 @@ class TabbedTests(unittest.TestCase):
             future=g.staging_contents(root,checked)["index.html"]
             self.assertEqual(future.count("function briefHtml("),1)
             self.assertEqual(future.count('href="./archive/"'),1)
+
+    def test_1136_public_manual_baseline_is_not_admitted_as_template(self):
+        home=g.ROOT/"index.html"
+        archive=g.ROOT/"archive"/"20261124-1136.html"
+        before=(home.read_bytes(),archive.read_bytes())
+        self.assertIn(b"2026-11-24 11:36",before[0])
+        self.assertIn(b"./data/manifest.json",before[0])
+        with self.assertRaisesRegex(ValueError,"unverified runtime manifest loader"):
+            g.template(before[0].decode("utf8"))
+        self.assertEqual(before,(home.read_bytes(),archive.read_bytes()))

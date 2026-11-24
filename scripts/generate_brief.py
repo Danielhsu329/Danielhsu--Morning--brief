@@ -31,6 +31,10 @@ def read_json(s):
     return json.loads(s, object_pairs_hook=pairs, parse_constant=bad)
 
 def template(source):
+    # Only the sealed embedded object/static archive path is approved. Do not
+    # execute or retain a hand-authored page's second, independent feed loader.
+    require('fetchJsonNoCache("./data/manifest.json")' not in source,
+            "manual dashboard has an unverified runtime manifest loader; no generation")
     prefix, body = source.split(MARKER, 1)
     obj, end = json.JSONDecoder().raw_decode(body)
     require(body[end:end+1] == ';', 'invalid dashboard data boundary')
