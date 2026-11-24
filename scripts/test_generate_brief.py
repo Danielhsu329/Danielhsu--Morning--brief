@@ -16,7 +16,8 @@ class BriefTests(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root=Path(self.tmp.name)
-        shutil.copy(g.ROOT/"index.html",self.root/"index.html")
+        # Keep November 23 as an independent historical fixture after the manual homepage changes.
+        shutil.copy(g.ROOT/"archive"/"20261123.html",self.root/"index.html")
         shutil.copytree(g.ROOT/"archive",self.root/"archive")
         self.src=(self.root/"index.html").read_text(encoding="utf-8")
         _,self.ex,_=g.template(self.src)
