@@ -41,6 +41,7 @@ def render(prefix, payload, suffix, new, archive):
         prefix=change_once(prefix,rf'(id="{ident}"[^>]*>)[^<]*',lambda x:x[1]+html.escape(value))
     prefix=change_once(prefix,r'(id="resetJsonBtn"[^>]*>)[^<]*',lambda m:m[1]+"重設為本期預設")
     prefix=re.sub(r"EMBEDDED DEFAULT_DATA \(\d{4}-\d{2}-\d{2}[^\n)]*\)","EMBEDDED DEFAULT_DATA (six-tab schema)",prefix)
+    prefix=re.sub(r"(?<=>)10\s*月營收", "月營收（最近已公告月份）",prefix)
     prefix=prefix.replace("（單位：億美元）","（單位：十億美元）").replace("（單位：新台幣億元）","（單位：新台幣十億元）")
     prefix=prefix.replace("美銀 11 月 FMS","美銀 FMS")
     prefix=prefix.replace("Q3 毛利率","季度毛利率").replace("Q3 GM / OPM","季度 GM / OPM").replace("Q3 CFO / CapEx / FCF","季度 CFO / CapEx / FCF")
@@ -51,6 +52,7 @@ def render(prefix, payload, suffix, new, archive):
     if MARKER not in prefix:
         prefix=change_once(prefix,r"<!-- Footer -->",lambda m:MARKER+"\n  "+m[0])
         suffix=change_once(suffix,r"    function nullBadge\(\)",lambda m:ESC+"\n"+m[0])
+        suffix=suffix.replace("(${c.oct_rev_yoy})", "${c.oct_rev_yoy === null ? '-' : briefHtml(c.oct_rev_yoy)}")
         suffix=re.sub(r"\$\{([^{}]+)\}",lambda m:"$"+"{briefHtml("+m[1]+")}" if m[1] in PLAIN else m[0],suffix)
         suffix=suffix.replace("($億)","($十億)").replace(" + ' 億'"," + ' 十億'").replace(" (億)"," (十億新台幣)").replace("'', '億'","'', '十億元'")
         suffix=suffix.replace("自營商避險賣壓","自營商避險淨買賣").replace("台指期夜盤收盤 (歸屬 11/24)","台指期夜盤最後成交（非結算）")

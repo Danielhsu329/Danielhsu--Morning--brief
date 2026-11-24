@@ -45,6 +45,8 @@ class TabbedTests(unittest.TestCase):
             for k in company.keys()-{"ticker","period","alert"}: company[k]=None
         for k in data["taiwan_market_and_bottom_checklist"]["spot_and_futures"]:
             if k!="note": data["taiwan_market_and_bottom_checklist"]["spot_and_futures"][k]=None
+        for company in data["ai_supply_chain"]["core_companies"]:
+            company["oct_rev_yoy"]=None
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
             shutil.copy(source_path,root/"index.html")

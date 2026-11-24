@@ -43,6 +43,8 @@ class BriefTests(unittest.TestCase):
                     module["energy_power_and_sentiment"]):
             for k,v in obj.items():
                 if type(v) in (int,float): obj[k]=None
+        for company in self.data["ai_supply_chain"]["core_companies"]:
+            company["oct_rev_yoy"]=None
         for row in cross["assets"]:
             row["close"]=None
             row["daily_chg"]=None
