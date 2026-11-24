@@ -109,4 +109,16 @@ class BriefTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"coverage"):
             g.check_production_coverage(self.ex,self.e)
 
+    def test_display_rejects_ytd_company_value(self):
+        row=next(c for c in self.data["us_cashflow_penetration"]["companies"] if c["ticker"]=="WMT")
+        row.update(period="2026-10-31",cfo_bn=29.4,capex_bn=8.0,fcf_bn=2.0)
+        self.e["us_company_financials"]={"WMT":{"period_end":"2026-10-31",
+            "source":"https://www.sec.gov/Archives/edgar/data/104169/fixture.htm",
+            "values":{"cfo_bn":10., "capex_bn":8., "fcf_bn":2.}}}
+        with self.assertRaisesRegex(ValueError,"WMT.*cfo_bn"):
+            g.bind(self.data,self.ex,self.e,self.now)
+        row["cfo_bn"]=10.
+        updated=g.bind(self.data,self.ex,self.e,self.now)
+        self.assertIn("sec.gov",updated["us_cashflow_penetration"]["companies"][-1]["alert"])
+
 if __name__=="__main__": unittest.main()

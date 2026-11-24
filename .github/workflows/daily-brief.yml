@@ -61,6 +61,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          MORNING_BRIEF_SEC_CONTACT: ${{ vars.MORNING_BRIEF_SEC_CONTACT }}
         run: python scripts/generate_brief.py
       - name: Commit only validated report files
         id: commit
