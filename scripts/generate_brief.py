@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import sys
 import tabbed_renderer
+import static_renderer_1136
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,11 +32,12 @@ def read_json(s):
     return json.loads(s, object_pairs_hook=pairs, parse_constant=bad)
 
 def template(source):
-    # Only the sealed embedded object/static archive path is approved. Do not
-    # execute or retain a hand-authored page's second, independent feed loader.
-    require('fetchJsonNoCache("./data/manifest.json")' not in source,
-            "manual dashboard has an unverified runtime manifest loader; no generation")
     prefix, body = source.split(MARKER, 1)
+    if 'fetchJsonNoCache("./data/manifest.json")' in source:
+        require(static_renderer_1136.identify(source),
+                "unverified runtime manifest loader without 11:36 renderer")
+        before, raw_obj, tail = static_renderer_1136.split_manual(prefix,body)
+        return before, read_json(raw_obj), tail
     obj, end = json.JSONDecoder().raw_decode(body)
     require(body[end:end+1] == ';', 'invalid dashboard data boundary')
     return prefix, obj, body[end:]
@@ -43,7 +45,7 @@ def template(source):
 def require_renderer(source, example):
     # Manually published editions are immutable. A different edition's DOM cannot
     # silently inherit the adapter contract or be treated as a feed to the author.
-    if tabbed_renderer.is_tabbed(source, example):
+    if static_renderer_1136.identify(source) or tabbed_renderer.is_tabbed(source, example):
         return
     anchors=("badgeSpot","badgeNight","badgeCutoff","navBriefDate")
     require(all(f'id="{anchor}"' in source for anchor in anchors)
@@ -221,6 +223,9 @@ def staging_contents(root, record):
     require(not archive.exists() and not (root/"data"/(day+".json")).exists(), "archive is immutable")
     packed = json.dumps(record, ensure_ascii=False, indent=2, allow_nan=False)+"\n"
     safe = packed.rstrip().replace("<","\\u003c").replace(">","\\u003e").replace("&","\\u0026").replace("\u2028","\\u2028").replace("\u2029","\\u2029")
+    if static_renderer_1136.identify(raw):
+        rendered=[static_renderer_1136.render(before,safe,after,record["meta"],arch) for arch in (False,True)]
+        return bundle(root,record,*rendered,packed)
     if tabbed_renderer.is_tabbed(raw, prev):
         updated=tabbed_renderer.render(before,safe,after,record["meta"],False)
         archive_html=tabbed_renderer.render(before,safe,after,record["meta"],True)

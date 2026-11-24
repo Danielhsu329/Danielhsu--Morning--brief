@@ -97,12 +97,43 @@ class TabbedTests(unittest.TestCase):
             self.assertEqual(future.count("function briefHtml("),1)
             self.assertEqual(future.count('href="./archive/"'),1)
 
-    def test_1136_public_manual_baseline_is_not_admitted_as_template(self):
+    def test_1136_static_render_has_one_payload_and_both_correct_units(self):
         home=g.ROOT/"index.html"
         archive=g.ROOT/"archive"/"20261124-1136.html"
         before=(home.read_bytes(),archive.read_bytes())
-        self.assertIn(b"2026-11-24 11:36",before[0])
         self.assertIn(b"./data/manifest.json",before[0])
-        with self.assertRaisesRegex(ValueError,"unverified runtime manifest loader"):
-            g.template(before[0].decode("utf8"))
+        _, example, _=g.template(home.read_text(encoding="utf8"))
+        record={**example,"meta":{**example["meta"],"date":"2026-11-27",
+                "cutoff_taipei":"2026-11-27 08:00 Asia/Taipei",
+                "us_trade_date":"2026-11-25","tw_trade_date":"2026-11-26","night_futures_official_date":None,
+                "headline_thesis":"Offline fixture", "key_events_boundary":["Fixture event"]}}
+        with tempfile.TemporaryDirectory() as temp:
+            location=Path(temp)
+            shutil.copy(home,location/"index.html")
+            shutil.copytree(g.ROOT/"archive",location/"archive")
+            out=g.staging_contents(location,record)
+            for key in ("index.html","archive/20261127.html"):
+                page=out[key]
+                self.assertEqual(g.template(page)[1],record)
+                self.assertNotIn("fetchJsonNoCache",page)
+                self.assertNotIn("2026-11-24 11:36",page)
+                self.assertIn('val: sf.twse_turnover_twd_bn, unit: " 十億元"',page)
+                self.assertIn('formatNullable(c.oct_rev_twd_bn, " 十億元")',page)
+                self.assertIn('briefHtml(item)',page)
+                self.assertIn("eventBoundaryList",page)
+                self.assertIn("assetCountBadge",page)
+            self.assertIn('href="./archive/"',out["index.html"])
+            self.assertIn('href="../"',out["archive/20261127.html"])
+            mapping={k:v.encode("utf-8") for k,v in out.items()}
+            mapping[""]=mapping["index.html"]
+            mapping["archive/"]=mapping["archive/index.html"]
+            verify(mapping.__getitem__,"2026-11-27",hashlib.sha256(mapping["data/latest.json"]).hexdigest())
+            (location/"index.html").write_text(out["index.html"],encoding="utf8")
+            record["meta"].update(date="2026-11-28",cutoff_taipei="2026-11-28 08:00 Asia/Taipei")
+            second=g.staging_contents(location,record)["index.html"]
+            self.assertEqual(second.count("function briefHtml("),1)
+            self.assertNotIn("fetchJsonNoCache",second)
+
+            for issue in ("20261124.html","20261124-1045.html","20261124-1136.html"):
+                self.assertIn(issue,out["archive/index.html"])
         self.assertEqual(before,(home.read_bytes(),archive.read_bytes()))
