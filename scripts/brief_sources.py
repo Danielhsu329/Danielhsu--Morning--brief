@@ -168,9 +168,7 @@ def collect(now: datetime, get=fetch) -> dict:
     tw = completed(now, TW, taiwan_schedule)
     local = now.astimezone(TW)
     tw_url = TWSE_CLOSE.format(year=tw.year, month=tw.month)
-    us_url = FRED_CLOSE.format(day=us.isoformat())
     tw_ohlc = taiwan_mark(get(tw_url), tw)
-    us_close = sp500_mark(get(us_url), us)
     prev_us = us - timedelta(days=1)
     while nyse_close(prev_us) is None:
         prev_us -= timedelta(days=1)
@@ -181,11 +179,10 @@ def collect(now: datetime, get=fetch) -> dict:
         "night_futures_official_date": night,
         "asset_rows": extra,
         "asset_gaps": gaps,
+        "source_exclusions": {"S&P 500": "https://fred.stlouisfed.org/series/SP500"},
         "cutoff_source_clock": local.isoformat(),
         "calendars": {"NYSE": NYSE, "TWSE": [TWSE_CAL.format(year=y) for y in sorted(tw_cal)]},
         "observations": {
-            "SP500": {"date": us.isoformat(), "close": us_close, "source": us_url,
-                      "publisher": "S&P Dow Jones Indices LLC via FRED", "status": "cash_close"},
             "TAIEX": {"date": tw.isoformat(), **tw_ohlc, "source": tw_url,
                       "publisher": "Taiwan Stock Exchange", "status": "cash_ohlc"},
         },

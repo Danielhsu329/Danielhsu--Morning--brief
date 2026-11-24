@@ -41,6 +41,7 @@ jobs:
     outputs:
       issue: ${{ steps.commit.outputs.issue }}
       sha: ${{ steps.commit.outputs.sha }}
+      digest: ${{ steps.commit.outputs.digest }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -76,6 +77,7 @@ jobs:
           git push origin HEAD:main
           echo "issue=$ISSUE" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "digest=$(sha256sum data/latest.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - name: Stage explicit Pages artifact
         run: |
           mkdir -p _site
@@ -89,29 +91,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 7
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/deploy-pages@v4
         id: deployment
-      - name: Read back public homepage, archive and JSON
+      - name: Read back exact public homepage, archive, JSON and manifest
         env:
           ISSUE: ${{ needs.generate.outputs.issue }}
           COMMIT: ${{ needs.generate.outputs.sha }}
-        run: |
-          set -euo pipefail
-          BASE=https://danielhsu329.github.io/Danielhsu--Morning--brief
-          for n in 1 2 3 4 5 6; do
-            if curl -fsS --max-time 15 "$BASE/?v=$COMMIT" -o /tmp/brief-home.html &&
-              curl -fsS --max-time 15 "$BASE/archive/${ISSUE//-/}.html?v=$COMMIT" -o /tmp/brief-archive.html &&
-              curl -fsS --max-time 15 "$BASE/data/latest.json?v=$COMMIT" -o /tmp/brief-latest.json &&
-              python -c 'import json, os, pathlib; date=os.environ["ISSUE"]; assert json.load(open("/tmp/brief-latest.json"))["meta"]["date"] == date; assert all((""date": ""+date+""") in pathlib.Path("/tmp/"+name).read_text() for name in ("brief-home.html","brief-archive.html"))'; then
-              exit 0
-            fi
-            sleep 8
-          done
-          echo "::error::Public website does not yet confirm the released issue; check Pages deployment without regenerating Gemini."
-          exit 1
+          DIGEST: ${{ needs.generate.outputs.digest }}
+        run: python scripts/verify_public.py --issue "$ISSUE" --commit "$COMMIT" --expected-sha "$DIGEST"

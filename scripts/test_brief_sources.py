@@ -23,8 +23,7 @@ class SourceChecks(unittest.TestCase):
             if "MI_5MINS" in url:
                 return tw_ohlc("115/11/26" if stale else "115/11/27")
             if "fred" in url:
-                self.assertIn("cosd=2026-11-25&coed=2026-11-25", url)
-                return "observation_date,SP500\n2026-11-25," + ("." if missing_us else "7400.20")
+                self.fail("Public workflow must not fetch unlicensed S&P observations")
             raise SourceError(url)
         return get
 
@@ -46,9 +45,11 @@ class SourceChecks(unittest.TestCase):
 
     def test_date_or_value_gap_fails(self):
         now=datetime(2026,11,27,13,0,tzinfo=timezone.utc)
-        for args in ({"stale":True},{"missing_us":True}):
-            with self.assertRaises(SourceError):
-                collect(now,self.fixture(**args))
+        with self.assertRaises(SourceError):
+            collect(now,self.fixture(stale=True))
+        out=collect(now,self.fixture(missing_us=True))
+        self.assertNotIn("SP500",out["observations"])
+        self.assertIn("S&P 500",out["source_exclusions"])
 
     def test_optional_exact_treasury_and_night(self):
         now=datetime(2026,11,24,0,0,tzinfo=timezone.utc)

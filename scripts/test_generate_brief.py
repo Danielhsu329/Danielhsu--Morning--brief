@@ -1,12 +1,15 @@
 """Offline fixture using the actual 6-module entry point and a copied public template."""
 import copy
 from datetime import datetime
+import hashlib
+import json
 from pathlib import Path
 import tempfile
 import shutil
 import unittest
 
 import generate_brief as g
+from verify_public import verify
 
 class BriefTests(unittest.TestCase):
     def setUp(self):
@@ -79,5 +82,31 @@ class BriefTests(unittest.TestCase):
         (self.root/"archive"/"20261127.html").write_text("known good",encoding="utf-8")
         with self.assertRaisesRegex(ValueError,"immutable"):
             g.staging_contents(self.root,self.data)
+
+    def test_public_readback_asserts_same_bytes_and_exact_payload(self):
+        result=g.staging_contents(self.root,g.bind(self.data,self.ex,self.e,self.now))
+        pages={k:v.encode("utf-8") for k,v in result.items()}
+        pages[""]=pages["index.html"]
+        pages["archive/"]=pages["archive/index.html"]
+        digest=hashlib.sha256(pages["data/latest.json"]).hexdigest()
+        verify(pages.__getitem__,"2026-11-27",digest)
+        for path in ("archive/20261127.html","data/2026-11-27.json","data/manifest.json"):
+            baseline=pages[path]
+            pages[path]=baseline.replace(b"2026-11-27",b"2026-11-26",1) if not path.endswith(".html") else baseline.replace(b"7200.41",b"7200.42",1)
+            with self.assertRaises(ValueError):
+                verify(pages.__getitem__,"2026-11-27",digest)
+            pages[path]=baseline
+
+    def test_unlicensed_spx_omitted_and_sparse_production_blocked(self):
+        self.e["source_exclusions"]={"S&P 500":"https://fred.stlouisfed.org/series/SP500"}
+        self.e["observations"].pop("SP500")
+        spx=self.data["cross_assets_and_macro"]["assets"][0]
+        with self.assertRaisesRegex(ValueError,"redistribution"):
+            g.bind(self.data,self.ex,self.e,self.now)
+        spx["close"]=None
+        self.assertIsNone(g.bind(self.data,self.ex,self.e,self.now)["cross_assets_and_macro"]["assets"][0]["close"])
+        self.assertIn("fred.stlouisfed.org/series/SP500",spx["note"])
+        with self.assertRaisesRegex(ValueError,"coverage"):
+            g.check_production_coverage(self.ex,self.e)
 
 if __name__=="__main__": unittest.main()
