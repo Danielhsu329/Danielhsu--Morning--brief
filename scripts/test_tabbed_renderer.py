@@ -16,7 +16,7 @@ class TabbedTests(unittest.TestCase):
         old_head, old, _=g.template(data_before.decode("utf-8"))
         self.assertEqual(old["meta"]["date"],"2026-11-24")
         self.assertIn('href="./archive/"',old_head)
-        self.assertIn("data_boundary_note",old["meta"])
+        self.assertIn("key_events_boundary",old["meta"])
         self.assertNotIn("executive_takeaways",old["meta"])
         fresh_date="2026-11-27"
         def synthetic(v,k=""):
@@ -34,7 +34,7 @@ class TabbedTests(unittest.TestCase):
             "source_exclusions":{"S&P 500":"https://fred.stlouisfed.org/series/SP500"}}
         data["meta"].update({k:e[k] for k in ("us_trade_date","tw_trade_date","night_futures_official_date")})
         data["meta"].update(cutoff_taipei="2026-11-27 08:00 Asia/Taipei",headline_thesis="這是新一期測試主題",
-                            data_boundary_note="測試：美台現貨日期分列，未取得欄位留空。")
+                            key_events_boundary=["測試：美台現貨日期分列，未取得欄位留空。"])
         for row in data["cross_assets_and_macro"]["assets"]:
             if "TAIEX" in row["name"]: row["close"]=37000.91
         data["taiwan_market_and_bottom_checklist"]["spot_and_futures"]["total_txf_oi_note"]=None if "total_txf_oi_note" in old["taiwan_market_and_bottom_checklist"]["spot_and_futures"] else None
@@ -60,13 +60,18 @@ class TabbedTests(unittest.TestCase):
                 self.assertEqual(g.template(page)[1],checked)
                 self.assertIn("這是新一期測試主題",page)
                 self.assertNotIn(old["meta"]["headline_thesis"],page)
-                for prior in ("2026-11-24 07:21","$500/噸","機構現金 3.6%","歸屬 11/24"):
+                for prior in ("2026-11-24 10:45","2026-11-24 07:21","$500/噸","機構現金 3.6%","歸屬 11/24"):
                     self.assertNotIn(prior,page)
                 for tab in ("macro","uscf","tw","aisc","energy","scen"):
                     self.assertIn(f'id="tab-{tab}"',page)
                 self.assertIn("十億美元",page)
                 self.assertIn("briefHtml(m.note)",page)
                 self.assertIn("dataBoundaryText",page)
+                self.assertIn("${briefHtml(item)}",page)
+                self.assertIn("assetCountLabel",page)
+            for historic in ("20261124.html","20261124-1045.html"):
+                self.assertIn(historic,archives_before)
+                self.assertIn(historic,out["archive/index.html"])
             self.assertIn('href="./archive/"',home)
             self.assertNotIn('href="./archive/"',archive)
             self.assertIn('href="./"',archive)

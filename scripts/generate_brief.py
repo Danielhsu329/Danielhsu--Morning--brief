@@ -76,7 +76,10 @@ def bind(record, example, evidence, now):
         expected[key] = evidence[key]
     require(all(meta[k] == v for k,v in expected.items()), "metadata not bound to independent source dates / cutoff")
     require(all(meta[k] for k in ("headline_thesis","stance","confidence","valuation_gap_status")), "missing editorial metadata")
-    if "data_boundary_note" in meta:
+    if "key_events_boundary" in meta:
+        require(all(isinstance(entry,str) and bool(entry.strip()) for entry in meta["key_events_boundary"]),
+                "key events boundary must hold plain, nonempty text")
+    elif "data_boundary_note" in meta:
         require(isinstance(meta["data_boundary_note"],str) and bool(meta["data_boundary_note"].strip()),
                 "the six-tab issue requires a data boundary note")
     else:

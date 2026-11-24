@@ -15,7 +15,7 @@ PLAIN={
  "s.name","active.name","active.label","active.key_assumptions","active.trigger","ev.date","ev.event","ev.threshold",
  "s.probability_pct","active.probability_pct","c.fcf_to_cfo_pct !== null ? c.fcf_to_cfo_pct + '%' : '-'",
  "alloc.cash_short_bond_pct ?? 0","alloc.defensive_equity_pct ?? 0","alloc.quality_ai_hardware_pct ?? 0","alloc.commodities_intl_pct ?? 0",
- "prefix","val","suffix"
+ "prefix","val","suffix","item"
 }
 ESC="""    function briefHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -24,7 +24,7 @@ ESC="""    function briefHtml(value) {
 
 def is_tabbed(source, example):
     return all(f'id="tab-{t}"' in source and f'data-tab="tab-{t}"' in source for t in TABS) and all(
-        f'id="{x}"' in source for x in ("moduleTabs","badgeDate","badgeCutoff","tradeDatesMeta","dataBoundaryText","headerTitle")) and "data_boundary_note" in example.get("meta",{})
+        f'id="{x}"' in source for x in ("moduleTabs","badgeDate","badgeCutoff","tradeDatesMeta","dataBoundaryText","headerTitle")) and bool({"data_boundary_note","key_events_boundary"} & example.get("meta",{}).keys())
 
 def change_once(content, expression, replacement):
     matches=list(re.finditer(expression,content))
@@ -40,7 +40,7 @@ def render(prefix, payload, suffix, new, archive):
     for ident,value in (("headerTitle",title),("badgeDate",day),("badgeCutoff",new["cutoff_taipei"])):
         prefix=change_once(prefix,rf'(id="{ident}"[^>]*>)[^<]*',lambda x:x[1]+html.escape(value))
     prefix=change_once(prefix,r'(id="resetJsonBtn"[^>]*>)[^<]*',lambda m:m[1]+"重設為本期預設")
-    prefix=re.sub(r"EMBEDDED DEFAULT_DATA \(\d{4}-\d{2}-\d{2} Exact Schema\)","EMBEDDED DEFAULT_DATA (six-tab schema)",prefix)
+    prefix=re.sub(r"EMBEDDED DEFAULT_DATA \(\d{4}-\d{2}-\d{2}[^\n)]*\)","EMBEDDED DEFAULT_DATA (six-tab schema)",prefix)
     prefix=prefix.replace("（單位：億美元）","（單位：十億美元）").replace("（單位：新台幣億元）","（單位：新台幣十億元）")
     prefix=prefix.replace("美銀 11 月 FMS","美銀 FMS")
     prefix=prefix.replace("Q3 毛利率","季度毛利率").replace("Q3 GM / OPM","季度 GM / OPM").replace("Q3 CFO / CapEx / FCF","季度 CFO / CapEx / FCF")
