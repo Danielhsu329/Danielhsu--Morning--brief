@@ -123,6 +123,12 @@ def bind(record, example, evidence, now):
         else:
             require(row["close"] == obs["close"], f"{row['name']}: not bound to official quote")
             row["note"] = obs["date"] + "｜" + obs.get("status", "經來源核對") + "｜" + obs["source"]
+            if obs.get("real_source"):
+                row["note"] += "；同日 TIPS 實質利率：" + obs["real_source"]
+            if obs.get("unit"):
+                row["note"] += "；水準單位 " + obs["unit"]
+            if obs.get("previous_date"):
+                row["range_note"] = "前次對照日期 " + obs["previous_date"]
             row["daily_chg"] = obs.get("daily_chg")
     for company in record["us_cashflow_penetration"]["companies"]:
         t = company["ticker"]

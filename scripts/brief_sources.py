@@ -189,6 +189,9 @@ def collect(now: datetime, get=fetch) -> dict:
     }
 
 TREASURY = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month={month}"
+TREASURY_REAL = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?field_tdr_date_value={year}&type=daily_treasury_real_yield_curve"
+REAL_10Y = "10 年期 TIPS 實質利率"
+BREAKEVEN_10Y = "10 年期平衡通膨率"
 TAIFEX = "https://www.taifex.com.tw/enl/eng3/futDailyMarketReport?queryDate={day}&commodity_id=TX&marketCode=1"
 UST_FIELDS = {"2 Yr": "美國 2 年期公債殖利率", "10 Yr": "美國 10 年期公債殖利率", "30 Yr": "美國 30 年期公債殖利率"}
 
@@ -232,6 +235,29 @@ def treasury_row(html, wanted):
         if parsed == wanted:
             return [number(row[i]) for i in cols]
     raise SourceError("Exact Treasury daily par curve absent")
+
+def real_treasury_row(html, wanted):
+    """Exact dated 10Y real par yield; never select the nearby nominal table."""
+    columns = None
+    hits = []
+    expected = {"Date", "5 Yr", "7 Yr", "10 Yr", "20 Yr", "30 Yr"}
+    for row in Tables(html).rows:
+        if "Date" in row:
+            cols = set(row)
+            # Treasury may append the explicitly named historical series columns.
+            columns = (len(row), row.index("Date"), row.index("10 Yr")) if (
+                expected <= cols and not {"1 Mo", "2 Yr", "10 Yr Bank Discount"} & cols
+                and all(row.count(k) == 1 for k in expected)
+            ) else None
+            continue
+        if columns and len(row) == columns[0]:
+            _, di, yi = columns
+            if row[di] == wanted.strftime("%m/%d/%Y"):
+                hits.append(number(row[yi]))
+    if len(hits) != 1:
+        raise SourceError("No unique dated Treasury real row")
+    return hits[0]
+
 
 def overnight_row(html, trade_day, physical_day, cutoff):
     doc = Tables(html)
@@ -282,6 +308,33 @@ def assets(now, get, us, prev_us, tw, tw_schedule):
                                      "source":source, "status":"derived_par_yield_spread", "unit":"bp", "change_unit":"bp"}
     except (ValueError, TypeError, OSError, KeyError):
         gaps["treasury"]="Exact current and previous official par-yield dates not both confirmed"
+    try:
+        real_source = TREASURY_REAL.format(year=us.year)
+        previous_real_source = TREASURY_REAL.format(year=prev_us.year)
+        raw = get(real_source)
+        prior_raw = raw if previous_real_source == real_source else get(previous_real_source)
+        real = real_treasury_row(raw, us)
+        prior_real = real_treasury_row(prior_raw, prev_us)
+        out[REAL_10Y] = {"date":us.isoformat(),"previous_date":prev_us.isoformat(),
+                         "close":real,"daily_chg":f"{(real-prior_real)*100:+.2f} bp",
+                         "source":real_source,"previous_source":previous_real_source,
+                         "status":"indicative_real_par_yield","unit":"%","change_unit":"bp"}
+        if UST_FIELDS["10 Yr"] in out:
+            be = round(values[1]-real, 4)
+            prev_be = round(old_values[1]-prior_real, 4)
+            out[BREAKEVEN_10Y] = {
+                "date":us.isoformat(),"previous_date":prev_us.isoformat(),
+                "close":be,"daily_chg":f"{(be-prev_be)*100:+.2f} bp",
+                "source":source,"previous_source":old_source,"real_source":real_source,
+                "previous_real_source":previous_real_source,
+                "inputs":{"nominal_10y":values[1],"real_10y":real,
+                          "previous_nominal_10y":old_values[1],"previous_real_10y":prior_real},
+                "status":"derived_nominal_less_real_par_yields_not_forecast","unit":"%","change_unit":"bp"}
+        else:
+            gaps["breakeven"]="Matching nominal par-yield dates not confirmed"
+    except (ValueError, TypeError, OSError, KeyError):
+        gaps["treasury_real"]="Exact current and previous official real par-yield dates not both confirmed"
+        gaps["breakeven"]="Matching nominal and real par-yield dates not both confirmed"
     try:
         for i in range(1,16):
             wanted = tw + timedelta(days=i)

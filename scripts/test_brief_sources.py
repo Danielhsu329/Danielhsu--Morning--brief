@@ -62,6 +62,10 @@ class SourceChecks(unittest.TestCase):
                 return tw_ohlc("115/11/23")
             if "fred" in url:
                 return "observation_date,SP500\n2026-11-23,7237.17"
+            if "daily_treasury_real_yield_curve" in url:
+                return tab(["Date","5 Yr","7 Yr","10 Yr","20 Yr","30 Yr"],
+                           ["11/20/2026","2.53","2.64","2.77","3.03","3.17"],
+                           ["11/23/2026","2.59","2.68","2.79","3.04","3.17"])
             if "treasury" in url:
                 return tab(["Date","2 Yr","10 Yr","30 Yr"],["11/20/2026","4.63","4.92","5.31"],
                            ["11/23/2026","4.63","4.92","5.29"])
@@ -79,6 +83,16 @@ class SourceChecks(unittest.TestCase):
         self.assertEqual(out["asset_rows"]["美債 2s10s 利差"]["close"],29)
         self.assertEqual(out["asset_rows"]["美國 30 年期公債殖利率"]["daily_chg"],"-2.00 bp")
         self.assertFalse(out["asset_gaps"])
+        real=out["asset_rows"]["10 年期 TIPS 實質利率"]
+        self.assertEqual((real["close"],real["daily_chg"],real["previous_date"]),(2.79,"+2.00 bp","2026-11-20"))
+        be=out["asset_rows"]["10 年期平衡通膨率"]
+        self.assertEqual((be["close"],be["daily_chg"],be["inputs"]["nominal_10y"]),(2.13,"-2.00 bp",4.92))
+        self.assertIn("daily_treasury_real_yield_curve",be["real_source"])
+        def missing_real(url):
+            return get(url).replace("11/20/2026","11/19/2026") if "real_yield" in url else get(url)
+        stale=collect(now,missing_real)
+        self.assertNotIn("10 年期平衡通膨率",stale["asset_rows"])
+        self.assertIn("breakeven",stale["asset_gaps"])
         def wrong_session(url):
             return get(url).replace("2026/11/23 15:00", "2026/11/22 15:00") if "taifex" in url else get(url)
         out=collect(now,wrong_session)
