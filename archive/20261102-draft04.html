@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全球宏觀與產業策略晨報｜經濟學視角互動分析儀表板</title>
+  <!-- Chosen Palette: Warm Editorial Stone & Slate with Deep Teal & Amber Accents -->
+  <!-- Application Structure Plan: The SPA transforms the static macro & industry strategy report into a 5-part interactive economic workstation: (1) Executive Thesis & Temporal Causality Guard to prevent post-hoc fallacies across the Oct 28–Nov 2 event window; (2) Macro Regime, China PMI Dual-Track Divergence & Fed/OPEC Policy Transmission; (3) Cost of Capital & Cross-Sector Cash Flow Benchmarks including Sandisk's interactive FCF bridge; (4) AI Supply Chain & Taiwan Market Mapping with strict denominator separation, TSMC N2 ramp economics, interactive Equipment/Liquid Cooling pipelines, and an 8-sector Semiconductor/Memory filterable matrix; (5) Dynamic Bull/Base/Bear Scenario Switcher, Catalyst Triggers, and Governance/SHA256 Audit Verification. This structure prioritizes economic mechanism verification and evidence maturity over linear report reading. -->
+  <!-- Visualization & Content Choices: 1. China PMI Diffusion & Structural Split (Chart.js Grouped Bar + 50-line toggle) -> Goal: Compare Sept vs Oct breadth and tech vs non-tech divergence without misreading diffusion indices as growth rates. 2. Cross-Sector Cash Conversion & Capital Intensity (Chart.js Interactive Bar with metric switcher) -> Goal: Compare normalized FCF/CFO ratios across AMZN, KO, P&G, and TSMC while respecting accounting period differences. 3. Sandisk Adjusted FCF Bridge (Chart.js Floating Waterfall Bar) -> Goal: Visually isolate how NBM adjustment shrinkage (+$1,473M) drove Adjusted FCF growth despite Unadjusted FCF decline (-$774M). 4. Cross-Asset & Taiwan Market Split-Denominator Chart (Chart.js Toggle Bar) -> Goal: Show UST yield drops alongside equity sell-offs and separate TWSE vs TPEx turnover denominators. All diagrams, pipelines, and icons use structured HTML/CSS/Tailwind and Unicode characters. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #1E293B;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 300px;
+      max-height: 400px;
+    }
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 350px;
+      }
+    }
+    .nav-pill.active {
+      background-color: #0F766E;
+      color: #FFFFFF;
+      border-color: #0F766E;
+    }
+    .timeline-node.active {
+      border-color: #0F766E;
+      background-color: #F0FDFA;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.12);
+    }
+    .pipeline-step.active {
+      border-color: #B45309;
+      background-color: #FFFBEB;
+    }
+    .scenario-btn.active-base {
+      background-color: #1E293B;
+      color: #FFFFFF;
+      border-color: #1E293B;
+    }
+    .scenario-btn.active-bull {
+      background-color: #0F766E;
+      color: #FFFFFF;
+      border-color: #0F766E;
+    }
+    .scenario-btn.active-bear {
+      background-color: #BE123C;
+      color: #FFFFFF;
+      border-color: #BE123C;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-teal-100 selection:text-teal-900">
+
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
+        <div>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-stone-500">
+            <span class="px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-200">ID: GMD-20261102-RESEARCH-01</span>
+            <span class="px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">DRAFT-04 經濟學視角重構版</span>
+            <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">截止窗：2026-11-02 07:52:46 Asia/Taipei</span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold text-slate-900 mt-1 tracking-tight">
+            全球宏觀與產業策略晨報：以資本成本、跨期現金流與經濟租重估 AI 與防禦配置
+          </h1>
+        </div>
+        <div class="flex items-center gap-2 self-start lg:self-center">
+          <button id="toggleAuditBtn" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-stone-300 bg-stone-50 hover:bg-stone-100 text-slate-700 transition flex items-center gap-1.5">
+            <span>🛡️ QG35: 95/100｜S40 PASS</span>
+            <span id="auditArrow">▾</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="auditPanel" class="hidden mt-3 p-4 rounded-xl bg-stone-50 border border-stone-200 text-xs text-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <div class="p-2.5 bg-white rounded-lg border border-stone-200">
+            <div class="font-bold text-slate-900 mb-1">📋 審查關卡狀態（Governance Gates）</div>
+            <ul class="space-y-1 text-stone-600">
+              <li>• Economist Reasoning / View：<span class="font-semibold text-teal-700">PASS</span></li>
+              <li>• Freshness（原晨間 07:52:46 窗）：<span class="font-semibold text-teal-700">PASS（非午後更新）</span></li>
+              <li>• Canonical Audit / 獨立 S40：<span class="font-semibold text-teal-700">PASS（exit 0 / 14:16 完成）</span></li>
+              <li>• S50 / S60 Runtime：<span class="font-semibold text-amber-700">待核准新 SHA / BLOCKED_HUMAN_HOLD</span></li>
+            </ul>
+          </div>
+          <div class="p-2.5 bg-white rounded-lg border border-stone-200">
+            <div class="font-bold text-slate-900 mb-1">⚖️ QG35 作者重評明細（95／100）</div>
+            <p class="text-stone-600 leading-relaxed">
+              五項維度得分為 <span class="font-bold text-slate-900">20 / 20 / 20 / 15 / 20</span>。扣除的 5 分位於「財務傳導與估值」，因部分台灣供應商財報正文、驗收細節及同步可比估值仍缺，嚴格遵守資料邊界不予補造。
+            </p>
+          </div>
+          <div class="p-2.5 bg-white rounded-lg border border-stone-200">
+            <div class="font-bold text-slate-900 mb-1">🔒 正文 SHA256 綁定與取證保留</div>
+            <div class="font-mono text-[11px] bg-stone-100 p-1.5 rounded border border-stone-200 break-all text-slate-800 select-all">
+              6731a4d52371f229e07c8b413b094576fd01520577bcfcc04f15007e3f5e3faa
+            </div>
+            <p class="text-stone-500 mt-1">美、台現貨最近完整交易日均為 10/30（前值 10/29）；保留原稿與取證限制。</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex items-center gap-1.5 overflow-x-auto pt-3 pb-1 no-scrollbar" aria-label="報告章節導覽">
+        <a href="#sec-thesis" class="nav-pill active whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200 bg-white text-slate-700 hover:bg-stone-100 transition">1. 核心命題與時序邊界</a>
+        <a href="#sec-macro" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200 bg-white text-slate-700 hover:bg-stone-100 transition">2. 中國 PMI、Fed 與 OPEC</a>
+        <a href="#sec-cash" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200 bg-white text-slate-700 hover:bg-stone-100 transition">3. 資本成本與現金流橋梁</a>
+        <a href="#sec-taiwan" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200 bg-white text-slate-700 hover:bg-stone-100 transition">4. 台股與 AI 供應鏈映射</a>
+        <a href="#sec-matrix" class="nav-pill whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold border border-stone-200 bg-white text-slate-700 hover:bg-stone-100 transition">5. 情境矩陣與證偽條件</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
+
+    <section id="sec-thesis" class="scroll-mt-32 space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2">
+          <span>🧭 總體經濟核心命題與研究定位</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">
+          從「營收規模擴張」轉向「跨期必要再投資與經濟租」的重新比價
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+          本區塊旨在建立整份晨報的總體經濟分析基準與時間因果紀律。您可以透過下方的策略定位指標卡掌握未來 1–12 週的唯一配置立場，並點擊「事件時間邊界檢驗器」中的各個時間節點，釐清哪些資訊屬於 10/30 美台股收盤前的已發生事件，哪些屬於週末新增的外生約束，避免落入倒果為因的敘事陷阱。
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-teal-50/70 border border-teal-200">
+            <div class="text-xs font-semibold text-teal-800 mb-1">唯一配置立場（Reiterate）</div>
+            <div class="text-base font-bold text-slate-900">Conditional Quality Rotation</div>
+            <div class="text-xs text-slate-600 mt-1">條件性品質輪動：提高穩定需求、低再投資、高現金轉換權重，保留具現金證據的 AI 核心。</div>
+          </div>
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200">
+            <div class="text-xs font-semibold text-stone-600 mb-1">研究期間與信心水準</div>
+            <div class="text-base font-bold text-slate-900">未來 1–12 週｜信心：中等</div>
+            <div class="text-xs text-slate-600 mt-1">營收成長本身較難支撐所有 AI 估值倍數，須通過自由現金流（FCF）檢驗。</div>
+          </div>
+          <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+            <div class="text-xs font-semibold text-amber-800 mb-1">Valuation Gap（估值差）</div>
+            <div class="text-base font-bold text-amber-900">Unclear（尚待釐清）</div>
+            <div class="text-xs text-slate-600 mt-1">缺同步可比價格、正常化現金流、增量投入與 WACC，不足以宣告全面資金流入或個股便宜。</div>
+          </div>
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200">
+            <div class="text-xs font-semibold text-stone-600 mb-1">ARES 貨幣與部位政策</div>
+            <div class="text-base font-bold text-slate-900">維持既有參數，不修改交易結論</div>
+            <div class="text-xs text-slate-600 mt-1">Policy Gap 標示為「未計算」；本重製未核定具體數值倉位。</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="p-4 rounded-xl border border-stone-200 bg-white">
+            <div class="flex items-center gap-2 font-bold text-slate-900 text-sm mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center">1</span>
+              <span>中國總量轉弱，科技結構仍強</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              10 月製造業 PMI（49.3）、生產（49.8）與新訂單（49.4）同步降至 50 以下；但高技術製造業（51.3）仍擴張，構成重要反證，不能直接用總量 PMI 下修台灣 AI 供應鏈 EPS。
+            </p>
+          </div>
+          <div class="p-4 rounded-xl border border-stone-200 bg-white">
+            <div class="flex items-center gap-2 font-bold text-slate-900 text-sm mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center">2</span>
+              <span>OPEC 延長既有要求，非新增減產</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              11/1 七國決議將維持 9 月所需產量水準的期間延至 12 月（較 10/4 決議增加一個月），實際產出與履約仍待觀察；不可將週五已完成的油價結算當成週日決議反應。
+            </p>
+          </div>
+          <div class="p-4 rounded-xl border border-stone-200 bg-white">
+            <div class="flex items-center gap-2 font-bold text-slate-900 text-sm mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center">3</span>
+              <span>防禦輪動與 AI 皆須通過現金檢驗</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              AI 營收高成長可伴隨 FCF 承壓（如 Amazon TTM FCF −424 億美元）；防禦股亦可面臨毛利下滑（如 P&G Core 毛利率年減 150bp）。研究須區分帳面收入與現金實現。
+            </p>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-stone-50 border border-stone-200">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">⏱️ 時間邊界與因果檢驗器（點擊時間節點檢視因果邊界）</h3>
+              <p class="text-xs text-stone-500">嚴格區分 10/30 收盤前已反映事件與週末新增外生約束，防止倒果為因。</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-white border border-stone-200 text-slate-700">基準截止：11/02 07:52:46</span>
+          </div>
+          <div id="timelineButtons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4"></div>
+          <div id="timelineDetail" class="p-4 rounded-lg bg-white border border-teal-200 text-xs sm:text-sm text-slate-700 leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-macro" class="scroll-mt-32 space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2">
+          <span>🌐 總體經濟 Regime、貨幣政策與能源傳導</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">
+          中國製造業「雙軌分化」、聯準會鷹派分歧與 OPEC 配額展延
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+          本節剖析構成當前經濟體制的三股外生力量。左側圖表視覺化呈現中國 10 月製造業 PMI 擴散指數的總量收縮與高技術結構韌性，您可切換檢視「9月 vs 10月總量與價格廣度」或「10月產業結構分化」；右側則整合聯準會（ARES 引擎）政策邊界與 OPEC 供給決議的成本推動傳導鏈，並標註關鍵統計與推論禁忌。
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 bg-stone-50 rounded-xl border border-stone-200 p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">📊 中國 10 月官方製造業 PMI 擴散指數分析</h3>
+                <p class="text-xs text-stone-500">資料來源：中國國家統計局（10/31 09:30 發布，季節調整擴散指數，50 為榮枯線）</p>
+              </div>
+              <div class="inline-flex rounded-lg border border-stone-300 bg-white p-0.5 self-start">
+                <button type="button" data-pmi-mode="mom" class="pmi-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-teal-700 text-white">9月 vs 10月</button>
+                <button type="button" data-pmi-mode="sector" class="pmi-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">產業結構分化</button>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="pmiChart"></canvas>
+            </div>
+
+            <div class="mt-4 p-3.5 rounded-lg bg-white border border-stone-200 text-xs text-slate-600 space-y-1.5">
+              <div class="font-bold text-slate-900">⚠️ 經濟統計判讀邊界與傳導模型：</div>
+              <p>• <strong>價格指數陷阱：</strong>主要原材料購進價格（60.8 → 56.8）與出廠價格（54.0 → 51.7）雙雙回落但仍高於 50，代表「價格上升的企業覆蓋廣度減弱」，<strong>絕非絕對價格水準下降</strong>，更不可將兩者相減當作企業毛利率。</p>
+              <p>• <strong>傳導假說：</strong>新訂單廣度轉弱（49.4）→ 企業降低補庫存與產能利用率 → 固定成本吸收與議價能力受壓 → 獲利落後營收，營運資金回收重要性上升（尚非已觀測到的公司 EPS 下修）。</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-4">
+            <div class="p-5 rounded-xl bg-stone-50 border border-stone-200">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-slate-900">🏛️ ARES Monetary Policy Engine</h3>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-800">10/28 FOMC 10–2 維持不變</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 my-3 text-xs">
+                <div class="p-2.5 bg-white rounded-lg border border-stone-200">
+                  <div class="text-stone-500">聯邦基金目標區間</div>
+                  <div class="text-sm font-bold text-slate-900 mt-0.5">3.75% – 4.00%</div>
+                  <div class="text-[11px] text-amber-700 mt-0.5">Cook & Hammack 反對（主張升息 25bp）</div>
+                </div>
+                <div class="p-2.5 bg-white rounded-lg border border-stone-200">
+                  <div class="text-stone-500">下次會議與 Policy Gap</div>
+                  <div class="text-sm font-bold text-slate-900 mt-0.5">12/8–12/9｜未計算</div>
+                  <div class="text-[11px] text-stone-500 mt-0.5">缺合格同步市場機率與模型輸出</div>
+                </div>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                聲明形容美國經濟活動強勁、通膨偏高，顯示不能把中國一般製造轉弱擴大成全球需求同步收縮。研究上降低對單一降息敘事的依賴，將訂單、利用率、毛利與現金回收納入同一框架。
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-stone-50 border border-stone-200">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-slate-900">🛢️ OPEC 11/1 決議與成本傳導鏈</h3>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900">延至 2026 年 12 月</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                沙、俄、伊拉克、科威特、哈薩克、阿爾及利亞與阿曼七國決議，將維持 2026 年 9 月所需產量水準延至 12 月（較 10/4 決議多一個月，下次會議 11/29）。此為<strong>既有配額要求延長</strong>，非新增減產；未讀到完整絕對桶數表，不填補絕對產量。
+              </p>
+              <div class="p-3 rounded-lg bg-white border border-stone-200 text-xs text-slate-700 space-y-1">
+                <div class="font-bold text-slate-900">成本推動（Cost-Push）檢驗順序：</div>
+                <div>1. 先核對實際產出／履約率與 11/1 後同合約結算價（10/30 WTI 12月／Brent 次年1月僅反映決議前狀態）。</div>
+                <div>2. 再檢視下游企業定價權、存貨與長約轉嫁條款；能源股具高 CapEx 與商品價格風險，不歸類為本報低再投資防禦資產。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-cash" class="scroll-mt-32 space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2">
+          <span>💰 儲蓄與投資平衡、資本成本與企業現金流實證</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">
+          當無風險利率回落而科技股重挫：跨產業現金轉換率與 Sandisk 現金流橋梁
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+          10/30 美債 2 年、10 年與 30 年名目殖利率全線下滑（分別 −5bp、−4bp、−1bp），證明當日科技與半導體重挫並非無風險利率上升所致，而是市場對「新增資本何時轉化為可分配自由現金流」的風險溢酬重估。下方左側圖表提供跨產業龍頭的現金流基準比價（支援切換「現金轉換率 %」與「原幣別絕對金額」），右側圖表則完整拆解 Sandisk FY27 Q1 未調整 FCF 季減與調整後 FCF 季增背後的會計調節橋梁。
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <div class="bg-stone-50 rounded-xl border border-stone-200 p-5 flex flex-col">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">⚖️ 跨產業 CFO、CapEx 與 FCF 資本比價</h3>
+                <p class="text-xs text-stone-500">不同會計期間與幣別基準（不按現金絕對金額高低排名）</p>
+              </div>
+              <div class="inline-flex rounded-lg border border-stone-300 bg-white p-0.5 self-start">
+                <button type="button" data-cash-mode="ratio" class="cash-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-teal-700 text-white">FCF / CFO 轉換率 (%)</button>
+                <button type="button" data-cash-mode="abs" class="cash-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">揭露現金流明細</button>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="cashBenchmarkChart"></canvas>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="font-bold text-slate-900">Amazon（TTM 至 9/30）</div>
+                <p class="text-slate-600 mt-1">CFO $1,683億、FCF <span class="text-rose-700 font-semibold">−$424億</span>（去年 +$148億），淨 PPE 購置年增 $948億（增量非總額）。Q3 AWS 營收 $460億（+39.3%）、營利 $178億，與集團負 FCF 並存。</p>
+              </div>
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="font-bold text-slate-900">KO（9M 至 10/2）＆ P&G（FY27 Q1）</div>
+                <p class="text-slate-600 mt-1">KO CFO $125億、FCF $114億（全年指引 FCF ≥$130億）。P&G CFO $57.67億、FCF $44.01億（FCF/淨利 93%），但 <span class="text-amber-800 font-semibold">Core 毛利率年減 150bp</span>，反駁防禦股無成本壓力。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-stone-50 rounded-xl border border-stone-200 p-5 flex flex-col">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">🌉 Sandisk FY27 Q1 調整後自由現金流變動橋梁</h3>
+                <p class="text-xs text-stone-500">單位：百萬美元｜FY26 Q4（截至 7/3）→ FY27 Q1（截至 10/2）</p>
+              </div>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-teal-50 text-teal-900 border border-teal-200 self-start">
+                −774 − 38 + 1,473 = +661
+              </span>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="sandiskBridgeChart"></canvas>
+            </div>
+
+            <div class="mt-4 p-3.5 rounded-lg bg-white border border-stone-200 text-xs text-slate-600 space-y-1.5">
+              <div class="font-bold text-slate-900">🔍 經濟學與會計拆解重點（反證與限制）：</div>
+              <p>• <strong>表面背離真相：</strong>營業現金流（CFO）由 $7,126M 降至 $6,363M（−10.71%），未調整 FCF 季減 $774M（−10.93%）；調整後 FCF 逆勢增加 $661M（+13.13%），主因 <strong>NBM 調節負項由 −$1,938M 大幅縮小至 −$465M（+$1,473M）</strong>，不可誤讀為本業營業現金流改善。</p>
+              <p>• <strong>利潤率與反證：</strong>調整後 FCF margin 由 56.2% 降至 51.6%；但單季 $5,696M 正現金仍反駁「記憶體全面失去回收能力」（缺增量資本與 WACC，未證明超額 ROIC）。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 rounded-xl bg-amber-50/60 border border-amber-200 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+          <div>
+            <span class="font-bold text-amber-950">📉 美股 10/30 財報時序與類股輪動檢驗（NYSE 回顧）：</span>
+            <span class="text-slate-700">Intel Q3 營收 $165億（DCAI $73億 +78%、CCPG $81億 −5%），但 Q3 GAAP 毛利率 43% 驟降至 Q4 指引 37.1%（non-GAAP 38%），展示營收與毛利可不同時點轉弱。全週類股輪動中，週前半資金一度離開防禦股、後半週才逆轉，且缺直接基金申贖流量證明，不可描述為整週單向流入。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-taiwan" class="scroll-mt-32 space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2">
+          <span>🇹🇼 台灣資金結構、台積電與 AI 硬體供應鏈映射</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">
+          現貨成交母體區隔、台積電 N2 爬坡稀釋與半導體次產業證據成熟度
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+          台灣市場分析必須嚴格遵守統計母體與交易時段（Session）歸屬紀律。本節上方提供「跨資產與台股結構圖表」（可切換美債殖利率/VIX 與台股指數/成交額/匯率）以及「台積電（2330.TW）Q3 財務與 N2 爬坡檢驗」；下方則提供「設備驗收與液冷散熱互動檢驗器」及「載板、先進互連與記憶體 8 大次產業可篩選矩陣」，依證據成熟度排列研究資源配置順序。
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
+          <div class="lg:col-span-6 bg-stone-50 rounded-xl border border-stone-200 p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">📈 10/30 跨資產與台股現貨／期貨結構</h3>
+                <p class="text-xs text-stone-500">最近完整交易日 10/30（對 10/29）收盤統計</p>
+              </div>
+              <div class="inline-flex rounded-lg border border-stone-300 bg-white p-0.5 self-start">
+                <button type="button" data-mkt-mode="tw" class="mkt-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-teal-700 text-white">台股指數與成交額</button>
+                <button type="button" data-mkt-mode="us" class="mkt-toggle-btn px-2.5 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">美債殖利率與 VIX</button>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="marketChart"></canvas>
+            </div>
+
+            <div class="mt-4 p-3.5 rounded-lg bg-white border border-stone-200 text-xs text-slate-600 space-y-1.5">
+              <div class="font-bold text-slate-900">📐 台灣市場統計母體與跨 Session 嚴格區隔：</div>
+              <p>• <strong>母體不可混除：</strong>上市外資賣超 <span class="font-semibold text-rose-700">1,124.67 億元</span>、櫃買外資賣超 <span class="font-semibold text-rose-700">83.29 億元</span>（櫃買法人表含鉅額交易，櫃買股票成交額表 −4.77% 不含鉅額，不可直接相除）；且外資賣超未證明資金流入特定防禦股。</p>
+              <p>• <strong>期貨與匯率：</strong>台指 11 月期貨 10/30 日盤結算 <strong>45,300</strong>（最後 45,301）；夜盤（10/30 15:00–10/31 05:00，官方歸屬 <strong>11/2 交易日</strong>）最後成交 <strong>44,433</strong>。外資全月份淨未平倉 <strong>−92,241 口</strong>為存量，不推算新增空單。USD/TWD 由 32.492 降至 <strong>32.478</strong>（台幣小幅升值），反駁「台幣貶值確認所有外資撤出」。</p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 bg-stone-50 rounded-xl border border-stone-200 p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">🏭 台積電（2330.TW）：保留 AI 核心與 N2 爬坡檢驗</h3>
+                <p class="text-xs text-stone-500">來源：Q3 Management Report 官方網域索引摘錄（原 PDF 下載失敗，取證限制保留）</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-900">AI 核心保留</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="text-stone-500">Q3 合併營收 / EPS</div>
+                <div class="text-sm font-bold text-slate-900 mt-0.5">14,942.4 億</div>
+                <div class="text-[11px] text-teal-700">EPS 29.43 元｜HPC 68%</div>
+              </div>
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="text-stone-500">Q3 毛利率</div>
+                <div class="text-sm font-bold text-slate-900 mt-0.5">66.4%</div>
+                <div class="text-[11px] text-amber-700">季減 1.3 ppt（N2 爬坡）</div>
+              </div>
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="text-stone-500">Q3 自由現金流</div>
+                <div class="text-sm font-bold text-teal-800 mt-0.5">4,765.6 億</div>
+                <div class="text-[11px] text-slate-600">CFO 9,197.7 / CapEx 4,432.1</div>
+              </div>
+              <div class="p-3 bg-white rounded-lg border border-stone-200">
+                <div class="text-stone-500">營運資金週轉</div>
+                <div class="text-sm font-bold text-slate-900 mt-0.5">AR 28 天</div>
+                <div class="text-[11px] text-slate-600">存貨週轉天數 82 天</div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-lg border border-stone-200 text-xs text-slate-700 space-y-2 leading-relaxed">
+              <div>
+                <span class="font-bold text-slate-900">• N2 爬坡稀釋的經濟意涵：</span>官方索引摘錄將毛利率季減 1.3 個百分點主因歸於 N2 初期量產爬坡稀釋，這是成本與折舊時序歸因，<strong>不等同終端需求轉弱</strong>；但既有高毛利與高 FCF 亦不代表所有新增產能邊際 ROIC 必高於資本成本（HPC 68% 亦非純 AI 占比）。
+              </div>
+              <div>
+                <span class="font-bold text-slate-900">• 接下來兩季證偽條件：</span>若產能利用率弱化、應收或存貨吸收現金且毛利未隨收入修復，將削弱核心品質判斷；反之，高投資後仍維持強勁 FCF，則否定全面撤離 AI 主張。
+              </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-lg border border-stone-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-900">🔧 設備驗收與液冷散熱互動檢驗（點擊階段檢視資金占用風險）</span>
+              </div>
+              <div id="pipelineSteps" class="grid grid-cols-3 sm:grid-cols-6 gap-1.5"></div>
+              <div id="pipelineDetail" class="p-3 rounded bg-amber-50/70 border border-amber-200 text-xs text-slate-700 leading-relaxed"></div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                <div class="p-2.5 rounded bg-stone-50 border border-stone-200">
+                  <div class="font-bold text-slate-900">弘塑（3131）／辛耘（3583）取證現況</div>
+                  <p class="text-stone-600 mt-1">辛耘 9 月營收年增 2.79%、月減 2.59%（10 月欄位空白不推估）；弘塑可確認 Q1/Q2 文件列表，尚未讀到 Q3 財報與驗收排程。</p>
+                </div>
+                <div class="p-2.5 rounded bg-stone-50 border border-stone-200">
+                  <div class="font-bold text-slate-900">奇鋐（3017）／雙鴻（3324）產品拆解</div>
+                  <p class="text-stone-600 mt-1">冷板、Manifold 與 CDU 具不同 BOM、良率、防漏保固與資金占用；官方頁無最新可讀數字，不硬排勝負或外推總市場規模。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-stone-50 rounded-xl border border-stone-200 p-5">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">🧬 載板、先進互連與記憶體全譜系研究矩陣（依證據成熟度排序）</h3>
+              <p class="text-xs text-stone-500">研究資源先投向已有現金驗證的 AI 核心，再向可驗證交付鏈延伸；Glass／TGV／CPO 技術選擇權須等資格與經濟性證據。</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" data-sector-cat="all" class="sector-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white">全部 (8)</button>
+              <button type="button" data-sector-cat="interconnect" class="sector-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-white border border-stone-300 text-slate-700 hover:bg-stone-100">載板與先進互連 (3)</button>
+              <button type="button" data-sector-cat="memory" class="sector-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-white border border-stone-300 text-slate-700 hover:bg-stone-100">記憶體全譜系 (5)</button>
+              <input id="sectorSearch" type="text" placeholder="搜尋關鍵字（如 HBM、CPO、良率）..." class="px-3 py-1 rounded-full text-xs border border-stone-300 bg-white focus:outline-none focus:border-teal-700" />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-stone-300 text-slate-900 bg-stone-100">
+                  <th class="py-2.5 px-3 font-bold whitespace-nowrap">次產業群別</th>
+                  <th class="py-2.5 px-3 font-bold">財務傳導機制與跨期時序</th>
+                  <th class="py-2.5 px-3 font-bold">相對研究順序、最強反證及證偽條件</th>
+                </tr>
+              </thead>
+              <tbody id="sectorTableBody" class="divide-y divide-stone-200 bg-white"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-matrix" class="scroll-mt-32 space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2">
+          <span>🎯 Company Impact Mapping 與證偽觸發條件</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">
+          五大價值鏈情境切換器與三大核心驗證觸發條件
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">
+          下方的情境條件均為作者設定之暫定質性研究框架，並非公司官方指引、已估計機率、共識 EPS 或目標價。您可以點擊切換「Base 基準情境」、「Bull 樂觀反證」或「Bear 悲觀風險」，同步檢視五大產業鏈條在未來 5–20 個交易日（高頻驗證）與接下來兩次 PMI／兩季財報（中期驗證）中的觀察重點與證偽紅線。
+        </p>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5 p-4 rounded-xl bg-stone-50 border border-stone-200">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-slate-700 mr-1">切換檢視情境：</span>
+            <button type="button" data-scenario="base" class="scenario-btn active-base px-3.5 py-1.5 rounded-lg text-xs font-bold border border-stone-300 transition">Base 基準情境</button>
+            <button type="button" data-scenario="bull" class="scenario-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border border-stone-300 bg-white text-slate-700 transition">Bull 樂觀反證</button>
+            <button type="button" data-scenario="bear" class="scenario-btn px-3.5 py-1.5 rounded-lg text-xs font-bold border border-stone-300 bg-white text-slate-700 transition">Bear 悲觀風險</button>
+          </div>
+          <div class="text-xs text-stone-500">
+            觀察窗口：近期 <strong>5–20 個交易日</strong>｜中期 <strong>兩次 PMI 與兩季財報</strong>（未經歷史統計校準）
+          </div>
+        </div>
+
+        <div id="impactCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"></div>
+
+        <div class="p-5 rounded-xl bg-teal-950 text-stone-100">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-300 mb-2">
+            🚦 後續調整配置優先序的三大關鍵驗證與證偽條件（Catalyst / Trigger）
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed mt-3">
+            <div class="p-3.5 rounded-lg bg-teal-900/60 border border-teal-800">
+              <div class="font-bold text-white mb-1">1. 中國新訂單擴散廣度</div>
+              <p class="text-teal-100">中國製造業 PMI 新訂單指數（10 月為 49.4）在接下來兩次發布中能否重回 50 以上擴張區間，抑或收縮壓力進一步向一般製造與庫存端擴散。</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-teal-900/60 border border-teal-800">
+              <div class="font-bold text-white mb-1">2. OPEC 實質供給與同合約油價</div>
+              <p class="text-teal-100">OPEC 將 9 月產量要求延至 12 月的決議，能否實質反映到產油國實際產出與出口縮減，並推動後續同合約原油結算價走升與下游成本轉嫁考驗。</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-teal-900/60 border border-teal-800">
+              <div class="font-bold text-white mb-1">3. 微觀企業自由現金流實現</div>
+              <p class="text-teal-100">AI 供應鏈與設備／液冷廠商的帳面收入成長，能否通過客戶端驗收、維持毛利率穩定，並在不被營運資金過度吸收的前提下轉化為真實自由現金流。</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-teal-800/80 text-xs text-teal-200">
+            <strong>配置紀律總結：</strong>唯有當目標公司的自由現金流品質出現相對改善，且其市場價格尚未要求過高的安全溢價時，方才提高條件性品質輪動的實作優先序；目前尚不足以設定具體的數值倉位。
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-stone-200 bg-white mt-12 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-stone-500">
+      <div>
+        全球宏觀與產業策略晨報｜ID: GMD-20261102-RESEARCH-01（DRAFT-04 經濟學視角重構版）｜資料截止：2026-11-02 07:52:46 Asia/Taipei
+      </div>
+      <div>
+        僅供總體經濟與產業組織研究參考，非自動交易觸發器或個別證券買進授權
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function wrapLabel(label, maxUnits) {
+      const limit = maxUnits || 16;
+      if (typeof label !== 'string') return label;
+      let currentUnits = 0;
+      let currentLine = '';
+      const lines = [];
+      for (let i = 0; i < label.length; i++) {
+        const ch = label[i];
+        const chUnits = /[\u4e00-\u9fa5\uff00-\uffef]/.test(ch) ? 2 : 1;
+        if (currentUnits + chUnits > limit && currentLine.length > 0) {
+          lines.push(currentLine);
+          currentLine = ch;
+          currentUnits = chUnits;
+        } else {
+          currentLine += ch;
+          currentUnits += chUnits;
+        }
+      }
+      if (currentLine.length > 0) lines.push(currentLine);
+      return lines.length > 1 ? lines : label;
+    }
+
+    const timelineData = [
+      {
+        date: '10/28（週三）',
+        title: 'FOMC 利率決議',
+        tag: '已發生背景',
+        tagColor: 'bg-stone-200 text-stone-800',
+        detail: '聯準會以 10–2 維持聯邦基金利率目標 3.75–4.00%（Cook 與 Hammack 反對並主張升息 25bp）。聲明形容美國經濟活動強勁、通膨偏高，顯示委員會內仍有偏緊分歧，但非 10/30 跌幅的單一因果證明。'
+      },
+      {
+        date: '10/29（週四）',
+        title: '美股財報序幕',
+        tag: '財報事件時序',
+        tagColor: 'bg-amber-100 text-amber-900',
+        detail: 'NYSE 10/30 回顧將 AI 敘事轉折連結至週三盤後 Google 財報、週四晚間科技財報及後續賣壓。同時美債 2/10/30 年殖利率於隔日（10/30）分別下滑 5/4/1bp，顯示科技股下跌主因非無風險利率上升。'
+      },
+      {
+        date: '10/30（週五）',
+        title: '美、台現貨收盤',
+        tag: '最近完整交易日',
+        tagColor: 'bg-teal-100 text-teal-900',
+        detail: '美股那斯達克、Nasdaq-100 與費城半導體跌幅高於道瓊（NYSE 回顧形容 INTC 約跌 30%）；台股加權跌 2.49%、櫃買跌 4.42%，上市外資賣超 1,124.67 億元，USD/TWD 升值至 32.478。此為本報最近完整現貨基準日。'
+      },
+      {
+        date: '10/31 09:30',
+        title: '中國 10 月 PMI',
+        tag: '週末新增約束',
+        tagColor: 'bg-rose-100 text-rose-900',
+        detail: '公布於美股 10/30 收盤之後！製造業總 PMI 降至 49.3、新訂單 49.4，但高技術製造業維持 51.3。時間邊界警告：絕不能拿 10/31 公布的中國 PMI 解釋 10/30 美股已完成的跌勢。'
+      },
+      {
+        date: '11/01（週日）',
+        title: 'OPEC 七國決議',
+        tag: '週末新增約束',
+        tagColor: 'bg-rose-100 text-rose-900',
+        detail: '決定將維持 2026 年 9 月所需產量水準延至 12 月（較 10/4 決議多一個月）。此為既有配額延長而非新增減產；10/30 WTI 與 Brent 結算只能描述決議前市場，不能量測週日公告效果。'
+      },
+      {
+        date: '11/02 07:52',
+        title: '晨報資料截止窗',
+        tag: '治理凍結基準',
+        tagColor: 'bg-slate-800 text-white',
+        detail: '資料截止維持 2026-11-02 07:52:46 Asia/Taipei（原 DRAFT-01 起稿時間）。台指期夜盤（10/30 15:00–10/31 05:00）官方歸屬 11/2 交易日最後成交 44,433，不可誤寫為 11/2 日盤收盤。'
+      }
+    ];
+
+    const timelineButtonsEl = document.getElementById('timelineButtons');
+    const timelineDetailEl = document.getElementById('timelineDetail');
+
+    function renderTimeline(activeIdx) {
+      timelineButtonsEl.innerHTML = '';
+      timelineData.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'timeline-node text-left p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 transition ' + (idx === activeIdx ? 'active' : '');
+        btn.innerHTML = `
+          <div class="text-[11px] font-bold text-slate-900">${item.date}</div>
+          <div class="text-xs font-semibold text-slate-700 mt-0.5 truncate">${item.title}</div>
+          <span class="inline-block mt-1.5 px-1.5 py-0.5 rounded text-[10px] font-semibold ${item.tagColor}">${item.tag}</span>
+        `;
+        btn.addEventListener('click', () => renderTimeline(idx));
+        timelineButtonsEl.appendChild(btn);
+      });
+      const current = timelineData[activeIdx];
+      timelineDetailEl.innerHTML = `
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <span class="font-bold text-slate-900">${current.date}｜${current.title}</span>
+          <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${current.tagColor}">${current.tag}</span>
+        </div>
+        <p>${current.detail}</p>
+      `;
+    }
+    renderTimeline(3);
+
+    const toggleAuditBtn = document.getElementById('toggleAuditBtn');
+    const auditPanel = document.getElementById('auditPanel');
+    const auditArrow = document.getElementById('auditArrow');
+    toggleAuditBtn.addEventListener('click', () => {
+      const isHidden = auditPanel.classList.contains('hidden');
+      auditPanel.classList.toggle('hidden');
+      auditArrow.textContent = isHidden ? '▴' : '▾';
+    });
+
+    const pmiCtx = document.getElementById('pmiChart').getContext('2d');
+    const thresholdLinePlugin = {
+      id: 'thresholdLine',
+      afterDatasetsDraw(chart) {
+        const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+        if (!y) return;
+        const yPos = y.getPixelForValue(50);
+        ctx.save();
+        ctx.beginPath();
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#BE123C';
+        ctx.moveTo(left, yPos);
+        ctx.lineTo(right, yPos);
+        ctx.stroke();
+        ctx.fillStyle = '#BE123C';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText('榮枯線 50.0', right - 68, yPos - 6);
+        ctx.restore();
+      }
+    };
+
+    let pmiChart = new Chart(pmiCtx, {
+      type: 'bar',
+      data: {
+        labels: ['製造業總PMI', '生產指數', '新訂單指數', '主要原材料購進價格', '出廠價格'].map(l => wrapLabel(l, 12)),
+        datasets: [
+          {
+            label: '2026 年 9 月',
+            data: [50.1, 51.7, 50.5, 60.8, 54.0],
+            backgroundColor: '#94A3B8',
+            borderRadius: 4
+          },
+          {
+            label: '2026 年 10 月',
+            data: [49.3, 49.8, 49.4, 56.8, 51.7],
+            backgroundColor: ['#BE123C', '#BE123C', '#BE123C', '#0F766E', '#0F766E'],
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              afterLabel(ctx) {
+                const idx = ctx.dataIndex;
+                if (idx >= 3) return '註：仍高於 50，代表價格上升廣度減弱，非價格水準下跌';
+                return '註：擴散指數衡量擴張企業覆蓋廣度，非產出成長率';
+              }
+            }
+          }
+        },
+        scales: {
+          y: { min: 45, max: 64, grid: { color: '#E7E5E4' } },
+          x: { grid: { display: false } }
+        }
+      },
+      plugins: [thresholdLinePlugin]
+    });
+
+    document.querySelectorAll('.pmi-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pmi-toggle-btn').forEach(b => {
+          b.classList.remove('bg-teal-700', 'text-white');
+          b.classList.add('text-slate-600');
+        });
+        btn.classList.add('bg-teal-700', 'text-white');
+        btn.classList.remove('text-slate-600');
+
+        const mode = btn.getAttribute('data-pmi-mode');
+        if (mode === 'mom') {
+          pmiChart.data.labels = ['製造業總PMI', '生產指數', '新訂單指數', '主要原材料購進價格', '出廠價格'].map(l => wrapLabel(l, 12));
+          pmiChart.data.datasets = [
+            {
+              label: '2026 年 9 月',
+              data: [50.1, 51.7, 50.5, 60.8, 54.0],
+              backgroundColor: '#94A3B8',
+              borderRadius: 4
+            },
+            {
+              label: '2026 年 10 月',
+              data: [49.3, 49.8, 49.4, 56.8, 51.7],
+              backgroundColor: ['#BE123C', '#BE123C', '#BE123C', '#0F766E', '#0F766E'],
+              borderRadius: 4
+            }
+          ];
+          pmiChart.options.scales.y.min = 45;
+          pmiChart.options.scales.y.max = 64;
+        } else {
+          pmiChart.data.labels = ['製造業總指數', '一般新訂單指數', '裝備製造業PMI', '高技術製造業PMI', '電腦通信電子設備(53+)'].map(l => wrapLabel(l, 12));
+          pmiChart.data.datasets = [
+            {
+              label: '2026 年 10 月結構分化（指數點）',
+              data: [49.3, 49.4, 50.6, 51.3, 53.0],
+              backgroundColor: ['#BE123C', '#BE123C', '#0F766E', '#0F766E', '#115E59'],
+              borderRadius: 4
+            }
+          ];
+          pmiChart.options.scales.y.min = 46;
+          pmiChart.options.scales.y.max = 56;
+        }
+        pmiChart.update();
+      });
+    });
+
+    const cashCtx = document.getElementById('cashBenchmarkChart').getContext('2d');
+    let cashBenchmarkChart = new Chart(cashCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Amazon (TTM)', 'Coca-Cola (9M)', 'P&G (FY27 Q1)', '台積電 (Q3)'].map(l => wrapLabel(l, 14)),
+        datasets: [
+          {
+            label: 'FCF / CFO 自由現金流轉換率 (%)',
+            data: [-25.19, 91.20, 76.31, 51.81],
+            backgroundColor: ['#BE123C', '#0F766E', '#0F766E', '#1E293B'],
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label(ctx) {
+                return `FCF / CFO 轉換率: ${ctx.parsed.y}%`;
+              },
+              afterLabel(ctx) {
+                const notes = [
+                  'AMZN TTM: CFO $1,683億, FCF -$424億 (淨PPE年增 $948億)',
+                  'KO 9M: CFO $125億, FCF $114億 (全年指引 FCF ≥$130億)',
+                  'P&G Q1: CFO $57.67億, FCF $44.01億 (Core毛利率 -150bp)',
+                  'TSMC Q3: CFO NT$9,197.7億, FCF NT$4,765.6億 (FCF/營收 31.89%)'
+                ];
+                return notes[ctx.dataIndex];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: -40,
+            max: 110,
+            grid: { color: '#E7E5E4' },
+            ticks: { callback: v => v + '%' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    document.querySelectorAll('.cash-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cash-toggle-btn').forEach(b => {
+          b.classList.remove('bg-teal-700', 'text-white');
+          b.classList.add('text-slate-600');
+        });
+        btn.classList.add('bg-teal-700', 'text-white');
+        btn.classList.remove('text-slate-600');
+
+        const mode = btn.getAttribute('data-cash-mode');
+        if (mode === 'ratio') {
+          cashBenchmarkChart.data.labels = ['Amazon (TTM)', 'Coca-Cola (9M)', 'P&G (FY27 Q1)', '台積電 (Q3)'].map(l => wrapLabel(l, 14));
+          cashBenchmarkChart.data.datasets = [
+            {
+              label: 'FCF / CFO 自由現金流轉換率 (%)',
+              data: [-25.19, 91.20, 76.31, 51.81],
+              backgroundColor: ['#BE123C', '#0F766E', '#0F766E', '#1E293B'],
+              borderRadius: 6
+            }
+          ];
+          cashBenchmarkChart.options.scales.y.min = -40;
+          cashBenchmarkChart.options.scales.y.max = 110;
+          cashBenchmarkChart.options.scales.y.ticks.callback = v => v + '%';
+          cashBenchmarkChart.options.plugins.tooltip.callbacks.label = ctx => `FCF / CFO 轉換率: ${ctx.parsed.y}%`;
+        } else {
+          cashBenchmarkChart.data.labels = ['AMZN TTM (億美元)', 'KO 9M (億美元)', 'P&G Q1 (億美元)', 'TSMC Q3 (百億台幣)'].map(l => wrapLabel(l, 14));
+          cashBenchmarkChart.data.datasets = [
+            {
+              label: '營業現金流 CFO',
+              data: [1683, 125, 57.67, 91.98],
+              backgroundColor: '#475569',
+              borderRadius: 4
+            },
+            {
+              label: '自由現金流 FCF',
+              data: [-424, 114, 44.01, 47.66],
+              backgroundColor: ['#BE123C', '#0F766E', '#0F766E', '#0F766E'],
+              borderRadius: 4
+            }
+          ];
+          cashBenchmarkChart.options.scales.y.min = -600;
+          cashBenchmarkChart.options.scales.y.max = 1900;
+          cashBenchmarkChart.options.scales.y.ticks.callback = v => v;
+          cashBenchmarkChart.options.plugins.tooltip.callbacks.label = ctx => `${ctx.dataset.label}: ${ctx.parsed.y} (各自原幣別/期間)`;
+        }
+        cashBenchmarkChart.update();
+      });
+    });
+
+    const sandiskCtx = document.getElementById('sandiskBridgeChart').getContext('2d');
+    const sandiskDeltas = [
+      'FY26 Q4 調整後 FCF: $5,035M (Margin 56.2%)',
+      '未調整 FCF 季減: -$774M (CFO -$763M, 淨PPE -$11M)',
+      'Flash Ventures 調節變動: -$38M (-$110M → -$148M)',
+      'NBM 調節負項縮小: +$1,473M (-$1,938M → -$465M)',
+      'FY27 Q1 調整後 FCF: $5,696M (+13.13%, Margin 51.6%)'
+    ];
+    new Chart(sandiskCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Q4 調整後FCF', '未調整FCF變動', 'Flash Ventures調節', 'NBM調節縮小', 'Q1 調整後FCF'].map(l => wrapLabel(l, 12)),
+        datasets: [
+          {
+            label: '百萬美元 (USD Millions)',
+            data: [
+              [0, 5035],
+              [4261, 5035],
+              [4223, 4261],
+              [4223, 5696],
+              [0, 5696]
+            ],
+            backgroundColor: ['#1E293B', '#BE123C', '#E11D48', '#0F766E', '#115E59'],
+            borderRadius: 5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label(ctx) {
+                return sandiskDeltas[ctx.dataIndex];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 6500,
+            grid: { color: '#E7E5E4' },
+            ticks: { callback: v => '$' + v }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    const marketCtx = document.getElementById('marketChart').getContext('2d');
+    let marketChart = new Chart(marketCtx, {
+      type: 'bar',
+      data: {
+        labels: ['加權指數跌幅', '櫃買指數跌幅', '上市廣義成交額變動', '櫃買股票成交額變動'].map(l => wrapLabel(l, 14)),
+        datasets: [
+          {
+            label: '10/30 單日變動率 (%)',
+            data: [-2.49, -4.42, 14.06, -4.77],
+            backgroundColor: ['#BE123C', '#9F1239', '#0F766E', '#B45309'],
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label(ctx) {
+                return `變動幅度: ${ctx.parsed.y > 0 ? '+' : ''}${ctx.parsed.y}%`;
+              },
+              afterLabel(ctx) {
+                const notes = [
+                  '上市外資賣超約 1,124.67 億元',
+                  '櫃買外資賣超約 83.29 億元（含鉅額）',
+                  '上市廣義成交額與櫃買股票成交額母體不同',
+                  '不含鉅額交易，不可直接與櫃買法人賣超相除'
+                ];
+                return notes[ctx.dataIndex];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: -8,
+            max: 18,
+            grid: { color: '#E7E5E4' },
+            ticks: { callback: v => v + '%' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    document.querySelectorAll('.mkt-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mkt-toggle-btn').forEach(b => {
+          b.classList.remove('bg-teal-700', 'text-white');
+          b.classList.add('text-slate-600');
+        });
+        btn.classList.add('bg-teal-700', 'text-white');
+        btn.classList.remove('text-slate-600');
+
+        const mode = btn.getAttribute('data-mkt-mode');
+        if (mode === 'tw') {
+          marketChart.data.labels = ['加權指數跌幅', '櫃買指數跌幅', '上市廣義成交額變動', '櫃買股票成交額變動'].map(l => wrapLabel(l, 14));
+          marketChart.data.datasets = [
+            {
+              label: '10/30 單日變動率 (%)',
+              data: [-2.49, -4.42, 14.06, -4.77],
+              backgroundColor: ['#BE123C', '#9F1239', '#0F766E', '#B45309'],
+              borderRadius: 6
+            }
+          ];
+          marketChart.options.scales.y.min = -8;
+          marketChart.options.scales.y.max = 18;
+          marketChart.options.scales.y.ticks.callback = v => v + '%';
+        } else {
+          marketChart.data.labels = ['美債 2Y 殖利率 (bp)', '美債 10Y 殖利率 (bp)', '美債 30Y 殖利率 (bp)', 'VIX 波動率指數 (點)'].map(l => wrapLabel(l, 14));
+          marketChart.data.datasets = [
+            {
+              label: '10/30 對 10/29 單日變動',
+              data: [-5, -4, -1, 2.22],
+              backgroundColor: ['#0F766E', '#0F766E', '#0F766E', '#BE123C'],
+              borderRadius: 6
+            }
+          ];
+          marketChart.options.scales.y.min = -7;
+          marketChart.options.scales.y.max = 5;
+          marketChart.options.scales.y.ticks.callback = v => v;
+        }
+        marketChart.update();
+      });
+    });
+
+    const pipelineStages = [
+      { step: '1. 資格認證', risk: '前置研發投入', desc: '設計導入（Design-in）與製程／散熱規格認證先於量產；沒有確定認證結果前，市場規模外推不具現金流保障。' },
+      { step: '2. 出貨安裝', risk: '營運資金高峰', desc: '出貨上升若伴隨在製品存貨與合約資產積累，會先一步消耗營業現金流，不能用單月營收成長替代 FCF。' },
+      { step: '3. FAT／SAT', risk: '測試與返工成本', desc: 'FAT（工廠測試）與 SAT（現場測試）驗證系統良率與無漏液可靠度；若測試返工增加，會直接侵蝕毛利率。' },
+      { step: '4. 合約驗收', risk: '認列時點變數', desc: '實際收入認列取決於個別合約履約條件，不同訂單會計認列時點可能不同；研究上嚴禁預填未經證實之驗收日期。' },
+      { step: '5. 收入認列', risk: '毛利與保固負債', desc: '製品單價提高若被材料、系統整合測試與保固負債吃掉，營收成長不一定轉化為營業利益成長。' },
+      { step: '6. 應收回收', risk: '最終現金實現', desc: '驗收認列與現金收款可不同期；唯有確認應收帳款規律回款、CFO 與收入同步改善，才提高相對研究優先序。' }
+    ];
+
+    const pipelineStepsEl = document.getElementById('pipelineSteps');
+    const pipelineDetailEl = document.getElementById('pipelineDetail');
+
+    function renderPipeline(activeIdx) {
+      pipelineStepsEl.innerHTML = '';
+      pipelineStages.forEach((st, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pipeline-step text-left p-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 transition ' + (idx === activeIdx ? 'active' : '');
+        btn.innerHTML = `
+          <div class="text-[11px] font-bold text-slate-900">${st.step}</div>
+          <div class="text-[10px] text-amber-800 mt-0.5 truncate">${st.risk}</div>
+        `;
+        btn.addEventListener('click', () => renderPipeline(idx));
+        pipelineStepsEl.appendChild(btn);
+      });
+      const curr = pipelineStages[activeIdx];
+      pipelineDetailEl.innerHTML = `<strong>${curr.step}（${curr.risk}）：</strong>${curr.desc}`;
+    }
+    renderPipeline(2);
+
+    const sectorData = [
+      {
+        name: 'ABF 載板',
+        cat: 'interconnect',
+        transmission: '封裝面積／層數與規格 → 良率、稼動率及報價 → 高額折舊吸收 → 自由現金流；不是單看 AI 晶片顆數線性外推。',
+        falsification: '先核對利用率、客戶資格與正常化回報。若擴產快於合格需求、價格／稼動不升，削弱高經濟租假說。'
+      },
+      {
+        name: 'Glass／TGV（玻璃基板）',
+        cat: 'interconnect',
+        transmission: '材料、微細通孔、金屬化與可靠度資格認證，在時間序列上先於量產、收入與回款。',
+        falsification: '先看有日期的客戶驗證與良率，再談規模；試產（Pilot）不是 HVM。可靠度／成本不如既有方案或量產延後為反證。'
+      },
+      {
+        name: 'CPO（共同封裝光學）',
+        cat: 'interconnect',
+        transmission: '光電整合資格 → 封裝／測試／現場維修責任界定 → 部署及收入，並伴隨初期資本與良率代價。',
+        falsification: '先核對實際部署及總體經濟性；若可插拔光學方案延壽、維修複雜或系統總成本較高，將延後商業變現。'
+      },
+      {
+        name: 'HBM（高頻寬記憶體）',
+        cat: 'memory',
+        transmission: '垂直堆疊、良率、封裝與客戶資格約束 → 合格出貨／世代組合 → 毛利與新增投資後自由現金流。',
+        falsification: '優先看已合格出貨、良率及資金回收；供給／競爭改善、資格轉換延誤或過度投資可壓低租金；不能套用一般 DRAM 價格。'
+      },
+      {
+        name: 'Server DDR5',
+        cat: 'memory',
+        transmission: '新平台導入、單機伺服器搭載量與合約價格 → 產品組合優化 → 庫存去化與現金回收。',
+        falsification: '先驗證伺服器平台滲透及搭載容量，不由 HBM 強勢推定價格；傳統供給釋出、庫存累積或平台延後是反證。'
+      },
+      {
+        name: '一般 DRAM',
+        cat: 'memory',
+        transmission: 'PC 等消費終端需求、供給與庫存水位 → 現貨與合約價格／稼動率 → 毛利與現金流。',
+        falsification: '中國總量 PMI 轉弱（49.3）提高需求查核順序，但不直接下修 EPS；原廠供給約束、補庫及報價韌性可反駁弱勢推論。'
+      },
+      {
+        name: 'LPDDR（低功耗記憶體）',
+        cat: 'memory',
+        transmission: '行動裝置需求、單機搭載容量、產品資格與報價 → 營收規模／產能利用率 → 現金實現。',
+        falsification: '與伺服器分開，先看終端銷售及合格容量；單機容量成長被出貨台數下滑抵銷或通路庫存增加是證偽線索。'
+      },
+      {
+        name: 'NAND／Enterprise SSD',
+        cat: 'memory',
+        transmission: '位元供需之外，企業級資格、控制器／韌體、組合與合資／預付資金調節共同決定 FCF。',
+        falsification: '先看企業級出貨、定價及完整現金調節（Sandisk 正現金是反證，但現金率由 56.2% 降至 51.6%、未調整 FCF 季減 10.93%）。'
+      }
+    ];
+
+    let currentSectorCat = 'all';
+    const sectorTableBody = document.getElementById('sectorTableBody');
+    const sectorSearch = document.getElementById('sectorSearch');
+
+    function renderSectors() {
+      const q = sectorSearch.value.trim().toLowerCase();
+      const filtered = sectorData.filter(item => {
+        const matchCat = currentSectorCat === 'all' || item.cat === currentSectorCat;
+        const matchText = !q || item.name.toLowerCase().includes(q) || item.transmission.toLowerCase().includes(q) || item.falsification.toLowerCase().includes(q);
+        return matchCat && matchText;
+      });
+
+      sectorTableBody.innerHTML = '';
+      if (filtered.length === 0) {
+        sectorTableBody.innerHTML = '<tr><td colspan="3" class="py-4 px-3 text-center text-stone-500">無符合篩選條件的次產業群別</td></tr>';
+        return;
+      }
+      filtered.forEach(item => {
+        const badge = item.cat === 'interconnect'
+          ? '<span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800 border border-amber-200">載板／先進互連</span>'
+          : '<span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] bg-teal-50 text-teal-800 border border-teal-200">記憶體全譜系</span>';
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-stone-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-3 align-top font-bold text-slate-900 whitespace-nowrap">
+            <div>${item.name}</div>
+            ${badge}
+          </td>
+          <td class="py-3 px-3 align-top text-slate-700 leading-relaxed">${item.transmission}</td>
+          <td class="py-3 px-3 align-top text-slate-600 leading-relaxed">${item.falsification}</td>
+        `;
+        sectorTableBody.appendChild(tr);
+      });
+    }
+
+    document.querySelectorAll('.sector-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sector-cat-btn').forEach(b => {
+          b.classList.remove('bg-slate-900', 'text-white');
+          b.classList.add('bg-white', 'border', 'border-stone-300', 'text-slate-700');
+        });
+        btn.classList.add('bg-slate-900', 'text-white');
+        btn.classList.remove('bg-white', 'border', 'border-stone-300', 'text-slate-700');
+        currentSectorCat = btn.getAttribute('data-sector-cat');
+        renderSectors();
+      });
+    });
+    sectorSearch.addEventListener('input', renderSectors);
+    renderSectors();
+
+    const impactChains = [
+      {
+        chain: '中國一般製造／非科技終端',
+        base: '一般需求廣度疲弱（PMI 49.3），但高技術製造（51.3）與電腦通信電子（53+）有支撐。',
+        bull: '新訂單指數（49.4）重回 50 以上擴張區間，且景氣復甦向一般製造與補庫存擴散。',
+        bear: '新訂單、產能利用率與企業應收帳款回款同步弱化，固定成本吸收惡化。',
+        evidence: '尚需公司區域收入暴露、在手訂單／庫存、毛利與現金明細；總 PMI 不足給個別公司 EPS 降幅。'
+      },
+      {
+        chain: '成本轉嫁能力有限的下游',
+        base: 'OPEC 產量要求期間延長至 12 月，實際產出、履約與中下游要素成本衝擊仍待驗證。',
+        bull: '終端需求減緩或其他供給增加抵銷油價壓力，或企業具備定價權順利轉嫁成本。',
+        bear: '原物料採購成本上升而終端售價調漲落後，營業毛利與營業現金流雙雙受壓。',
+        evidence: '先查 OPEC 實產／海運出口與後續同合約油價，再查公司避險與合約調價條款；不由配額直接算損失。'
+      },
+      {
+        chain: 'Amazon／Intel／台積電',
+        base: '帳面營收強弱與自由現金流實現時序明顯分化（如 AWS 高營益 vs 集團負 FCF；TSMC N2 爬坡稀釋）。',
+        bull: '高強度資本投資順利轉化為高產能利用率、毛利修復與可持續自由現金流改善。',
+        bear: '折舊攤提與必要再投資持續高企，而現金回收時點延後，邊際 ROIC 低於資本成本。',
+        evidence: '核對同期間集團與分部口徑：不把 AWS 營利當集團 FCF，亦不把台積電 HPC 68% 全數算純 AI。'
+      },
+      {
+        chain: '弘塑／辛耘；奇鋐／雙鴻',
+        base: '保留結構性成長機會，但客戶驗收排程、液冷產品拆分與最新財報現金流證據待補。',
+        bull: '機台與次系統交付、營業毛利率與應收現金回款呈現同步規律改善。',
+        bear: '營收認列後伴隨應收帳款、合約資產、存貨或漏液保固資金占用大幅增加。',
+        evidence: '需取得實際客戶資格、FAT/SAT 驗收條款、冷板/Manifold/CDU 組合及完整財報；無數字不寫零成長。'
+      },
+      {
+        chain: 'KO／P&G 等現金比較基準',
+        base: '自由現金流轉換率較高且具可見度（KO 9M FCF/CFO 91.2%、P&G Q1 76.31%），仍須檢查估值與成本。',
+        bull: '終端需求／定價與現金流維持穩定，且安全溢價處於合理可接受範圍。',
+        bear: '區域銷量、毛利率（如 P&G Core 毛利率已年減 150bp）或現金流轉弱，同時安全溢價過高。',
+        evidence: '需同期間、含區域暴露的正常化現金流與可比估值；P&G 毛利下滑是需處理的實證反證。'
+      }
+    ];
+
+    const impactCardsGrid = document.getElementById('impactCardsGrid');
+
+    function renderImpactCards(scenario) {
+      impactCardsGrid.innerHTML = '';
+      const badgeStyles = {
+        base: { label: 'Base 基準情境', cls: 'bg-slate-800 text-white', border: 'border-stone-200' },
+        bull: { label: 'Bull 樂觀反證', cls: 'bg-teal-700 text-white', border: 'border-teal-300' },
+        bear: { label: 'Bear 悲觀風險', cls: 'bg-rose-700 text-white', border: 'border-rose-300' }
+      };
+      const st = badgeStyles[scenario];
+
+      impactChains.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-xl bg-stone-50 border ${st.border} flex flex-col justify-between space-y-3`;
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <h4 class="font-bold text-slate-900 text-sm">${item.chain}</h4>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${st.cls}">${st.label}</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-stone-200">
+              ${item[scenario]}
+            </p>
+          </div>
+          <div class="text-[11px] text-stone-600 leading-relaxed pt-1 border-t border-stone-200">
+            <strong class="text-slate-800">尚待驗證與判斷邊界：</strong>${item.evidence}
+          </div>
+        `;
+        impactCardsGrid.appendChild(card);
+      });
+    }
+
+    document.querySelectorAll('.scenario-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.scenario-btn').forEach(b => {
+          b.classList.remove('active-base', 'active-bull', 'active-bear');
+          b.classList.add('bg-white', 'text-slate-700');
+        });
+        const sc = btn.getAttribute('data-scenario');
+        btn.classList.remove('bg-white', 'text-slate-700');
+        btn.classList.add(`active-${sc}`);
+        renderImpactCards(sc);
+      });
+    });
+    renderImpactCards('base');
+
+    const navPills = document.querySelectorAll('.nav-pill');
+    navPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        navPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
