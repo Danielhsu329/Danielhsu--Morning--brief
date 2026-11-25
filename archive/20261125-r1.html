@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全球宏觀與產業策略晨報｜Danielhsu Morning Brief</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'PingFang TC', 'Microsoft JhengHei', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+          colors: {
+            terminal: {
+              bg: '#0b1120',
+              card: '#111827',
+              border: '#1e293b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #0b1120;
+      color: #e2e8f0;
+      font-family: 'Inter', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    }
+    .font-num {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    /* Custom subtle scrollbars for dark terminal */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .tab-btn.active {
+      background-color: #0f172a;
+      color: #38bdf8;
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+    }
+    .pill-btn.active {
+      background-color: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0b1120] text-slate-200 antialiased selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-[#0b1120]/95 backdrop-blur-md border-b border-[#1e293b]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <!-- Brand & Dynamic Timestamp -->
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <h1 id="headerTitle" class="text-base sm:text-lg font-bold tracking-tight text-white">
+              全球宏觀與產業策略晨報｜2026 年 11 月 25 日
+            </h1>
+            <span id="syncStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-950/80 text-amber-300 border border-amber-700/70">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span>載入中...</span>
+            </span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-[11px] font-num text-slate-400">
+            <span id="badgeDate" class="px-2 py-0.5 rounded bg-[#111827] text-sky-300 border border-sky-900/70">2026-11-25</span>
+            <span id="badgeCutoff" class="px-2 py-0.5 rounded bg-[#111827] text-slate-300 border border-[#1e293b]">2026-11-25 09:38 Asia/Taipei</span>
+            <span id="badgeTradeDates" class="hidden sm:inline-block px-2 py-0.5 rounded bg-[#111827] text-slate-400 border border-[#1e293b]"></span>
+          </div>
+        </div>
+
+        <!-- Historical Date Controls & JSON Import -->
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <div class="flex items-center rounded-lg bg-[#111827] border border-[#1e293b] p-0.5 shadow-inner">
+            <button id="prevDateBtn" type="button" title="較早一期" class="px-2.5 py-1.5 rounded-md text-slate-300 hover:bg-[#1e293b] hover:text-white text-xs font-bold transition">
+              ‹
+            </button>
+            <div class="relative flex items-center">
+              <span class="pl-2 pr-1 text-slate-400 text-xs select-none" aria-hidden="true">📅</span>
+              <select id="history-date-select" aria-label="選擇歷史晨報日期" class="bg-transparent text-sky-300 font-num text-xs font-semibold py-1.5 pr-6 pl-1 focus:outline-none cursor-pointer">
+                <option value="2026-11-25" class="bg-[#0b1120] text-slate-100">2026-11-25 (最新)</option>
+              </select>
+              <span id="dateLoadingSpinner" class="hidden absolute right-1.5 w-3 h-3 border-2 border-sky-400 border-t-transparent rounded-full animate-spin pointer-events-none"></span>
+            </div>
+            <button id="nextDateBtn" type="button" title="較新一期" class="px-2.5 py-1.5 rounded-md text-slate-300 hover:bg-[#1e293b] hover:text-white text-xs font-bold transition">
+              ›
+            </button>
+            <div class="w-px h-4 bg-[#1e293b] mx-0.5"></div>
+            <button id="refreshDataBtn" type="button" title="重新同步線上 data/ 資料" class="px-2.5 py-1.5 rounded-md text-slate-300 hover:bg-[#1e293b] hover:text-sky-300 text-xs font-bold transition">
+              ↻
+            </button>
+          </div>
+
+          <button id="openJsonModalBtn" type="button" class="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-sky-950/50">
+            <span class="font-num">{ }</span>
+            <span>匯入每日 JSON</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+
+    <!-- Executive Hero & Event Boundary Banner -->
+    <section class="rounded-xl bg-[#111827] border border-[#1e293b] p-5 shadow-xl">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div class="space-y-2.5 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-sky-400">Headline Macro Thesis</span>
+            <span id="heroStanceBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/40"></span>
+            <span id="heroConfidenceBadge" class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-500/15 text-sky-300 border border-sky-500/40"></span>
+          </div>
+          <h2 id="heroThesis" class="text-lg sm:text-xl font-bold text-white leading-snug"></h2>
+          <p class="text-xs text-slate-400">
+            <span class="text-slate-500 font-semibold">Valuation Gap：</span>
+            <span id="heroValuationGap" class="text-slate-300"></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Key Event Boundaries Strip -->
+      <div id="eventBoundaryStrip" class="mt-4 pt-4 border-t border-[#1e293b]">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center gap-1.5">
+          <span>⚡</span>
+          <span>時序與重大事件邊界（Key Event Boundaries）</span>
+        </div>
+        <div id="eventBoundaryList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+      </div>
+    </section>
+
+    <!-- 6 Interactive Module Tabs -->
+    <nav aria-label="儀表板模組導覽" class="flex items-center gap-2 overflow-x-auto pb-1">
+      <button data-tab="tab-macro" class="tab-btn active shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        1. 跨資產與總經
+      </button>
+      <button data-tab="tab-us-cf" class="tab-btn shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        2. 美股現金流穿透
+      </button>
+      <button data-tab="tab-tw" class="tab-btn shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        3. 台股籌碼與落底檢核
+      </button>
+      <button data-tab="tab-ai" class="tab-btn shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        4. AI 供應鏈與譜系
+      </button>
+      <button data-tab="tab-scenarios" class="tab-btn shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        5. 商品、情緒與情境
+      </button>
+      <button data-tab="tab-calendar" class="tab-btn shrink-0 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-[#1e293b] bg-[#111827] text-slate-300 hover:text-white transition">
+        6. 催化劑行事曆
+      </button>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: Cross-Assets & Macro -->
+    <!-- =================================================================== -->
+    <section id="tab-macro" class="tab-panel space-y-5">
+      <!-- Cross-Assets Table Card -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>跨資產實時矩陣</span>
+              <span id="assetCountBadge" class="px-2 py-0.5 rounded-full text-[11px] font-num bg-sky-500/15 text-sky-300 border border-sky-500/30">25 項</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">涵蓋美台股指、台指期日夜盤、美債曲線、信用利差、匯率、大宗商品與加密資產</p>
+          </div>
+          <div class="relative w-full md:w-64">
+            <input id="assetSearchInput" type="text" placeholder="搜尋資產名稱或備註..." class="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#0b1120] border border-[#1e293b] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500" />
+            <span class="absolute left-2.5 top-2 text-slate-500 text-xs">🔍</span>
+          </div>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div id="assetCategoryPills" class="flex flex-wrap items-center gap-1.5 mb-4"></div>
+
+        <!-- Assets Table -->
+        <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#0b1120] text-slate-400 border-b border-[#1e293b]">
+                <th class="py-2.5 px-3 font-semibold">類別</th>
+                <th class="py-2.5 px-3 font-semibold">資產名稱</th>
+                <th class="py-2.5 px-3 font-semibold text-right">收盤／報價</th>
+                <th class="py-2.5 px-3 font-semibold text-right">單日變動</th>
+                <th class="py-2.5 px-3 font-semibold">波段位置／結構</th>
+                <th class="py-2.5 px-3 font-semibold">口徑備註</th>
+              </tr>
+            </thead>
+            <tbody id="assetsTableBody" class="divide-y divide-[#1e293b]/70"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Macro Indicators & Fed Policy Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Macro Indicators Table (2 cols) -->
+        <div class="lg:col-span-2 rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+          <h3 class="text-base font-bold text-white mb-3">美台核心總經指標</h3>
+          <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-[#0b1120] text-slate-400 border-b border-[#1e293b]">
+                  <th class="py-2.5 px-3 font-semibold">區域</th>
+                  <th class="py-2.5 px-3 font-semibold">指標</th>
+                  <th class="py-2.5 px-3 font-semibold">期別</th>
+                  <th class="py-2.5 px-3 font-semibold text-right">實際值</th>
+                  <th class="py-2.5 px-3 font-semibold">前值／預期</th>
+                  <th class="py-2.5 px-3 font-semibold">解讀備註</th>
+                </tr>
+              </thead>
+              <tbody id="macroTableBody" class="divide-y divide-[#1e293b]/70"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Fed Policy Card (1 col) -->
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold text-white">聯準會政策路徑</h3>
+              <span class="px-2 py-0.5 rounded text-[11px] font-num bg-sky-500/15 text-sky-300 border border-sky-500/30">FOMC</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+                <div class="text-[11px] text-slate-400">現行利率區間</div>
+                <div id="fedCurrentRate" class="text-base font-bold font-num text-white mt-0.5"></div>
+                <div class="text-[11px] text-slate-400 mt-1">EFFR：<span id="fedEffectiveRate" class="font-num text-emerald-300 font-semibold"></span></div>
+              </div>
+              <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+                <div class="text-[11px] text-slate-400">下次會議日期</div>
+                <div id="fedNextMeeting" class="text-xs font-bold font-num text-sky-300 mt-1"></div>
+              </div>
+            </div>
+            <div class="space-y-2.5 text-xs">
+              <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+                <div class="text-[11px] text-slate-400 mb-1">市場隱含機率</div>
+                <div id="fedImpliedProb" class="text-slate-200 leading-relaxed"></div>
+              </div>
+              <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+                <div class="text-[11px] text-slate-400 mb-1">Policy Gap 狀態</div>
+                <div id="fedPolicyGap" class="text-slate-300 leading-relaxed"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-[#1e293b]">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 mb-2">Top 3 金融條件驅動因子</div>
+            <ul id="fedDriversList" class="space-y-1.5 text-xs text-slate-300"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: US Cash Flow Penetration -->
+    <!-- =================================================================== -->
+    <section id="tab-us-cf" class="tab-panel hidden space-y-5">
+      <!-- Grouped Bar Chart -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">美股科技巨頭與防禦龍頭現金流結構（十億美元）</h3>
+            <p class="text-xs text-slate-400 mt-0.5">比較營業現金流（CFO）、資本支出（CapEx）、自由現金流（FCF）與扣 SBC 後 FCF</p>
+          </div>
+          <span class="text-[11px] font-num text-slate-400">單位：USD Billions</span>
+        </div>
+        <div class="relative h-72 sm:h-80 w-full">
+          <canvas id="usCashflowChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Detailed Financial Table -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <h3 class="text-base font-bold text-white mb-3">跨期現金流與資產負債表穿透表</h3>
+        <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#0b1120] text-slate-400 border-b border-[#1e293b]">
+                <th class="py-2.5 px-3 font-semibold">代碼</th>
+                <th class="py-2.5 px-3 font-semibold">期別</th>
+                <th class="py-2.5 px-3 font-semibold text-right">營收 ($B)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">淨利 ($B)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">D&amp;A / SBC</th>
+                <th class="py-2.5 px-3 font-semibold text-right">營運資金</th>
+                <th class="py-2.5 px-3 font-semibold text-right">CFO ($B)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">CapEx ($B)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">FCF ($B)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">FCF/CFO</th>
+                <th class="py-2.5 px-3 font-semibold text-right">扣 SBC FCF</th>
+                <th class="py-2.5 px-3 font-semibold">融資與資產負債表警訊</th>
+              </tr>
+            </thead>
+            <tbody id="usCashflowTableBody" class="divide-y divide-[#1e293b]/70"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sector Rotation & Counter-Evidence -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-sky-400 mb-1.5">📈 相對價格與類股輪動</div>
+          <p id="rotRelativePrice" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-emerald-400 mb-1.5">💧 ETF 直接資金流證據</div>
+          <p id="rotDirectFlows" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        <div class="rounded-xl bg-[#111827] border border-amber-500/30 p-4">
+          <div class="text-xs font-bold text-amber-400 mb-1.5">⚠️ 反向檢驗與反證</div>
+          <p id="rotCounterEvidence" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: Taiwan Market & Bottom Checklist -->
+    <!-- =================================================================== -->
+    <section id="tab-tw" class="tab-panel hidden space-y-5">
+      <!-- KPI Grid -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">台灣現貨（上市／櫃買分離）與期權匯率 KPI</h3>
+            <p id="twKpiNote" class="text-xs text-slate-400 mt-0.5"></p>
+          </div>
+          <span class="px-2.5 py-1 rounded-md text-[11px] font-num bg-rose-500/15 text-rose-300 border border-rose-500/40 shrink-0">
+            嚴格分離上市 TWSE 與上櫃 TPEx 口徑
+          </span>
+        </div>
+        <div id="twKpiGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+      </div>
+
+      <!-- 5-Signal Bottoming Checklist -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <h3 class="text-base font-bold text-white mb-3">台股五大籌碼落底檢核表（Bottoming Checklist）</h3>
+        <div id="bottomSignalsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: AI Supply Chain & Spectrum -->
+    <!-- =================================================================== -->
+    <section id="tab-ai" class="tab-panel hidden space-y-5">
+      <!-- Margin Comparison Chart -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">AI 供應鏈核心企業毛利率（GM%）與營益率（OPM%）對比</h3>
+            <p class="text-xs text-slate-400 mt-0.5">台積電（2330）、弘塑（3131）、辛耘（3583）、奇鋐（3017）、雙鴻（3324）最新單季獲利品質</p>
+          </div>
+          <span class="text-[11px] font-num text-slate-400">單位：%</span>
+        </div>
+        <div class="relative h-64 sm:h-72 w-full">
+          <canvas id="aiMarginChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Core Companies Working Capital Table -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <h3 class="text-base font-bold text-white mb-3">營運資金與現金流品質穿透（新台幣億元／天數）</h3>
+        <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#0b1120] text-slate-400 border-b border-[#1e293b]">
+                <th class="py-2.5 px-3 font-semibold">公司</th>
+                <th class="py-2.5 px-3 font-semibold text-right">10月營收 (YoY)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">GM / OPM</th>
+                <th class="py-2.5 px-3 font-semibold text-right">現金 (億)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">AR (億) / DSO</th>
+                <th class="py-2.5 px-3 font-semibold text-right">存貨 (億) / DIO</th>
+                <th class="py-2.5 px-3 font-semibold text-right">合約負債 (億)</th>
+                <th class="py-2.5 px-3 font-semibold text-right">Q3 CFO / CapEx / FCF</th>
+                <th class="py-2.5 px-3 font-semibold">營運資金評語</th>
+              </tr>
+            </thead>
+            <tbody id="aiCoreTableBody" class="divide-y divide-[#1e293b]/70"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 8-Segment Spectrum Matrix -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <h3 class="text-base font-bold text-white mb-3">AI 硬體 8 大次產業譜系與證偽矩陣</h3>
+        <div class="overflow-x-auto rounded-lg border border-[#1e293b]">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-[#0b1120] text-slate-400 border-b border-[#1e293b]">
+                <th class="py-2.5 px-3 font-semibold text-center">順位</th>
+                <th class="py-2.5 px-3 font-semibold">次產業環節</th>
+                <th class="py-2.5 px-3 font-semibold">傳導時序</th>
+                <th class="py-2.5 px-3 font-semibold">最新供需與報價現況</th>
+                <th class="py-2.5 px-3 font-semibold">核心證偽條件</th>
+              </tr>
+            </thead>
+            <tbody id="aiSpectrumTableBody" class="divide-y divide-[#1e293b]/70"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 5: Commodities, Sentiment & Scenarios -->
+    <!-- =================================================================== -->
+    <section id="tab-scenarios" class="tab-panel hidden space-y-5">
+      <!-- 4-Card Energy, Power & Sentiment Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-amber-400 mb-1.5">🛢️ 原油與 OPEC+ 政策</div>
+          <p id="sentOil" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-sky-400 mb-1.5">🥉 期銅與洋山溢價背離</div>
+          <p id="sentCopper" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-rose-400 mb-1.5">⚡ PJM 電力容量瓶頸</div>
+          <p id="sentPjm" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-4">
+          <div class="text-xs font-bold text-emerald-400 mb-1.5">📊 美銀 FMS 機構情緒</div>
+          <p id="sentBofa" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- Interactive Scenario Switcher & Doughnut Chart -->
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+          <div>
+            <h3 class="text-base font-bold text-white">三大宏觀情境與動態資產配置權重</h3>
+            <p class="text-xs text-slate-400 mt-0.5">點擊下方情境卡片，即時切換建議資產配置圖表與觸發條件</p>
+          </div>
+          <div id="scenarioButtons" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Scenario Details (7 cols) -->
+          <div class="lg:col-span-7 space-y-3.5">
+            <div class="p-4 rounded-xl bg-[#0b1120] border border-[#1e293b]">
+              <div class="flex items-center justify-between mb-2">
+                <span id="scenDetailName" class="text-base font-bold text-white"></span>
+                <span id="scenDetailProb" class="px-2.5 py-0.5 rounded-full text-xs font-bold font-num"></span>
+              </div>
+              <p id="scenDetailLabel" class="text-sm font-medium text-sky-300 mb-3"></p>
+              <div class="space-y-2 text-xs">
+                <div>
+                  <span class="text-slate-400 font-semibold">核心假設：</span>
+                  <span id="scenDetailAssumptions" class="text-slate-200"></span>
+                </div>
+                <div>
+                  <span class="text-amber-400 font-semibold">關鍵觸發／驗證門檻：</span>
+                  <span id="scenDetailTrigger" class="text-amber-200"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Allocation Bars -->
+            <div id="scenAllocBars" class="grid grid-cols-2 gap-3"></div>
+          </div>
+
+          <!-- Dynamic Doughnut Chart (5 cols) -->
+          <div class="lg:col-span-5 flex flex-col items-center justify-center p-4 rounded-xl bg-[#0b1120] border border-[#1e293b]">
+            <div class="relative h-60 w-60 sm:h-64 sm:w-64">
+              <canvas id="scenarioDoughnutChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 6: Catalysts Calendar -->
+    <!-- =================================================================== -->
+    <section id="tab-calendar" class="tab-panel hidden space-y-5">
+      <div class="rounded-xl bg-[#111827] border border-[#1e293b] p-5">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h3 class="text-base font-bold text-white">未來四週關鍵總經、央行與企業催化劑行事曆</h3>
+            <p class="text-xs text-slate-400 mt-0.5">2026 年 11 月 25 日至 12 月 17 日可量化交易門檻</p>
+          </div>
+          <span id="catalystCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-num bg-sky-500/15 text-sky-300 border border-sky-500/30">9 項事件</span>
+        </div>
+
+        <div id="catalystsTimeline" class="relative border-l-2 border-[#1e293b] ml-3 space-y-5 pl-6"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-[#1e293b] mt-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+    <div>全球宏觀與產業策略晨報（Danielhsu Morning Brief）｜嚴守「缺數不補造」與時序邊界紀律</div>
+    <div class="font-num">GitHub Pages Ready · Chart.js + Tailwind CSS</div>
+  </footer>
+
+  <!-- JSON Import Modal -->
+  <div id="jsonModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+    <div class="w-full max-w-3xl rounded-xl bg-[#111827] border border-[#1e293b] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-[#1e293b] bg-[#0b1120]">
+        <div class="flex items-center gap-2">
+          <span class="font-num text-sky-400 font-bold">{ }</span>
+          <h3 class="text-sm font-bold text-white">匯入每日晨報 JSON（即時重繪全站圖表）</h3>
+        </div>
+        <button id="closeJsonModalBtn" type="button" class="text-slate-400 hover:text-white text-lg leading-none px-2">✕</button>
+      </div>
+
+      <div class="p-5 space-y-3 overflow-y-auto flex-1">
+        <p class="text-xs text-slate-400">
+          貼上每日 8:00 排程產出的標準 6 模組 JSON，點擊「套用並重新渲染」即可立即檢視；所有 Chart.js 圖表將自動銷毀並重建。
+        </p>
+        <div id="jsonErrBox" class="hidden p-3 rounded-lg bg-rose-950/70 border border-rose-700/70 text-rose-200 text-xs font-num"></div>
+        <textarea id="jsonTextarea" rows="14" spellcheck="false" class="w-full rounded-lg bg-[#0b1120] border border-[#1e293b] p-3 text-xs font-num text-emerald-300 focus:outline-none focus:border-sky-500"></textarea>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3.5 border-t border-[#1e293b] bg-[#0b1120]">
+        <div class="flex flex-wrap gap-2">
+          <button id="copyJsonBtn" type="button" class="px-3 py-1.5 rounded-lg bg-[#1e293b] hover:bg-slate-700 text-slate-200 text-xs font-medium transition">複製目前 JSON</button>
+          <button id="resetJsonBtn" type="button" class="px-3 py-1.5 rounded-lg bg-[#1e293b] hover:bg-slate-700 text-amber-300 text-xs font-medium transition">重設為內建 11/25 資料</button>
+        </div>
+        <button id="applyJsonBtn" type="button" class="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition">套用並重新渲染</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    // =========================================================================
+    // 1. BUILT-IN DEFAULT DATA (2026-11-25 09:38 Asia/Taipei Full Verified)
+    // =========================================================================
+    const DEFAULT_DATA = {
+      "meta": {
+        "date": "2026-11-25",
+        "cutoff_taipei": "2026-11-25 09:38 Asia/Taipei",
+        "us_trade_date": "2026-11-24",
+        "tw_trade_date": "2026-11-24",
+        "night_futures_official_date": "2026-11-25",
+        "key_events_boundary": [
+          "2026-11-24 台股加權指數狂飆 3,310.46 點創史上最大收盤漲點（收 40,122.35），逾 621 檔鎖漲停致上市成交縮至 4,194.05 億，惟外資上市櫃合計反手大賣 587.94 億（上市 -503.90 億、上櫃 -84.04 億），新台幣逆勢貶 4.4 分收 32.939 元",
+          "2026-11-24 美股風格劇烈分化：道瓊漲 0.85% 站上 50,018.70 點，但費城半導體重挫 7.88%（收 8,832.50）、那斯達克跌 1.48%（23,733.54），VIX 守 26.36 高位",
+          "2026-11-25 05:00 台指期夜盤受費半重挫牽動狂瀉 1,842 點收 38,482 點（-4.57%），電子期跌 136.55 點，今日台股開板換手面臨強烈回測考驗",
+          "2026-11-25 晚間美國將公布 10 月 PCE 物價指數、Q3 GDP 二修與聯準會褐皮書，定奪 12 月 FOMC 利率終點預期"
+        ],
+        "headline_thesis": "費半重挫 7.88% 拖累夜盤狂瀉 1,842 點，台股開板換手直面法人倒貨與今晚 10 月 PCE 終極考驗",
+        "stance": "戰術性防禦中性（Defensive Neutral／逢開板震盪汰弱留強，聚焦高現金轉換龍頭，嚴禁追高槓桿）",
+        "confidence": "結構判斷中高／短線延續性中低",
+        "valuation_gap_status": "未取得／Unclear（同口徑 WACC 與 11/24 最新 Forward P/E 尚未取得）"
+      },
+      "cross_assets_and_macro": {
+        "assets": [
+          { "category": "美股指數", "name": "S&P 500", "close": 7201.09, "daily_chg": "-0.50% (-36.08)", "range_note": "近 9 日 8 黑，距 10/6 歷史高點 7,818.93 回落 7.90%", "note": "11/24 美股收盤（Dow Jones / FactSet）" },
+          { "category": "美股指數", "name": "道瓊工業 (DJIA)", "close": 50018.7, "daily_chg": "+0.85%", "range_note": "價值與醫療類股輪動推升，強勢站上 5 萬點大關", "note": "11/24 美股官方收盤" },
+          { "category": "美股指數", "name": "那斯達克綜合 (IXIC)", "close": 23733.54, "daily_chg": "-1.48%", "range_note": "AI 動能降溫，輝達回吐部分漲幅、Anthropic 破發", "note": "11/24 美股官方收盤" },
+          { "category": "美股指數", "name": "費城半導體 (SOX)", "close": 8832.5, "daily_chg": "-7.88% (-755.55)", "range_note": "回吐前日大半漲幅，盤中低 8,657.78、高 9,197.56", "note": "11/24 INDEXNASDAQ 官方收盤（前收 9,588.05）" },
+          { "category": "台股指數", "name": "台灣加權指數 (TAIEX)", "close": 40122.35, "daily_chg": "+8.99% (+3,310.46)", "range_note": "創史上最大收盤漲點，收復 4 萬點；盤中高 40,180.38", "note": "11/24 上市獨立母體收盤（TWSE）" },
+          { "category": "台股指數", "name": "台灣櫃買指數 (TPEx)", "close": 293.23, "daily_chg": "+8.24% (+22.33)", "range_note": "強彈惟成交額驟縮至 531.01 億元", "note": "11/24 上櫃獨立母體收盤（TPEx）" },
+          { "category": "台股期貨", "name": "台指期日盤（近月）", "close": 40324, "daily_chg": "+9.99% (+3,665)", "range_note": "亮燈漲停鎖死，轉為正價差 +201.65 點", "note": "11/24 日盤收盤（TAIFEX）" },
+          { "category": "台股期貨", "name": "台指期夜盤（近月）", "close": 38482, "daily_chg": "-4.57% (-1,842)", "range_note": "受費半挫 7.88% 牽動大跌；小臺收 38,486（-1,838）、電子期收 2,347（-136.55）", "note": "11/25 05:00 收盤（TAIFEX，官方歸屬 11/25 交易日）" },
+          { "category": "美債利率", "name": "美國 2 年期公債殖利率", "close": 4.668, "daily_chg": "+0.6 bps", "range_note": "連兩日走升共 +5.8 bps，距 52 週高 4.922% 約 25.4 bps", "note": "11/24 Tradeweb FTSE 3pm ET 收盤（Dow Jones）" },
+          { "category": "美債利率", "name": "美國 10 年期公債殖利率", "close": 4.901, "daily_chg": "-1.9 bps", "range_note": "連守 5% 下方，盤中區間 4.872%–4.942%", "note": "11/24 Tradeweb FTSE 3pm ET 收盤（Investing 報 4.899%）" },
+          { "category": "美債利率", "name": "美國 30 年期公債殖利率", "close": 5.292, "daily_chg": "-0.3 bps", "range_note": "連七個交易日走跌（累計降 18.8 bps），探 11/9 來低位", "note": "11/24 Tradeweb FTSE 3pm ET 收盤（Dow Jones）" },
+          { "category": "美債利率", "name": "美債 2s10s 利差", "close": 23.3, "daily_chg": "-2.5 bps", "range_note": "殖利率曲線略趨平坦（單位：bps）", "note": "11/24 Tradeweb 同口徑實數重算（4.901% - 4.668%）" },
+          { "category": "美債利率", "name": "10 年期 TIPS 實質利率", "close": 2.77, "daily_chg": "-1 bp", "range_note": "仍處高檔實質利率約束區", "note": "11/24 收盤（TradingEconomics / FRED）" },
+          { "category": "美債利率", "name": "10 年期平衡通膨率", "close": 2.13, "daily_chg": "-2 bps", "range_note": "11/24 隱含值約 2.131%（4.901% - 2.77%），低於 10 月均值 2.35%", "note": "FRED (T10YIE) 最新已公布日 11/23 實數" },
+          { "category": "信用利差", "name": "美國高收益債 OAS (HY)", "close": 352, "daily_chg": "+5 bps", "range_note": "週闊 29 bps（11/13 為 323 bps），仍低於長期均值 515 bps", "note": "ICE BofA (FRED BAMLH0A0HYM2) 最新已公布日 11/19（11/25 更新）" },
+          { "category": "信用利差", "name": "美國投資級債 OAS (IG)", "close": 94, "daily_chg": "+1 bp", "range_note": "觸及 52 週高點 94 bps；AI 投資級債利差達 148 bps", "note": "ICE BofA (FRED BAMLC0A0CM) 最新已公布日 11/19" },
+          { "category": "波動率", "name": "Cboe VIX 恐慌指數", "close": 26.36, "daily_chg": "-0.98% (-0.26)", "range_note": "盤中高 32.38、低 25.98；仍處 25 以上高波動區", "note": "11/24 INDEXCBOE 官方收盤（前收 26.62；Cboe Spot 26.43）" },
+          { "category": "外匯", "name": "美元指數 (DXY)", "close": 103.815, "daily_chg": "-0.48%", "range_note": "自 19 個月高檔小幅回落，盤中一度觸及 104 關卡", "note": "11/24 收盤（TradingEconomics）" },
+          { "category": "外匯", "name": "新台幣兌美元 (USD/TWD)", "close": 32.939, "daily_chg": "+0.044（貶 4.4 分）", "range_note": "外資賣股匯出致盤中觸 33.00 關卡，終止連 3 升", "note": "11/24 台北及元太外匯收盤，成交 34.88 億美元（中央社）" },
+          { "category": "大宗商品", "name": "WTI 原油", "close": 81.66, "daily_chg": "+1.75% (+1.40)", "range_note": "盤中一度跌破 $80 觸 16 週低，尾盤反彈收 $81.66", "note": "11/24 結算（TradingEconomics，美元／桶）" },
+          { "category": "大宗商品", "name": "布蘭特原油", "close": 90.94, "daily_chg": "+1.77% (+1.58)", "range_note": "盤中探 $89 下方，收盤重返 $90 上方", "note": "11/24 結算（TradingEconomics，美元／桶）" },
+          { "category": "大宗商品", "name": "美國亨利港天然氣", "close": 3.34, "daily_chg": "+4.96%", "range_note": "月漲 10.58%，受冬季與 LNG 出口需求支撐", "note": "11/24 結算（TradingEconomics，美元／MMBtu）" },
+          { "category": "大宗商品", "name": "COMEX 期銅", "close": 5.3963, "daily_chg": "-4.22%", "range_note": "延續技術熊市弱勢", "note": "11/24 結算（TradingEconomics，美元／磅）" },
+          { "category": "避險與加密", "name": "黃金現貨 (XAUUSD)", "close": 3552.73, "daily_chg": "-2.26%", "range_note": "前日反彈後再度承壓，白銀重挫 5.34% 至 $40.82", "note": "11/24 收盤（TradingEconomics）" },
+          { "category": "避險與加密", "name": "比特幣 (BTC)", "close": 59714.89, "daily_chg": "-2.42%", "range_note": "失守 6 萬美元關卡；11/25 早盤續探 $59,381.62", "note": "11/24 23:55 UTC 收盤（美元）" }
+        ],
+        "macro_indicators": [
+          { "region": "美國", "indicator": "ISM 製造業 PMI", "period": "2026-10", "actual": 55.5, "prior_or_est": "前值 54.5 / 預期 54.6", "note": "價格指數高達 75.2" },
+          { "region": "美國", "indicator": "ISM 服務業 PMI", "period": "2026-10", "actual": 54.5, "prior_or_est": "前值 54.9 / 預期 54.8", "note": "新訂單驟降 3.9 點至 55.9，價格指數 73.0" },
+          { "region": "美國", "indicator": "整體／核心 CPI 月增率", "period": "2026-10", "actual": "+0.4% / +0.3%", "prior_or_est": "預期 +0.3% / +0.2%", "note": "因 2025 年停擺缺樣本，BLS 未發布 10 月年增率" },
+          { "region": "美國", "indicator": "整體／核心 PCE 年增率", "period": "2026-09", "actual": "+3.6% / +3.1%", "prior_or_est": "前值 3.4% / 3.0%", "note": "10 月 PCE 數據訂於今晚（11/25）公布" },
+          { "region": "美國", "indicator": "非農就業 (NFP)／失業率", "period": "2026-10", "actual": "+16.5 萬 / 4.1%", "prior_or_est": "預期 +6.5 萬 / 前值 4.2%", "note": "時薪月增 +0.4%（年增 +3.1%）；U-6 達 7.9%" },
+          { "region": "美國", "indicator": "Q3 GDP 初值", "period": "2026-Q3", "actual": "+3.4%", "prior_or_est": "Q2 +2.2% / 預期 +3.2%", "note": "季增年率；今晚（11/25）公布二修" },
+          { "region": "美國", "indicator": "國際貿易逆差", "period": "2026-09", "actual": -1050, "prior_or_est": "前值 -1057 億", "note": "單位：億美元；對台單月逆差擴至 219 億美元躍居第三大" },
+          { "region": "台灣", "indicator": "Q3 GDP 概估", "period": "2026-Q3", "actual": "+14.36%", "prior_or_est": "市場預期 +12.0%", "note": "創 48 年同季新高，連四季雙位數成長" },
+          { "region": "台灣", "indicator": "海關出口／外銷訂單", "period": "2026-10", "actual": "967.6 億 / 1238.2 億美元", "prior_or_est": "年增 +58.9% / +78.3%", "note": "資通接單 +107.2%、電子 +89.8%" },
+          { "region": "台灣", "indicator": "CPI 年增率／NMI", "period": "2026-10", "actual": "+2.33% / 55.4%", "prior_or_est": "NMI 前值 56.9%", "note": "10 月台灣製造業 PMI 未取得／Unclear" }
+        ],
+        "fed_policy": {
+          "current_rate_range": "3.75%–4.00%",
+          "effective_ffr": 3.88,
+          "next_meeting_date": "2026-12-08 至 2026-12-09",
+          "policy_gap_status": "未計算（缺乏 2027 全曲線同步期貨與最新 SEP 同口徑比對）",
+          "market_implied_prob": "12 月升息 25 bps 機率高達 99.2%（4.00%–4.25% 區間，11/24 市場定價）",
+          "top_3_drivers": [
+            "今晚（11/25）美國 10 月核心 PCE 月增率決定 2027 年利率終點預期",
+            "美債 10Y 殖利率守 4.899% 高檔，持續壓縮高存續期科技股估值倍數",
+            "美伊外交斡旋與 IEA 預期供給過剩壓抑油價，惟 WTI 尚未有效跌破 $80"
+          ]
+        }
+      },
+      "us_cashflow_penetration": {
+        "companies": [
+          { "ticker": "MSFT", "period": "FY27 Q1", "revenue_bn": 92.3, "net_income_bn": 36.63, "da_bn": 11.74, "sbc_bn": 3.13, "wc_chg_bn": 2.12, "cfo_bn": 58.0, "capex_bn": 39.37, "fcf_bn": 18.63, "fcf_to_cfo_pct": 32.1, "fcf_ex_sbc_bn": 15.5, "alert": "含融資租賃總 CapEx $452 億；未起租資料中心租約 $3,646 億" },
+          { "ticker": "GOOGL", "period": "2026 Q3", "revenue_bn": 127.58, "net_income_bn": 26.47, "da_bn": 8.37, "sbc_bn": 8.63, "wc_chg_bn": -17.43, "cfo_bn": 42.29, "capex_bn": 51.36, "fcf_bn": -9.07, "fcf_to_cfo_pct": -21.4, "fcf_ex_sbc_bn": -17.7, "alert": "回購歸零；單季發債 $290 億＋ATM 增發普通股 $123.7 億" },
+          { "ticker": "META", "period": "2026 Q3", "revenue_bn": 64.6, "net_income_bn": 9.86, "da_bn": 7.15, "sbc_bn": 7.36, "wc_chg_bn": 6.6, "cfo_bn": 32.79, "capex_bn": 34.91, "fcf_bn": -2.12, "fcf_to_cfo_pct": -6.5, "fcf_ex_sbc_bn": -9.48, "alert": "前 9 月零回購；現金幾與總債打平；規劃 $375 億股權融資" },
+          { "ticker": "AMZN", "period": "2026 Q3", "revenue_bn": 201.94, "net_income_bn": 20.69, "da_bn": 20.95, "sbc_bn": 5.41, "wc_chg_bn": null, "cfo_bn": 42.42, "capex_bn": 75.9, "fcf_bn": -33.48, "fcf_to_cfo_pct": -78.9, "fcf_ex_sbc_bn": -38.88, "alert": "TTM FCF -$423.6 億；長債 9 個月飆至 $1,731 億（完整營運資金明細未取得／Unclear）" },
+          { "ticker": "NVDA", "period": "FY27 Q3", "revenue_bn": 115.84, "net_income_bn": 65.29, "da_bn": 1.25, "sbc_bn": 2.09, "wc_chg_bn": -19.59, "cfo_bn": 48.25, "capex_bn": 4.42, "fcf_bn": 43.83, "fcf_to_cfo_pct": 90.8, "fcf_ex_sbc_bn": 41.74, "alert": "11/24 回吐部分前日 31.5% 漲幅；應收帳款單季吸金 -$180.5 億、10-Q 延遲申報與 SEC 審查尚未落幕" },
+          { "ticker": "PG", "period": "FY27 Q1", "revenue_bn": 23.3, "net_income_bn": 4.76, "da_bn": null, "sbc_bn": null, "wc_chg_bn": null, "cfo_bn": 5.77, "capex_bn": 1.37, "fcf_bn": 4.4, "fcf_to_cfo_pct": 76.3, "fcf_ex_sbc_bn": null, "alert": "FCF 生產力 93%，單季回饋股東 $39 億（D&A／SBC 細項未單獨揭露／Unclear）" },
+          { "ticker": "WMT", "period": "FY27 Q3 (9M)", "revenue_bn": 188.8, "net_income_bn": 4.95, "da_bn": null, "sbc_bn": null, "wc_chg_bn": null, "cfo_bn": 29.4, "capex_bn": null, "fcf_bn": 6.8, "fcf_to_cfo_pct": 23.1, "fcf_ex_sbc_bn": null, "alert": "上修全年財測，ROI 升至 15.4%（CFO／FCF 為 9M 累計口徑，單季明細未取得／Unclear）" }
+        ],
+        "sector_rotation": {
+          "relative_price": "11/24 價值與防禦輪動再起：DJIA +0.85%（站上 50,019）、零售財報亮眼與醫療走強；IXIC -1.48%，NVDA 與 Anthropic（跌破 $83 IPO 價）承壓",
+          "direct_flows": "11/24 單日 ETF 資金流尚待統計（未取得／Unclear）；上週累計科技 ETF 流出 17 億美元、貨幣市場基金單週吸金 1,404 億美元",
+          "counter_evidence": "美銀 11 月機構現金水位僅 3.6%（低於 4.0% 警戒線），反彈動能易受獲利了結壓抑"
+        }
+      },
+      "taiwan_market_and_bottom_checklist": {
+        "spot_and_futures": {
+          "twse_turnover_twd_bn": 419.41,
+          "tpex_turnover_twd_bn": 53.1,
+          "twse_inst_net_twd_bn": -123.01,
+          "twse_foreign_net_twd_bn": -50.39,
+          "twse_dealer_hedge_twd_bn": -81.03,
+          "tpex_foreign_net_twd_bn": -8.4,
+          "margin_balance_chg_twd_bn": -6.46,
+          "txf_day_spread": 201.65,
+          "foreign_txf_net_oi": -103182,
+          "total_txf_oi": null,
+          "options_pc_ratio_oi_pct": 45.96,
+          "txf_night_close": 38482,
+          "usd_twd_close": 32.939,
+          "note": "11/24 上市收 40,122.35（+3,310.46），成交 4,194.05 億創今年新低；上市三大法人賣超 1,230.11 億（外資 -503.90 億、自營商合計 -810.25 億、投信 +84.04 億）；上櫃三大法人賣超 69.31 億（外資 -84.04 億、投信 +9.47 億、自營 +5.26 億）；外資期貨淨空單仍達 103,182 口；台北外匯收 32.939 元（貶 4.4 分，成交 34.88 億美元）；11/25 清晨夜盤狂瀉 1,842 點收 38,482 點"
+        },
+        "bottom_signals": [
+          { "id": 1, "signal": "融資餘額加速清洗", "status": "已達標（續降）", "latest": "11/24 融資續減 64.6 億元（上櫃減逾 50 億），維持率降至 120% 生效", "target_gate": "反彈開板後融資不可過度暴增" },
+          { "id": 2, "signal": "外資期貨淨空單回補", "status": "嚴重未達標（警戒）", "latest": "11/24 淨空 103,182 口（大漲日僅微補 250 口），且上市櫃外資合計反手大賣 587.94 億", "target_gate": "淨空單顯著回補並跌破 60,000 口" },
+          { "id": 3, "signal": "櫃買流動性修復", "status": "反向窒息（待開板）", "latest": "11/24 上櫃成交驟縮至 531.01 億元，且上櫃外資逆勢賣超 84.04 億元", "target_gate": "開板換手後上櫃成交額回升至 1,200 億元以上" },
+          { "id": 4, "signal": "台積電爆量止跌", "status": "夜盤回測考驗", "latest": "11/24 台積電 2,230 元一價到底漲停鎖死，惟 11/25 清晨台指夜盤重挫 1,842 點", "target_gate": "開板後爆量換手並站穩 5 日線" },
+          { "id": 5, "signal": "2027 年企業獲利共識穩固", "status": "尚符合", "latest": "外資仍估 2026 +42%、2027 +37%", "target_gate": "12/9 博通與 12/17 美光財測未見下修" }
+        ]
+      },
+      "ai_supply_chain": {
+        "core_companies": [
+          { "ticker": "2330.TW", "name": "台積電", "oct_rev_twd_bn": 586.89, "oct_rev_yoy": "+59.7%", "q3_gm_pct": 66.4, "q3_opm_pct": 58.7, "cash_twd_bn": 4017.0, "ar_twd_bn": null, "dso_days": null, "inv_twd_bn": null, "dio_days": null, "contract_liab_twd_bn": null, "provisions_twd_bn": null, "q3_cfo_twd_bn": 919.77, "q3_capex_twd_bn": 443.21, "q3_fcf_twd_bn": 476.56, "comment": "11/24 2,230 元一價到底漲停鎖死；FCF/CFO 達 51.8%，靜待今日開板換手檢驗" },
+          { "ticker": "3131.TW", "name": "弘塑", "oct_rev_twd_bn": 0.753, "oct_rev_yoy": "+30.5%", "q3_gm_pct": 36.59, "q3_opm_pct": 21.96, "cash_twd_bn": 5.378, "ar_twd_bn": 0.702, "dso_days": null, "inv_twd_bn": 4.529, "dio_days": null, "contract_liab_twd_bn": 4.51, "provisions_twd_bn": 0.32, "q3_cfo_twd_bn": 1.38, "q3_capex_twd_bn": 0.062, "q3_fcf_twd_bn": 1.318, "comment": "合約負債季增 37.7%，CFO 由負強轉正，營運資金閉環優異" },
+          { "ticker": "3583.TW", "name": "辛耘", "oct_rev_twd_bn": 1.101, "oct_rev_yoy": "+25.5%", "q3_gm_pct": 41.28, "q3_opm_pct": 16.62, "cash_twd_bn": 10.306, "ar_twd_bn": 1.201, "dso_days": 31.45, "inv_twd_bn": 13.054, "dio_days": 640.42, "contract_liab_twd_bn": 16.464, "provisions_twd_bn": null, "q3_cfo_twd_bn": null, "q3_capex_twd_bn": null, "q3_fcf_twd_bn": null, "comment": "合約負債達單季營收 5.35 倍；Q3 完整單季 CFO 絕對值未取得／Unclear（現金季增 28.77 億佐證淨流入）" },
+          { "ticker": "3017.TW", "name": "奇鋐", "oct_rev_twd_bn": 22.103, "oct_rev_yoy": "前10月>65%", "q3_gm_pct": 33.86, "q3_opm_pct": 28.53, "cash_twd_bn": 80.031, "ar_twd_bn": 14.749, "dso_days": 23.0, "inv_twd_bn": 75.265, "dio_days": 160.0, "contract_liab_twd_bn": 0.001, "provisions_twd_bn": 0.0, "q3_cfo_twd_bn": 10.675, "q3_capex_twd_bn": 4.892, "q3_fcf_twd_bn": 5.783, "comment": "垂直整合推升毛利創高，收款僅 23 天，800 億現金足以自籌擴產" },
+          { "ticker": "3324.TW", "name": "雙鴻", "oct_rev_twd_bn": 3.372, "oct_rev_yoy": "+44.8%", "q3_gm_pct": 25.65, "q3_opm_pct": 13.92, "cash_twd_bn": 5.226, "ar_twd_bn": 12.332, "dso_days": 108.03, "inv_twd_bn": 8.865, "dio_days": 103.52, "contract_liab_twd_bn": 0.0, "provisions_twd_bn": 0.0, "q3_cfo_twd_bn": null, "q3_capex_twd_bn": 1.959, "q3_fcf_twd_bn": null, "comment": "毛利率季減 2.77 pp，AR 天數 108 天偏緊；Q3 單季 CFO 絕對值未取得／Unclear（現金流量比率 3.19%）" }
+        ],
+        "spectrum_matrix": [
+          { "segment": "HBM", "timing": "領先／同步", "rank": 1, "status": "2027 HBM4 價估倍增至 $3.0–5.5/Gb 且供給傳售罄", "falsification": "良率過快解除致供給超車或客戶砍價" },
+          { "segment": "ABF 載板", "timing": "同步／略落後", "rank": 2, "status": "2027 缺口估擴至 26%，台廠 10 月營收全創高", "falsification": "T-Glass 斷鏈或傳統伺服器崩盤壓低稼動率" },
+          { "segment": "Server DDR5", "timing": "同步", "rank": 3, "status": "Q4 合約價估漲 10%–15%，2027 全年預期不跌", "falsification": "通用伺服器 CapEx 遭 AI 排擠致合約價轉負" },
+          { "segment": "一般 DRAM", "timing": "落後（產能外溢）", "rank": 4, "status": "蘋果傳洽簽罕見長期供貨保障協議", "falsification": "消費性電子萎縮致現貨與合約價背離擴大" },
+          { "segment": "LPDDR", "timing": "落後（邊緣終端）", "rank": 5, "status": "綁定邊緣 AI 手機／PC 換機潮", "falsification": "AI 終端換機率低於預期，單機容量升級停滯" },
+          { "segment": "NAND / Enterprise SSD", "timing": "同步至落後", "rank": 6, "status": "11 月初 512Gb TLC 現貨週跌 4.33%，TrendForce 預警 2027 Q2 轉下行", "falsification": "原廠大幅減產扭轉供給過剩（反向證偽）" },
+          { "segment": "CPO（共同封裝光學）", "timing": "遠期", "rank": 7, "status": "DIGITIMES 預警混合鍵合良率瓶頸，大規模交付恐延至 2027 底", "falsification": "2027 H1 良率突破並提前放量（反向證偽）" },
+          { "segment": "Glass / TGV 玻璃基板", "timing": "遠期", "rank": 8, "status": "LIDE 通孔良率僅 75%–85%，台積電 CoPoS 量產落於 2028", "falsification": "良率快速突破 95% 提前取代 ABF（反向證偽）" }
+        ]
+      },
+      "commodities_sentiment_and_scenarios": {
+        "energy_power_and_sentiment": {
+          "oil_and_opec": "11/24 WTI 盤中跌破 $80 後反彈收 $81.66（+1.75%）、布蘭特收 $90.94（+1.77%）；IEA 指波斯灣出口恢復至戰前 74% 且預期本季轉過剩；OPEC+ 11/29 定調 2027 政策",
+          "copper_divergence": "11/24 COMEX 期銅續挫 4.22% 至 $5.3963/磅，金融端弱勢與實體端（洋山溢價）持續背離",
+          "pjm_power_crunch": "PJM 董事會回覆結果未取得／Unclear（前次 2028/29 容量價觸 $325/MW-日上限仍缺 6.8 GW）",
+          "bofa_fms_sentiment": "65% 視 AI 泡沫／雲端發債為頭號尾部風險；52% 預期 6 個月內有雲端商砍 CapEx；惟機構現金僅 3.6%（低於 4% 警戒線）"
+        },
+        "scenarios": [
+          { "name": "基準情境（Base）", "probability_pct": 55, "label": "高利率壓頂＋開板換手後箱型築底", "key_assumptions": "今晚核心 PCE 3.2%–3.3%；Fed 12/9 升 1 碼後停看聽；油價 $78–85", "allocation": { "cash_short_bond_pct": 25, "defensive_equity_pct": 40, "quality_ai_hardware_pct": 25, "commodities_intl_pct": 10 }, "trigger": "10Y 4.70%–5.05% 盤整，台股開板後外資賣壓趨緩" },
+          { "name": "鷹派下行（Bear）", "probability_pct": 30, "label": "通膨再起／Fed 鷹派驚喜＋AI 砍單", "key_assumptions": "核心 PCE 月增 >=0.4%；Fed 暗示 1 月續升；雲端商縮減 2027 CapEx", "allocation": { "cash_short_bond_pct": 45, "defensive_equity_pct": 40, "quality_ai_hardware_pct": 10, "commodities_intl_pct": 5 }, "trigger": "10Y >5.20%、HY OAS >400 bps、外資期貨淨空單持續高掛 10 萬口" },
+          { "name": "溫和反轉（Bull）", "probability_pct": 15, "label": "油價破 80＋通膨急降＋終點利率確認", "key_assumptions": "核心 PCE 月增 <=0.2%；WTI <$80；Fed 明示緊縮近尾聲；10Y <4.50%", "allocation": { "cash_short_bond_pct": 10, "defensive_equity_pct": 20, "quality_ai_hardware_pct": 50, "commodities_intl_pct": 20 }, "trigger": "10Y <4.50%、WTI <$80、VIX <20、外資期貨淨空單 <6 萬口" }
+        ],
+        "catalysts_calendar": [
+          { "date": "2026-11-25", "event": "美國 10 月 PCE 物價指數＋Q3 GDP 二修＋聯準會褐皮書", "threshold": "核心 PCE 月增 <=0.2% 利多，>=0.4% 重燃鷹派憂慮" },
+          { "date": "2026-11-26", "event": "美國感恩節休市（11/27 提早收盤）", "threshold": "觀察節間低量流動性與反彈延續力道" },
+          { "date": "2026-11-29", "event": "OPEC+ 全體部長級會議", "threshold": "2027 年配額是否推動油價有效跌破 $80/bbl" },
+          { "date": "2026-12-01", "event": "黃仁勳出席美國眾議院三委員會閉門聽證會", "threshold": "晶片流向中國與國安揭露之監管衝擊" },
+          { "date": "2026-12-03", "event": "美國參議院銀行委員會公開聽證／11 月 ISM 服務業 PMI", "threshold": "服務業新訂單是否跌破 54、價格指數能否破 70" },
+          { "date": "2026-12-04", "event": "美國 11 月非農就業報告 (NFP)", "threshold": "檢驗是否回落至 8–10 萬（低於 3 個月均值 13.7 萬）" },
+          { "date": "2026-12-09", "event": "FOMC 利率決策與 SEP 點陣圖／博通 (AVGO) 財報／台灣 11 月出口", "threshold": "2027 點陣圖中位數是否上修高於 4.1%；博通 ASIC 財測" },
+          { "date": "2026-12-10", "event": "美國 11 月 CPI／台積電 11 月營收", "threshold": "油價回落對 CPI 傳導；台積電 Q4 財測達成進度" },
+          { "date": "2026-12-17", "event": "美光 (MU) FY27 Q1 財報／歐洲央行 (ECB) 決策", "threshold": "驗證 HBM4 報價翻倍與 DRAM／NAND 週期分化" }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 2. APPLICATION STATE & CHART INSTANCES
+    // =========================================================================
+    let currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    let activeAssetCat = "全部";
+    let assetSearchQuery = "";
+    let activeScenarioIdx = 0;
+
+    let manifestDates = [DEFAULT_DATA.meta.date];
+    let currentSelectedDate = DEFAULT_DATA.meta.date;
+    let isLiveMode = false;
+
+    let usCashflowChart = null;
+    let aiMarginChart = null;
+    let scenarioDoughnutChart = null;
+
+    // =========================================================================
+    // 3. HELPER UTILITIES
+    // =========================================================================
+    function formatNullable(val, suffix = "") {
+      if (val === null || val === undefined || val === "") {
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700/70 text-[10px] font-medium">未取得／Unclear</span>`;
+      }
+      if (typeof val === "number") {
+        return `<span class="font-num">${val.toLocaleString("en-US", { maximumFractionDigits: 3 })}${suffix}</span>`;
+      }
+      return `<span class="font-num">${val}${suffix}</span>`;
+    }
+
+    /** 將新台幣十億元 (TWD bn) 換算為新台幣億元 (×10) */
+    function formatTwdBnToYi(val, suffix = " 億") {
+      if (val === null || val === undefined || val === "") {
+        return formatNullable(null);
+      }
+      const yi = Number(val) * 10;
+      const sign = yi > 0 && suffix.includes("買賣超") ? "+" : "";
+      return `<span class="font-num">${sign}${yi.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${suffix.replace("買賣超", "")}</span>`;
+    }
+
+    function getChangeColorClass(chgStr) {
+      if (!chgStr) return "text-slate-400";
+      const s = String(chgStr).trim();
+      if (s.startsWith("+")) return "text-emerald-400";
+      if (s.startsWith("-")) return "text-rose-400";
+      return "text-slate-300";
+    }
+
+    function showToast(msg, isError = false) {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `pointer-events-auto px-4 py-2.5 rounded-lg text-xs font-semibold shadow-xl border transition-all duration-300 ${
+        isError
+          ? "bg-rose-950/95 text-rose-200 border-rose-700"
+          : "bg-slate-900/95 text-emerald-300 border-emerald-700/70"
+      }`;
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-2");
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    function setSyncStatus(mode, detail = "") {
+      const badge = document.getElementById("syncStatusBadge");
+      if (!badge) return;
+      if (mode === "live") {
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-700/70";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>線上自動同步</span>`;
+        badge.title = detail || "已從 data/ 目錄自動載入最新晨報";
+      } else if (mode === "manual") {
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-sky-950/80 text-sky-300 border border-sky-700/70";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span><span>手動匯入預覽</span>`;
+        badge.title = detail || "目前顯示手動匯入之 JSON 資料";
+      } else {
+        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-950/80 text-amber-300 border border-amber-700/70";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span>內建基準模式</span>`;
+        badge.title = detail || "未偵測到線上 data/ 目錄，已自動回退至內建基準";
+      }
+    }
+
+    // =========================================================================
+    // 4. RENDER FUNCTIONS (ALL 6 MODULES + HERO)
+    // =========================================================================
+    function renderAll(data) {
+      currentData = data;
+      renderHeaderAndHero(data.meta || {});
+      renderCrossAssetsAndMacro(data.cross_assets_and_macro || {});
+      renderUsCashflow(data.us_cashflow_penetration || {});
+      renderTaiwanMarket(data.taiwan_market_and_bottom_checklist || {});
+      renderAiSupplyChain(data.ai_supply_chain || {});
+      renderCommoditiesAndScenarios(data.commodities_sentiment_and_scenarios || {});
+      renderCatalystsCalendar(data.commodities_sentiment_and_scenarios || {});
+    }
+
+    function renderHeaderAndHero(meta) {
+      const dateStr = meta.date || "YYYY-MM-DD";
+      const [y, m, d] = dateStr.split("-");
+      const zhDate = y && m && d ? `${y} 年 ${parseInt(m, 10)} 月 ${parseInt(d, 10)} 日` : dateStr;
+
+      document.getElementById("headerTitle").textContent = `全球宏觀與產業策略晨報｜${zhDate}`;
+      document.getElementById("badgeDate").textContent = dateStr;
+      document.getElementById("badgeCutoff").textContent = meta.cutoff_taipei || "未取得／Unclear";
+      document.getElementById("badgeTradeDates").textContent = `美股 ${meta.us_trade_date || "-"} · 台股 ${meta.tw_trade_date || "-"} · 夜盤歸屬 ${meta.night_futures_official_date || "-"}`;
+
+      document.getElementById("heroThesis").textContent = meta.headline_thesis || "未取得／Unclear";
+      document.getElementById("heroStanceBadge").textContent = meta.stance || "未取得／Unclear";
+      document.getElementById("heroConfidenceBadge").textContent = `信心：${meta.confidence || "未取得／Unclear"}`;
+      document.getElementById("heroValuationGap").textContent = meta.valuation_gap_status || "未取得／Unclear";
+
+      const boundaries = meta.key_events_boundary || meta.weekend_policy_events || [];
+      const strip = document.getElementById("eventBoundaryStrip");
+      const list = document.getElementById("eventBoundaryList");
+      if (boundaries.length > 0) {
+        strip.classList.remove("hidden");
+        list.innerHTML = boundaries
+          .map((item, idx) => `
+            <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b] text-xs text-slate-300 leading-relaxed flex gap-2">
+              <span class="font-num font-bold text-amber-400 shrink-0">0${idx + 1}</span>
+              <span>${item}</span>
+            </div>
+          `)
+          .join("");
+      } else {
+        strip.classList.add("hidden");
+      }
+    }
+
+    function renderCrossAssetsAndMacro(section) {
+      const assets = section.assets || [];
+      document.getElementById("assetCountBadge").textContent = `${assets.length} 項`;
+
+      // Category pills
+      const cats = ["全部", ...new Set(assets.map(a => a.category).filter(Boolean))];
+      const pillsEl = document.getElementById("assetCategoryPills");
+      pillsEl.innerHTML = cats
+        .map(cat => `
+          <button type="button" data-cat="${cat}" class="pill-btn ${cat === activeAssetCat ? "active" : ""} px-2.5 py-1 rounded-md text-[11px] font-medium border border-[#1e293b] bg-[#0b1120] text-slate-300 hover:text-white transition">
+            ${cat}
+          </button>
+        `)
+        .join("");
+
+      pillsEl.querySelectorAll(".pill-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeAssetCat = btn.dataset.cat;
+          renderAssetsTable(assets);
+          pillsEl.querySelectorAll(".pill-btn").forEach(b => b.classList.toggle("active", b.dataset.cat === activeAssetCat));
+        });
+      });
+
+      renderAssetsTable(assets);
+
+      // Macro Indicators
+      const macros = section.macro_indicators || [];
+      document.getElementById("macroTableBody").innerHTML = macros
+        .map(m => `
+          <tr class="hover:bg-[#1e293b]/40 transition">
+            <td class="py-2.5 px-3"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${m.region === "美國" ? "bg-sky-500/15 text-sky-300" : "bg-emerald-500/15 text-emerald-300"}">${m.region}</span></td>
+            <td class="py-2.5 px-3 font-medium text-white">${m.indicator}</td>
+            <td class="py-2.5 px-3 font-num text-slate-400">${m.period}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-white">${formatNullable(m.actual)}</td>
+            <td class="py-2.5 px-3 text-slate-400">${m.prior_or_est || "-"}</td>
+            <td class="py-2.5 px-3 text-slate-300">${m.note || "-"}</td>
+          </tr>
+        `)
+        .join("");
+
+      // Fed Policy
+      const fed = section.fed_policy || {};
+      document.getElementById("fedCurrentRate").textContent = fed.current_rate_range || "未取得／Unclear";
+      const effrEl = document.getElementById("fedEffectiveRate");
+      if (effrEl) {
+        effrEl.textContent = fed.effective_ffr !== null && fed.effective_ffr !== undefined ? `${fed.effective_ffr}%` : "未取得／Unclear";
+      }
+      document.getElementById("fedNextMeeting").textContent = fed.next_meeting_date || "未取得／Unclear";
+      document.getElementById("fedImpliedProb").textContent = fed.market_implied_prob || "未取得／Unclear";
+      document.getElementById("fedPolicyGap").textContent = fed.policy_gap_status || "未取得／Unclear";
+      document.getElementById("fedDriversList").innerHTML = (fed.top_3_drivers || [])
+        .map((d, i) => `<li class="flex items-start gap-2"><span class="font-num text-amber-400 font-bold">${i + 1}.</span><span>${d}</span></li>`)
+        .join("");
+    }
+
+    function renderAssetsTable(assets) {
+      const q = assetSearchQuery.trim().toLowerCase();
+      const filtered = assets.filter(a => {
+        const matchCat = activeAssetCat === "全部" || a.category === activeAssetCat;
+        const matchQ = !q ||
+          String(a.name || "").toLowerCase().includes(q) ||
+          String(a.category || "").toLowerCase().includes(q) ||
+          String(a.range_note || "").toLowerCase().includes(q) ||
+          String(a.note || "").toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      const tbody = document.getElementById("assetsTableBody");
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">無符合篩選條件之資產項目</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map(a => `
+          <tr class="hover:bg-[#1e293b]/40 transition">
+            <td class="py-2.5 px-3 text-slate-400 whitespace-nowrap">${a.category}</td>
+            <td class="py-2.5 px-3 font-semibold text-white whitespace-nowrap">${a.name}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-slate-100 whitespace-nowrap">${formatNullable(a.close)}</td>
+            <td class="py-2.5 px-3 text-right font-semibold whitespace-nowrap ${getChangeColorClass(a.daily_chg)}">${formatNullable(a.daily_chg)}</td>
+            <td class="py-2.5 px-3 text-slate-300">${a.range_note || "-"}</td>
+            <td class="py-2.5 px-3 text-slate-400">${a.note || "-"}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function renderUsCashflow(section) {
+      const companies = section.companies || [];
+
+      // Chart.js Grouped Bar Chart (CFO, CapEx, FCF, FCF ex-SBC)
+      const ctx = document.getElementById("usCashflowChart").getContext("2d");
+      if (usCashflowChart) usCashflowChart.destroy();
+      usCashflowChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: companies.map(c => c.ticker),
+          datasets: [
+            { label: "CFO ($B)", data: companies.map(c => c.cfo_bn), backgroundColor: "#10b981", borderRadius: 4 },
+            { label: "CapEx ($B)", data: companies.map(c => c.capex_bn), backgroundColor: "#f59e0b", borderRadius: 4 },
+            { label: "FCF ($B)", data: companies.map(c => c.fcf_bn), backgroundColor: companies.map(c => (c.fcf_bn !== null && c.fcf_bn < 0 ? "#f43f5e" : "#38bdf8")), borderRadius: 4 },
+            { label: "扣 SBC 後 FCF ($B)", data: companies.map(c => c.fcf_ex_sbc_bn), backgroundColor: companies.map(c => (c.fcf_ex_sbc_bn !== null && c.fcf_ex_sbc_bn < 0 ? "#be123c" : "#818cf8")), borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#cbd5e1", font: { family: "Inter", size: 11 } } },
+            tooltip: { backgroundColor: "#0f172a", borderColor: "#334155", borderWidth: 1, titleColor: "#fff", bodyColor: "#cbd5e1" }
+          },
+          scales: {
+            x: { ticks: { color: "#cbd5e1", font: { family: "JetBrains Mono", weight: "bold" } }, grid: { color: "#1e293b" } },
+            y: { ticks: { color: "#94a3b8", font: { family: "JetBrains Mono" } }, grid: { color: "#1e293b" } }
+          }
+        }
+      });
+
+      // Table
+      document.getElementById("usCashflowTableBody").innerHTML = companies
+        .map(c => {
+          const fcfColor = c.fcf_bn === null ? "" : c.fcf_bn < 0 ? "text-rose-400 font-bold" : "text-emerald-400 font-bold";
+          const fcfExColor = c.fcf_ex_sbc_bn === null ? "" : c.fcf_ex_sbc_bn < 0 ? "text-rose-400 font-bold" : "text-indigo-300 font-bold";
+          return `
+            <tr class="hover:bg-[#1e293b]/40 transition">
+              <td class="py-2.5 px-3 font-num font-bold text-white">${c.ticker}</td>
+              <td class="py-2.5 px-3 font-num text-slate-400 whitespace-nowrap">${c.period}</td>
+              <td class="py-2.5 px-3 text-right text-slate-200">${formatNullable(c.revenue_bn)}</td>
+              <td class="py-2.5 px-3 text-right text-slate-200">${formatNullable(c.net_income_bn)}</td>
+              <td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-300">${formatNullable(c.da_bn)} / ${formatNullable(c.sbc_bn)}</td>
+              <td class="py-2.5 px-3 text-right text-slate-300">${formatNullable(c.wc_chg_bn)}</td>
+              <td class="py-2.5 px-3 text-right text-emerald-300">${formatNullable(c.cfo_bn)}</td>
+              <td class="py-2.5 px-3 text-right text-amber-300">${formatNullable(c.capex_bn)}</td>
+              <td class="py-2.5 px-3 text-right ${fcfColor}">${formatNullable(c.fcf_bn)}</td>
+              <td class="py-2.5 px-3 text-right">${formatNullable(c.fcf_to_cfo_pct, "%")}</td>
+              <td class="py-2.5 px-3 text-right ${fcfExColor}">${formatNullable(c.fcf_ex_sbc_bn)}</td>
+              <td class="py-2.5 px-3 text-slate-300">${c.alert || "-"}</td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      const rot = section.sector_rotation || {};
+      document.getElementById("rotRelativePrice").textContent = rot.relative_price || "未取得／Unclear";
+      document.getElementById("rotDirectFlows").textContent = rot.direct_flows || "未取得／Unclear";
+      document.getElementById("rotCounterEvidence").textContent = rot.counter_evidence || "未取得／Unclear";
+    }
+
+    function renderTaiwanMarket(section) {
+      const sf = section.spot_and_futures || {};
+      document.getElementById("twKpiNote").textContent = sf.note || "";
+
+      const kpis = [
+        { label: "上市成交額 (TWSE)", html: formatTwdBnToYi(sf.twse_turnover_twd_bn, " 億"), color: "text-amber-300" },
+        { label: "上櫃成交額 (TPEx)", html: formatTwdBnToYi(sf.tpex_turnover_twd_bn, " 億"), color: "text-amber-300" },
+        {
+          label: "上市三大法人買賣超",
+          html: formatTwdBnToYi(sf.twse_inst_net_twd_bn, " 億"),
+          color: sf.twse_inst_net_twd_bn < 0 ? "text-rose-400" : "text-emerald-400",
+          alert: sf.twse_inst_net_twd_bn !== null && sf.twse_inst_net_twd_bn <= -50
+        },
+        {
+          label: "上市外資買賣超",
+          html: formatTwdBnToYi(sf.twse_foreign_net_twd_bn, " 億"),
+          color: sf.twse_foreign_net_twd_bn < 0 ? "text-rose-400" : "text-emerald-400",
+          alert: sf.twse_foreign_net_twd_bn !== null && sf.twse_foreign_net_twd_bn <= -30
+        },
+        {
+          label: "上市自營商買賣超",
+          html: formatTwdBnToYi(sf.twse_dealer_hedge_twd_bn, " 億"),
+          color: sf.twse_dealer_hedge_twd_bn < 0 ? "text-rose-400" : "text-emerald-400",
+          alert: sf.twse_dealer_hedge_twd_bn !== null && sf.twse_dealer_hedge_twd_bn <= -30
+        },
+        {
+          label: "上櫃外資買賣超",
+          html: formatTwdBnToYi(sf.tpex_foreign_net_twd_bn, " 億"),
+          color: sf.tpex_foreign_net_twd_bn < 0 ? "text-rose-400" : "text-emerald-400"
+        },
+        { label: "上市融資餘額變動", html: formatTwdBnToYi(sf.margin_balance_chg_twd_bn, " 億"), color: "text-emerald-300" },
+        { label: "台指期日盤價差", html: formatNullable(sf.txf_day_spread, " 點"), color: sf.txf_day_spread >= 0 ? "text-emerald-400" : "text-rose-400" },
+        {
+          label: "外資台指期淨未平倉",
+          html: formatNullable(sf.foreign_txf_net_oi, " 口"),
+          color: "text-rose-400",
+          alert: sf.foreign_txf_net_oi !== null && sf.foreign_txf_net_oi <= -100000
+        },
+        { label: "選擇權 P/C Ratio (OI)", html: formatNullable(sf.options_pc_ratio_oi_pct, "%"), color: "text-sky-300" },
+        {
+          label: "台指期夜盤收盤 (11/25)",
+          html: formatNullable(sf.txf_night_close, " 點"),
+          color: "text-rose-400",
+          alert: sf.txf_night_close !== null && sf.txf_night_close < 39000
+        },
+        { label: "台北外匯 USD/TWD", html: formatNullable(sf.usd_twd_close, " 元"), color: "text-amber-300" }
+      ];
+
+      document.getElementById("twKpiGrid").innerHTML = kpis
+        .map(k => `
+          <div class="p-3.5 rounded-lg bg-[#0b1120] border ${k.alert ? "border-rose-500/80 bg-rose-950/25 shadow-lg shadow-rose-950/40" : "border-[#1e293b]"}">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-[11px] text-slate-400">${k.label}</span>
+              ${k.alert ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">高警示</span>` : ""}
+            </div>
+            <div class="text-base sm:text-lg font-bold mt-1 ${k.color}">${k.html}</div>
+          </div>
+        `)
+        .join("");
+
+      // 5 Bottoming Signals with dynamic status color inference
+      const signals = section.bottom_signals || [];
+      const badgeStyles = {
+        emerald: "bg-emerald-500/15 text-emerald-300 border-emerald-500/40",
+        rose: "bg-rose-500/15 text-rose-300 border-rose-500/40",
+        amber: "bg-amber-500/15 text-amber-300 border-amber-500/40",
+        sky: "bg-sky-500/15 text-sky-300 border-sky-500/40"
+      };
+
+      function inferSignalColor(s) {
+        if (s.badgeType && badgeStyles[s.badgeType]) return badgeStyles[s.badgeType];
+        const st = String(s.status || "");
+        if (st.includes("嚴重") || st.includes("警戒") || st.includes("未達標")) return badgeStyles.rose;
+        if (st.includes("已達標") || st.includes("初步達標")) return badgeStyles.emerald;
+        if (st.includes("窒息") || st.includes("待開板") || st.includes("待換手") || st.includes("量縮")) return badgeStyles.amber;
+        return badgeStyles.sky;
+      }
+
+      document.getElementById("bottomSignalsList").innerHTML = signals
+        .map(s => {
+          const style = inferSignalColor(s);
+          return `
+            <div class="p-4 rounded-xl bg-[#0b1120] border border-[#1e293b] flex flex-col justify-between gap-2.5">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-xs font-bold text-white"><span class="font-num text-sky-400 mr-1">#${s.id}</span>${s.signal}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold border ${style} shrink-0">${s.status}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">${s.latest}</p>
+              </div>
+              <div class="pt-2 border-t border-[#1e293b] text-[11px] text-slate-400">
+                <span class="text-slate-500 font-semibold">確認門檻：</span>${s.target_gate}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderAiSupplyChain(section) {
+      const companies = section.core_companies || [];
+
+      // Chart.js Margin Bar Chart
+      const ctx = document.getElementById("aiMarginChart").getContext("2d");
+      if (aiMarginChart) aiMarginChart.destroy();
+      aiMarginChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: companies.map(c => `${c.name} (${c.ticker.replace(".TW", "")})`),
+          datasets: [
+            { label: "毛利率 GM (%)", data: companies.map(c => c.q3_gm_pct), backgroundColor: "#38bdf8", borderRadius: 5 },
+            { label: "營益率 OPM (%)", data: companies.map(c => c.q3_opm_pct), backgroundColor: "#10b981", borderRadius: 5 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#cbd5e1", font: { family: "Inter", size: 11 } } },
+            tooltip: { backgroundColor: "#0f172a", borderColor: "#334155", borderWidth: 1 }
+          },
+          scales: {
+            x: { ticks: { color: "#cbd5e1", font: { size: 11 } }, grid: { color: "#1e293b" } },
+            y: { beginAtZero: true, max: 80, ticks: { color: "#94a3b8", font: { family: "JetBrains Mono" }, callback: v => v + "%" }, grid: { color: "#1e293b" } }
+          }
+        }
+      });
+
+      // Core Companies Table
+      document.getElementById("aiCoreTableBody").innerHTML = companies
+        .map(c => `
+          <tr class="hover:bg-[#1e293b]/40 transition">
+            <td class="py-2.5 px-3 whitespace-nowrap">
+              <div class="font-bold text-white">${c.name}</div>
+              <div class="text-[10px] font-num text-slate-400">${c.ticker}</div>
+            </td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+              <div class="text-slate-100">${formatTwdBnToYi(c.oct_rev_twd_bn, " 億")}</div>
+              <div class="text-[10px] text-emerald-400 font-num">${c.oct_rev_yoy || "-"}</div>
+            </td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+              <span class="text-sky-300">${formatNullable(c.q3_gm_pct, "%")}</span>
+              <span class="text-slate-500"> / </span>
+              <span class="text-emerald-300">${formatNullable(c.q3_opm_pct, "%")}</span>
+            </td>
+            <td class="py-2.5 px-3 text-right text-slate-200 whitespace-nowrap">${formatTwdBnToYi(c.cash_twd_bn, "")}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-300">
+              ${formatTwdBnToYi(c.ar_twd_bn, "")} / ${formatNullable(c.dso_days, "d")}
+            </td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-300">
+              ${formatTwdBnToYi(c.inv_twd_bn, "")} / ${formatNullable(c.dio_days, "d")}
+            </td>
+            <td class="py-2.5 px-3 text-right text-amber-300 whitespace-nowrap">${formatTwdBnToYi(c.contract_liab_twd_bn, "")}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap text-[11px]">
+              ${formatTwdBnToYi(c.q3_cfo_twd_bn, "")} / ${formatTwdBnToYi(c.q3_capex_twd_bn, "")} / <span class="text-emerald-400 font-semibold">${formatTwdBnToYi(c.q3_fcf_twd_bn, "")}</span>
+            </td>
+            <td class="py-2.5 px-3 text-slate-300">${c.comment || "-"}</td>
+          </tr>
+        `)
+        .join("");
+
+      // 8-Segment Spectrum Matrix
+      const matrix = section.spectrum_matrix || [];
+      document.getElementById("aiSpectrumTableBody").innerHTML = matrix
+        .map(s => `
+          <tr class="hover:bg-[#1e293b]/40 transition">
+            <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-num font-bold ${s.rank <= 3 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" : "bg-slate-800 text-slate-300"}">${s.rank}</span></td>
+            <td class="py-2.5 px-3 font-bold text-white whitespace-nowrap">${s.segment}</td>
+            <td class="py-2.5 px-3 text-sky-300 whitespace-nowrap">${s.timing}</td>
+            <td class="py-2.5 px-3 text-slate-200">${s.status}</td>
+            <td class="py-2.5 px-3 text-amber-300/90">${s.falsification}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    function renderCommoditiesAndScenarios(section) {
+      const eps = section.energy_power_and_sentiment || {};
+      document.getElementById("sentOil").textContent = eps.oil_and_opec || "未取得／Unclear";
+      document.getElementById("sentCopper").textContent = eps.copper_divergence || "未取得／Unclear";
+      document.getElementById("sentPjm").textContent = eps.pjm_power_crunch || "未取得／Unclear";
+      document.getElementById("sentBofa").textContent = eps.bofa_fms_sentiment || "未取得／Unclear";
+
+      const scenarios = section.scenarios || [];
+      if (activeScenarioIdx >= scenarios.length) activeScenarioIdx = 0;
+
+      const btnWrap = document.getElementById("scenarioButtons");
+      btnWrap.innerHTML = scenarios
+        .map((sc, idx) => `
+          <button type="button" data-idx="${idx}" class="scen-btn px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+            idx === activeScenarioIdx
+              ? "bg-sky-600 text-white border-sky-400 shadow-md shadow-sky-950/60"
+              : "bg-[#0b1120] text-slate-300 border-[#1e293b] hover:text-white"
+          }">
+            ${sc.name} (${sc.probability_pct}%)
+          </button>
+        `)
+        .join("");
+
+      btnWrap.querySelectorAll(".scen-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeScenarioIdx = parseInt(btn.dataset.idx, 10);
+          renderCommoditiesAndScenarios(section);
+        });
+      });
+
+      if (scenarios.length > 0) {
+        updateScenarioDisplay(scenarios[activeScenarioIdx]);
+      }
+    }
+
+    function updateScenarioDisplay(sc) {
+      document.getElementById("scenDetailName").textContent = sc.name;
+      const probEl = document.getElementById("scenDetailProb");
+      probEl.textContent = `評估機率 ${sc.probability_pct}%`;
+      probEl.className = `px-2.5 py-0.5 rounded-full text-xs font-bold font-num ${
+        sc.name.includes("Bear") || sc.name.includes("下行")
+          ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+          : sc.name.includes("Bull") || sc.name.includes("反轉")
+          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+          : "bg-sky-500/20 text-sky-300 border border-sky-500/40"
+      }`;
+      document.getElementById("scenDetailLabel").textContent = sc.label;
+      document.getElementById("scenDetailAssumptions").textContent = sc.key_assumptions;
+      document.getElementById("scenDetailTrigger").textContent = sc.trigger;
+
+      const alloc = sc.allocation || {};
+      const allocItems = [
+        { label: "現金與短中天期美債", val: alloc.cash_short_bond_pct || 0, color: "#94a3b8" },
+        { label: "防禦型股票 (XLV/XLP)", val: alloc.defensive_equity_pct || 0, color: "#10b981" },
+        { label: "高品質 AI 硬體龍頭", val: alloc.quality_ai_hardware_pct || 0, color: "#38bdf8" },
+        { label: "商品與非美市場", val: alloc.commodities_intl_pct || 0, color: "#f59e0b" }
+      ];
+
+      document.getElementById("scenAllocBars").innerHTML = allocItems
+        .map(item => `
+          <div class="p-3 rounded-lg bg-[#0b1120] border border-[#1e293b]">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="text-slate-300">${item.label}</span>
+              <span class="font-num font-bold text-white">${item.val}%</span>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500" style="width: ${item.val}%; background-color: ${item.color};"></div>
+            </div>
+          </div>
+        `)
+        .join("");
+
+      // Doughnut Chart
+      const ctx = document.getElementById("scenarioDoughnutChart").getContext("2d");
+      if (scenarioDoughnutChart) scenarioDoughnutChart.destroy();
+      scenarioDoughnutChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: allocItems.map(i => i.label),
+          datasets: [{
+            data: allocItems.map(i => i.val),
+            backgroundColor: allocItems.map(i => i.color),
+            borderColor: "#0b1120",
+            borderWidth: 3,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "62%",
+          plugins: {
+            legend: { position: "bottom", labels: { color: "#cbd5e1", boxWidth: 10, padding: 12, font: { size: 11 } } },
+            tooltip: {
+              backgroundColor: "#0f172a",
+              borderColor: "#334155",
+              borderWidth: 1,
+              callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` }
+            }
+          }
+        }
+      });
+    }
+
+    function renderCatalystsCalendar(section) {
+      const list = section.catalysts_calendar || [];
+      document.getElementById("catalystCountBadge").textContent = `${list.length} 項事件`;
+      document.getElementById("catalystsTimeline").innerHTML = list
+        .map(c => `
+          <div class="relative">
+            <span class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-sky-400 border-2 border-[#0b1120] shadow"></span>
+            <div class="p-4 rounded-xl bg-[#0b1120] border border-[#1e293b] hover:border-sky-500/40 transition">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                <span class="px-2 py-0.5 rounded text-xs font-num font-bold bg-sky-500/15 text-sky-300 border border-sky-500/30">${c.date}</span>
+                <span class="text-xs font-bold text-white flex-1">${c.event}</span>
+              </div>
+              <div class="mt-2 inline-block px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200">
+                <span class="font-semibold text-amber-400">量化門檻：</span>${c.threshold}
+              </div>
+            </div>
+          </div>
+        `)
+        .join("");
+    }
+
+    // =========================================================================
+    // 5. TABS, SEARCH & JSON MODAL INTERACTIONS
+    // =========================================================================
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === target));
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("hidden", p.id !== target));
+
+        // Ensure Chart.js instances cleanly destroy & re-render when their tab becomes visible
+        if (target === "tab-us-cf") {
+          renderUsCashflow(currentData.us_cashflow_penetration || {});
+        } else if (target === "tab-ai") {
+          renderAiSupplyChain(currentData.ai_supply_chain || {});
+        } else if (target === "tab-scenarios") {
+          renderCommoditiesAndScenarios(currentData.commodities_sentiment_and_scenarios || {});
+        }
+      });
+    });
+
+    document.getElementById("assetSearchInput").addEventListener("input", e => {
+      assetSearchQuery = e.target.value;
+      renderAssetsTable((currentData.cross_assets_and_macro || {}).assets || []);
+    });
+
+    const jsonModal = document.getElementById("jsonModal");
+    const jsonTextarea = document.getElementById("jsonTextarea");
+    const jsonErrBox = document.getElementById("jsonErrBox");
+
+    function closeModal() {
+      jsonModal.classList.add("hidden");
+      jsonModal.classList.remove("flex");
+      jsonErrBox.classList.add("hidden");
+    }
+
+    document.getElementById("openJsonModalBtn").addEventListener("click", () => {
+      jsonTextarea.value = JSON.stringify(currentData, null, 2);
+      jsonErrBox.classList.add("hidden");
+      jsonModal.classList.remove("hidden");
+      jsonModal.classList.add("flex");
+    });
+
+    document.getElementById("closeJsonModalBtn").addEventListener("click", closeModal);
+    jsonModal.addEventListener("click", e => { if (e.target === jsonModal) closeModal(); });
+
+    document.getElementById("copyJsonBtn").addEventListener("click", () => {
+      jsonTextarea.select();
+      try {
+        document.execCommand("copy");
+        showToast("已複製目前 JSON 至剪貼簿！");
+      } catch (err) {
+        showToast("複製失敗，請手動全選複製", true);
+      }
+    });
+
+    document.getElementById("resetJsonBtn").addEventListener("click", () => {
+      jsonErrBox.classList.add("hidden");
+      activeAssetCat = "全部";
+      activeScenarioIdx = 0;
+      const builtIn = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderAll(builtIn);
+      jsonTextarea.value = JSON.stringify(builtIn, null, 2);
+      setSyncStatus("fallback", `已重設為內建基準（${DEFAULT_DATA.meta.date}）`);
+      showToast(`已重設為 ${DEFAULT_DATA.meta.date} 內建基準資料`);
+    });
+
+    document.getElementById("applyJsonBtn").addEventListener("click", () => {
+      try {
+        const parsed = JSON.parse(jsonTextarea.value);
+        if (!parsed.meta || !parsed.cross_assets_and_macro) {
+          throw new Error("JSON 缺少必要頂層欄位（meta 或 cross_assets_and_macro）");
+        }
+        activeAssetCat = "全部";
+        activeScenarioIdx = 0;
+        renderAll(parsed);
+        setSyncStatus("manual", `手動匯入預覽（${parsed.meta.date || "自訂日期"}）`);
+        closeModal();
+        showToast(`已成功載入 ${parsed.meta.date || "最新"} 晨報資料並重繪圖表！`);
+      } catch (err) {
+        jsonErrBox.textContent = `JSON 解析失敗：${err.message}`;
+        jsonErrBox.classList.remove("hidden");
+      }
+    });
+
+    // =========================================================================
+    // 6. DYNAMIC GITHUB PAGES FETCH (data/manifest.json & data/latest.json)
+    // =========================================================================
+    function setDateLoading(loading) {
+      const spinner = document.getElementById("dateLoadingSpinner");
+      const selectEl = document.getElementById("history-date-select");
+      const refreshBtn = document.getElementById("refreshDataBtn");
+      if (spinner) spinner.classList.toggle("hidden", !loading);
+      if (selectEl) selectEl.disabled = loading;
+      if (refreshBtn) refreshBtn.disabled = loading;
+    }
+
+    function populateDateSelector(dates, activeDate) {
+      manifestDates = Array.isArray(dates) && dates.length > 0 ? dates : [DEFAULT_DATA.meta.date];
+      currentSelectedDate = manifestDates.includes(activeDate) ? activeDate : manifestDates[0];
+
+      const selectEl = document.getElementById("history-date-select");
+      if (selectEl) {
+        selectEl.innerHTML = manifestDates
+          .map((d, idx) => `<option value="${d}" class="bg-[#0b1120] text-slate-100">${d}${idx === 0 ? " (最新)" : ""}</option>`)
+          .join("");
+        selectEl.value = currentSelectedDate;
+      }
+      updateDateNavButtons();
+    }
+
+    function updateDateNavButtons() {
+      const idx = manifestDates.indexOf(currentSelectedDate);
+      const prevBtn = document.getElementById("prevDateBtn");
+      const nextBtn = document.getElementById("nextDateBtn");
+      if (prevBtn) {
+        const canGoOlder = idx !== -1 && idx < manifestDates.length - 1;
+        prevBtn.disabled = !canGoOlder;
+        prevBtn.classList.toggle("opacity-40", !canGoOlder);
+        prevBtn.classList.toggle("cursor-not-allowed", !canGoOlder);
+      }
+      if (nextBtn) {
+        const canGoNewer = idx > 0;
+        nextBtn.disabled = !canGoNewer;
+        nextBtn.classList.toggle("opacity-40", !canGoNewer);
+        nextBtn.classList.toggle("cursor-not-allowed", !canGoNewer);
+      }
+    }
+
+    function updateUrlDateParam(dateStr) {
+      try {
+        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+          const url = new URL(window.location.href);
+          if (dateStr) url.searchParams.set("date", dateStr);
+          else url.searchParams.delete("date");
+          window.history.replaceState({}, "", url.toString());
+        }
+      } catch (err) {
+        // Ignore in sandboxed iframe environments
+      }
+    }
+
+    async function fetchJsonNoCache(path) {
+      const sep = path.includes("?") ? "&" : "?";
+      const res = await fetch(`${path}${sep}t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    }
+
+    async function loadBriefByDate(dateStr, updateUrl = true) {
+      if (!isLiveMode && dateStr === DEFAULT_DATA.meta.date) {
+        renderAll(JSON.parse(JSON.stringify(DEFAULT_DATA)));
+        return;
+      }
+      setDateLoading(true);
+      try {
+        const data = await fetchJsonNoCache(`./data/${dateStr}.json`);
+        if (!data || !data.meta || !data.cross_assets_and_macro) {
+          throw new Error("JSON 結構不完整");
+        }
+        isLiveMode = true;
+        currentSelectedDate = dateStr;
+        activeAssetCat = "全部";
+        activeScenarioIdx = 0;
+        renderAll(data);
+        document.getElementById("history-date-select").value = dateStr;
+        updateDateNavButtons();
+        if (updateUrl) updateUrlDateParam(dateStr);
+        setSyncStatus("live", `已載入 ./data/${dateStr}.json`);
+        showToast(`已切換至 ${dateStr} 晨報資料`);
+      } catch (err) {
+        showToast(`無法載入 ${dateStr} 歷史檔（${err.message}）`, true);
+        document.getElementById("history-date-select").value = currentSelectedDate;
+      } finally {
+        setDateLoading(false);
+      }
+    }
+
+    async function initDashboard(showFeedback = false) {
+      setDateLoading(true);
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedDate = urlParams.get("date");
+
+      try {
+        const manifest = await fetchJsonNoCache("./data/manifest.json");
+        const dates = Array.isArray(manifest.dates) && manifest.dates.length > 0
+          ? manifest.dates
+          : (manifest.latest ? [manifest.latest] : []);
+
+        let targetDate = manifest.latest || dates[0];
+        let targetPath = "./data/latest.json";
+        if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && dates.includes(requestedDate)) {
+          targetDate = requestedDate;
+          targetPath = `./data/${requestedDate}.json`;
+        }
+
+        let briefData;
+        try {
+          briefData = await fetchJsonNoCache(targetPath);
+        } catch (latestErr) {
+          if (targetPath === "./data/latest.json" && targetDate) {
+            briefData = await fetchJsonNoCache(`./data/${targetDate}.json`);
+          } else {
+            throw latestErr;
+          }
+        }
+
+        if (!briefData || !briefData.meta || !briefData.cross_assets_and_macro) {
+          throw new Error("遠端 JSON 缺少必要模組欄位");
+        }
+
+        const resolvedDate = briefData.meta.date || targetDate || DEFAULT_DATA.meta.date;
+        const mergedDates = dates.includes(resolvedDate) ? dates : [resolvedDate, ...dates];
+
+        isLiveMode = true;
+        activeAssetCat = "全部";
+        activeScenarioIdx = 0;
+        populateDateSelector(mergedDates, resolvedDate);
+        renderAll(briefData);
+        setSyncStatus("live", `線上同步成功（最後更新：${manifest.updated_at || briefData.meta.cutoff_taipei || "-"}）`);
+        if (showFeedback) showToast(`已重新同步線上晨報（${resolvedDate}）`);
+      } catch (err) {
+        isLiveMode = false;
+        activeAssetCat = "全部";
+        activeScenarioIdx = 0;
+        populateDateSelector([DEFAULT_DATA.meta.date], DEFAULT_DATA.meta.date);
+        renderAll(JSON.parse(JSON.stringify(DEFAULT_DATA)));
+        setSyncStatus("fallback", `未偵測到線上 data/manifest.json，已切換至內建基準（${DEFAULT_DATA.meta.date}）`);
+        if (showFeedback) showToast("未偵測到線上 data/ 目錄，維持內建基準模式", true);
+      } finally {
+        setDateLoading(false);
+      }
+    }
+
+    document.getElementById("history-date-select").addEventListener("change", e => loadBriefByDate(e.target.value, true));
+    document.getElementById("prevDateBtn").addEventListener("click", () => {
+      const idx = manifestDates.indexOf(currentSelectedDate);
+      if (idx !== -1 && idx < manifestDates.length - 1) loadBriefByDate(manifestDates[idx + 1], true);
+    });
+    document.getElementById("nextDateBtn").addEventListener("click", () => {
+      const idx = manifestDates.indexOf(currentSelectedDate);
+      if (idx > 0) loadBriefByDate(manifestDates[idx - 1], true);
+    });
+    document.getElementById("refreshDataBtn").addEventListener("click", () => initDashboard(true));
+
+    window.addEventListener("DOMContentLoaded", () => initDashboard(false));
+  </script>
+</body>
+</html>
