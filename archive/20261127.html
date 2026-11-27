@@ -151,7 +151,7 @@
               <p class="text-[11px] font-mono-num text-slate-400">
                 <span id="headerSubtitleDate" class="text-sky-300 font-semibold">2026 年 11 月 27 日</span>
                 <span class="mx-1 text-slate-600">|</span>
-                截止：<span id="headerCutoff">2026-11-27 07:32 Asia/Taipei</span>
+                截止：<span id="headerCutoff">2026-11-27 08:30 Asia/Taipei</span>
               </p>
             </div>
           </div>
@@ -255,16 +255,16 @@
           </div>
           <ol class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
             <li class="rounded-xl border border-slate-800/90 bg-[#0B1120] p-3">
-              <strong class="text-sky-300">1. 台股內資強勢護盤，外資仍連九賣且空單再創高：</strong>
-              11/26 加權指數大漲 956.38 點收 39,151.81 點（成交 8,174.7 億）、櫃買勁揚 5.03% 收 289.84 點（成交 1,213.6 億），新台幣強升重返 32.947 元；惟外資現貨續賣 492 億元（連 9 賣），台指期淨空單擴大至 106,275 口，全賴投信（+231 億／期貨淨多 104,920 口）與自營商（+129 億）硬扛。
+              <strong class="text-sky-300">1. 台指期夜盤收平 39,492、內資扛盤對峙外資連九賣：</strong>
+              11/26 加權大漲 956.38 點收 39,151.81（成交 8,174.7 億）、櫃買勁揚 5.03% 收 289.84（成交 1,213.6 億），新台幣升至 32.947 元；11/27 05:00 台指期夜盤收平盤 39,492 點（正價差約 +340 點、台積電期貨夜盤 2,168 +9 元），惟外資現貨連 9 賣 (-492 億) 且期貨淨空單擴至 106,275 口，短線仍屬投信（+231 億／期貨淨多 104,920 口）土洋對作格局。
             </li>
             <li class="rounded-xl border border-slate-800/90 bg-[#0B1120] p-3">
-              <strong class="text-sky-300">2. 美 301 豁免半導體與台積電美國擴廠節奏：</strong>
-              USTR 提議對台最高 15% 不疊加關稅且豁免晶片，緩解 200% 關稅極端恐慌；11/26 台積電微跌 0.23% 收 2,145 元，亞利桑那廠訂於 12/4 辦擴建典禮並評估 2 奈米落腳德州。
+              <strong class="text-sky-300">2. 美 301 豁免半導體與台積電擴廠節奏、10 月台灣 PMI 62.5%：</strong>
+              USTR 提議對台最高 15% 不疊加關稅且豁免晶片，緩解極端關稅恐慌；台積電 11/26 收 2,145 元，12/4 亞利桑那廠擴建典禮並評估 2 奈米落腳德州。中經院 10 月製造業 PMI 維持 62.5% 高檔擴張，但價格指數達 78.8%、交貨時間 68.4%，顯示關鍵零組件仍吃緊。
             </li>
             <li class="rounded-xl border border-slate-800/90 bg-[#0B1120] p-3">
-              <strong class="text-sky-300">3. 油價連漲挑戰通膨神經，比特幣重返 6 萬美元：</strong>
-              11/26 感恩節清淡市況下，DXY 微降至 103.82、BTC 反彈至 $60,842，但 WTI 漲至 $84.87、布蘭特近 $96，成為 11/29 OPEC+ 會議與 12/9 FOMC 前最大通膨變數。
+              <strong class="text-sky-300">3. 東京核心 CPI 衝 2.9% 與油價走揚，全球緊縮壓力未退：</strong>
+              11/27 07:30 東京 11 月核心 CPI 年增加速至 +2.9% 創 16 個月新高，強化日銀 12 月升息預期；中東局勢推升 WTI 11/26 漲至 $84.87（亞盤測試 $85+）、布蘭特近 $96，成為 11/29 OPEC+ 與 12/9 FOMC 前最大變數。
             </li>
           </ol>
         </div>
@@ -275,7 +275,7 @@
             <span class="rounded-md bg-amber-500/15 px-2 py-0.5 text-[10px] font-mono-num font-bold text-amber-300">ACTION & GATES</span>
           </div>
           <div class="rounded-xl border border-amber-500/30 bg-amber-950/15 p-3 text-xs text-amber-100 leading-relaxed">
-            <strong>主要動作：</strong>台股直逼 10 日線（39,374）壓力區且美股黑五提早收盤量淡，堅守高現金轉換賣水人（台積電、奇鋐、弘塑）與美股防禦底倉（XLV／XLP、短中天期美債），不追高高融資題材股。
+            <strong>主要動作：</strong>台股開盤前直逼 10 日線（39,374）壓力區、美股今晚黑五提早收盤量淡，堅守高現金轉換賣水人（台積電、奇鋐、弘塑）與美股防禦底倉（XLV／XLP、短中天期美債），嚴禁追高高融資題材股。
           </div>
           <ol class="space-y-2 text-xs text-slate-300 leading-relaxed">
             <li class="rounded-xl border border-slate-800/90 bg-[#0B1120] p-3">
@@ -673,65 +673,311 @@
   <!-- ==================== DASHBOARD ENGINE SCRIPT ==================== -->
   <script>
     // =========================================================================
-    // 1. EXACT BUILT-IN DEFAULT_DATA (2026-11-27 07:32 Asia/Taipei)
+    // 1. EXACT BUILT-IN DEFAULT_DATA (2026-11-27 08:30 Asia/Taipei)
     // =========================================================================
     const DEFAULT_DATA = {
       "meta": {
         "date": "2026-11-27",
-        "cutoff_taipei": "2026-11-27 07:32 Asia/Taipei",
+        "cutoff_taipei": "2026-11-27 08:30 Asia/Taipei",
         "us_trade_date": "2026-11-25",
         "tw_trade_date": "2026-11-26",
         "night_futures_official_date": "2026-11-27",
         "key_events_boundary": [
           "2026-11-26 美國感恩節休市（美股與美債休市一日，11/27 黑五提早收盤），美股與美債最新完整交易日為 2026-11-25",
-          "2026-11-25/26 美國貿易代表署 (USTR) 發布 301 條款調查報告，提議對台灣商品課徵最高 15% 關稅（不疊加 MFN）且明確豁免半導體產品（2027/1/25 舉行聽證會）",
-          "2026-11-26 台股強彈 956.38 點收 39,151.81 點、新台幣強升 1.79 角重返 32.947 元；惟外資現貨連 9 賣 (-492 億) 且期貨淨空單擴至 106,275 口",
-          "2026-11-26 中東局勢推升 WTI 原油連兩日上漲至 $84.87、布蘭特升至 $95.90；台積電亞利桑那廠訂於 12/4 辦擴建典禮並評估 2 奈米落腳德州"
+          "2026-11-27 05:00 台指期夜盤收平盤 39,492 點（0.00%，盤中 39,008–39,559，台積電期貨夜盤收 2,168 元 +9 元）；截至 08:30 台股現貨尚未開盤，最新收盤日為 2026-11-26",
+          "2026-11-27 07:30 東京 11 月核心 CPI 年增加速至 +2.9%（前值 2.6%，創 16 個月新高），電燃補貼到期推升能源漲 9.5%，強化日銀 12 月升息預期",
+          "2026-11-25/26 美國貿易代表署 (USTR) 發布 301 條款調查報告，提議對台最高 15% 不疊加關稅且豁免半導體（2027/1/25 聽證會）；11/26 台股強彈 956.38 點收 39,151.81，惟外資連 9 賣 (-492 億) 且期貨淨空單擴至 106,275 口",
+          "2026-11-26 中東局勢推升 WTI 漲至 $84.87（11/27 亞盤續測 $85+）、布蘭特升至 $95.90（亞盤近 $96.3+）；台積電亞利桑那廠訂於 12/4 辦擴建典禮並評估 2 奈米落腳德州"
         ],
-        "headline_thesis": "美 301 條款對台 15% 不疊加且豁免晶片激勵台股強彈 956 點，惟外資連九賣且油價續揚至 84.87 美元",
+        "headline_thesis": "美 301 豁免半導體助台股強彈、夜盤收平 39,492；外資空單 10.6 萬口與東京 CPI 2.9%／油價續壓風險胃納",
         "stance": "戰術性防禦中性（Defensive Neutral／逢反彈汰弱留強，聚焦高現金轉換龍頭，嚴禁追高槓桿）",
         "confidence": "結構判斷中高／短線延續性中低",
         "valuation_gap_status": "未取得／Unclear（同口徑 WACC 與最新 Forward P/E 尚未取得）"
       },
       "cross_assets_and_macro": {
         "assets": [
-          { "category": "美股指數", "name": "S&P 500", "close": 7182.78, "daily_chg": "-0.25% (-18.31)", "range_note": "11/26 感恩節休市，維持 11/25 收盤實數", "note": "11/25 美股收盤（11/26 休市）" },
-          { "category": "美股指數", "name": "道瓊工業 (DJIA)", "close": 50182.95, "daily_chg": "+0.33% (+164.25)", "range_note": "11/26 感恩節休市，續守 5 萬點大關", "note": "11/25 美股收盤（11/26 休市）" },
-          { "category": "美股指數", "name": "那斯達克綜合 (IXIC)", "close": 23585.8, "daily_chg": "-0.62% (-147.73)", "range_note": "11/26 感恩節休市，維持 11/25 收盤實數", "note": "11/25 美股收盤（11/26 休市）" },
-          { "category": "美股指數", "name": "費城半導體 (SOX)", "close": 8774.86, "daily_chg": "-0.65%", "range_note": "11/26 感恩節休市，維持 11/25 收盤實數", "note": "11/25 美股收盤（11/26 休市）" },
-          { "category": "台股指數", "name": "台灣加權指數 (TAIEX)", "close": 39151.81, "daily_chg": "+2.50% (+956.38)", "range_note": "受 301 晶片豁免激勵收復 39,000 點，直逼 10MA (39,374)", "note": "11/26 上市獨立母體收盤（TWSE）" },
-          { "category": "台股指數", "name": "台灣櫃買指數 (TPEx)", "close": 289.84, "daily_chg": "+5.03% (+13.87)", "range_note": "強彈 5.03%，成交額回升至 1,213.64 億元重返健康水位", "note": "11/26 上櫃獨立母體收盤（TPEx）" },
-          { "category": "台股期貨", "name": "台指期日盤（近月）", "close": 39455, "daily_chg": "+3.49% (+1,332)", "range_note": "轉為大幅正價差 +303.19 點", "note": "11/26 日盤收盤（TAIFEX）" },
-          { "category": "台股期貨", "name": "台指期夜盤（近月）", "close": null, "daily_chg": null, "range_note": "11/26 17:58 盤中參考價 39,304 (-188 點)", "note": "11/27 05:00 終場收盤實數未取得／Unclear（官方歸屬 11/27 交易日）" },
-          { "category": "美債利率", "name": "美國 2 年期公債殖利率", "close": 4.66, "daily_chg": "-4.1 bps", "range_note": "11/26 感恩節美債休市，維持 11/25 收盤", "note": "11/25 收盤（11/26 休市）" },
-          { "category": "美債利率", "name": "美國 10 年期公債殖利率", "close": 4.87, "daily_chg": "-6.4 bps", "range_note": "11/26 感恩節美債休市，維持 11/25 收盤", "note": "11/25 收盤（11/26 休市）" },
-          { "category": "美債利率", "name": "美國 30 年期公債殖利率", "close": 5.26, "daily_chg": "-6.8 bps", "range_note": "11/26 感恩節美債休市，維持 11/25 收盤", "note": "11/25 收盤（11/26 休市）" },
-          { "category": "美債利率", "name": "美債 2s10s 利差", "close": 21, "daily_chg": "-2.3 bps", "range_note": "10Y (4.87%) 減 2Y (4.66%) 實數計算（11/26 休市）", "note": "11/25 實數計算（單位：bps）" },
-          { "category": "美債利率", "name": "10 年期 TIPS 實質利率", "close": 2.72, "daily_chg": "-6.1 bps", "range_note": "11/26 感恩節美債休市，維持 11/25 收盤", "note": "11/25 收盤（11/26 休市）" },
-          { "category": "美債利率", "name": "10 年期平衡通膨率", "close": 2.15, "daily_chg": "-0.3 bps", "range_note": "10Y 名目 (4.87%) 減 10Y TIPS (2.72%) 實數計算", "note": "11/25 實數計算（%）" },
-          { "category": "信用利差", "name": "美國高收益債 OAS (HY)", "close": 363, "daily_chg": "+11 bps", "range_note": "11/26 休市，維持 11/25 ICE BofA 基準", "note": "11/25 基準（11/26 休市，單位：bps）" },
-          { "category": "信用利差", "name": "美國投資級債 OAS (IG)", "close": 94, "daily_chg": "0 bps", "range_note": "11/26 休市，維持 11/25 ICE BofA 基準", "note": "11/25 基準（11/26 休市，單位：bps）" },
-          { "category": "波動率", "name": "Cboe VIX 恐慌指數", "close": 28.29, "daily_chg": "+7.32%", "range_note": "11/26 美股休市，維持 11/25 收盤實數", "note": "11/25 收盤（11/26 休市）" },
-          { "category": "外匯", "name": "美元指數 (DXY)", "close": 103.82, "daily_chg": "-0.22%", "range_note": "感恩節清淡市況下小幅回落至 103.8 附近", "note": "11/26 收盤（MacroMicro）" },
-          { "category": "外匯", "name": "新台幣兌美元 (USD/TWD)", "close": 32.947, "daily_chg": "+0.54%（強升 1.79 角）", "range_note": "重返 33 元內，台北外匯成交 17.87 億美元", "note": "11/26 中央銀行 16:00 銀行間收盤匯率" },
-          { "category": "大宗商品", "name": "WTI 原油", "close": 84.87, "daily_chg": "+1.41% (+1.18)", "range_note": "中東襲擊疑慮推升油價連兩日走揚，遠離 $80 分水嶺", "note": "11/26 報價（TradingEconomics，美元／桶）" },
-          { "category": "大宗商品", "name": "布蘭特原油", "close": 95.9, "daily_chg": "+1.38% (+1.30)", "range_note": "逼近 $96 關卡，增添通膨上行壓力", "note": "11/26 報價（TradingEconomics，美元／桶）" },
-          { "category": "大宗商品", "name": "美國亨利港天然氣", "close": 3.59, "daily_chg": "-1.80%", "range_note": "月漲 19.58%，高檔小幅拉回", "note": "11/26 報價（TradingEconomics，美元／MMBtu）" },
-          { "category": "大宗商品", "name": "COMEX 期銅", "close": 5.3205, "daily_chg": "-0.30%", "range_note": "延續弱勢整理", "note": "11/26 報價（TradingEconomics，美元／磅）" },
-          { "category": "避險與加密", "name": "黃金現貨 (XAUUSD)", "close": 3567.16, "daily_chg": "-0.60%", "range_note": "白銀強彈 4.80% 至 $43.38，黃金小幅整理", "note": "11/26 報價（TradingEconomics）" },
-          { "category": "避險與加密", "name": "比特幣 (BTC)", "close": 60842, "daily_chg": "+3.89%", "range_note": "重返 6 萬美元關卡上方", "note": "11/26 報價（MacroMicro，美元）" }
+          {
+            "category": "美股指數",
+            "name": "S&P 500",
+            "close": 7182.78,
+            "daily_chg": "-0.25% (-18.31)",
+            "range_note": "11/26 感恩節休市，11/27 黑五提早收盤，維持 11/25 收盤實數",
+            "note": "11/25 美股收盤（11/26 休市）"
+          },
+          {
+            "category": "美股指數",
+            "name": "道瓊工業 (DJIA)",
+            "close": 50182.95,
+            "daily_chg": "+0.33% (+164.25)",
+            "range_note": "11/26 感恩節休市，續守 5 萬點大關",
+            "note": "11/25 美股收盤（11/26 休市）"
+          },
+          {
+            "category": "美股指數",
+            "name": "那斯達克綜合 (IXIC)",
+            "close": 23585.8,
+            "daily_chg": "-0.62% (-147.73)",
+            "range_note": "11/26 感恩節休市，維持 11/25 收盤實數",
+            "note": "11/25 美股收盤（11/26 休市）"
+          },
+          {
+            "category": "美股指數",
+            "name": "費城半導體 (SOX)",
+            "close": 8774.86,
+            "daily_chg": "-0.65%",
+            "range_note": "11/26 感恩節休市，維持 11/25 收盤實數",
+            "note": "11/25 美股收盤（11/26 休市）"
+          },
+          {
+            "category": "台股指數",
+            "name": "台灣加權指數 (TAIEX)",
+            "close": 39151.81,
+            "daily_chg": "+2.50% (+956.38)",
+            "range_note": "受 301 晶片豁免激勵收復 39,000 點，直逼 10MA (39,374)；11/27 08:30 尚未開盤",
+            "note": "11/26 上市獨立母體收盤（TWSE）"
+          },
+          {
+            "category": "台股指數",
+            "name": "台灣櫃買指數 (TPEx)",
+            "close": 289.84,
+            "daily_chg": "+5.03% (+13.87)",
+            "range_note": "強彈 5.03%，成交額回升至 1,213.64 億元重返健康水位",
+            "note": "11/26 上櫃獨立母體收盤（TPEx）"
+          },
+          {
+            "category": "台股期貨",
+            "name": "台指期日盤（近月）",
+            "close": 39455,
+            "daily_chg": "+3.49% (+1,332)",
+            "range_note": "轉為大幅正價差 +303.19 點",
+            "note": "11/26 日盤收盤（TAIFEX）"
+          },
+          {
+            "category": "台股期貨",
+            "name": "台指期夜盤（近月）",
+            "close": 39492,
+            "daily_chg": "0.00% (0 點)",
+            "range_note": "盤中 39,008–39,559 震盪後收平，較 11/26 現貨維持約 +340 點正價差；台積電期貨夜盤收 2,168 (+9 元)",
+            "note": "11/27 05:00 夜盤終場收盤（官方歸屬 11/27 交易日，TAIFEX）"
+          },
+          {
+            "category": "美債利率",
+            "name": "美國 2 年期公債殖利率",
+            "close": 4.66,
+            "daily_chg": "-4.1 bps",
+            "range_note": "11/26 感恩節美債休市，維持 11/25 收盤",
+            "note": "11/25 收盤（11/26 休市）"
+          },
+          {
+            "category": "美債利率",
+            "name": "美國 10 年期公債殖利率",
+            "close": 4.87,
+            "daily_chg": "-6.4 bps",
+            "range_note": "11/26 感恩節美債休市，維持 11/25 收盤",
+            "note": "11/25 收盤（11/26 休市）"
+          },
+          {
+            "category": "美債利率",
+            "name": "美國 30 年期公債殖利率",
+            "close": 5.26,
+            "daily_chg": "-6.8 bps",
+            "range_note": "11/26 感恩節美債休市，維持 11/25 收盤",
+            "note": "11/25 收盤（11/26 休市）"
+          },
+          {
+            "category": "美債利率",
+            "name": "美債 2s10s 利差",
+            "close": 21,
+            "daily_chg": "-2.3 bps",
+            "range_note": "10Y (4.87%) 減 2Y (4.66%) 實數計算（11/26 休市）",
+            "note": "11/25 實數計算（單位：bps）"
+          },
+          {
+            "category": "美債利率",
+            "name": "10 年期 TIPS 實質利率",
+            "close": 2.72,
+            "daily_chg": "-6.1 bps",
+            "range_note": "11/26 感恩節美債休市，維持 11/25 收盤",
+            "note": "11/25 收盤（11/26 休市）"
+          },
+          {
+            "category": "美債利率",
+            "name": "10 年期平衡通膨率",
+            "close": 2.15,
+            "daily_chg": "-0.3 bps",
+            "range_note": "10Y 名目 (4.87%) 減 10Y TIPS (2.72%) 實數計算",
+            "note": "11/25 實數計算（%）"
+          },
+          {
+            "category": "信用利差",
+            "name": "美國高收益債 OAS (HY)",
+            "close": 363,
+            "daily_chg": "+11 bps",
+            "range_note": "11/26 休市，維持 11/25 ICE BofA 基準",
+            "note": "11/25 基準（11/26 休市，單位：bps）"
+          },
+          {
+            "category": "信用利差",
+            "name": "美國投資級債 OAS (IG)",
+            "close": 94,
+            "daily_chg": "0 bps",
+            "range_note": "11/26 休市，維持 11/25 ICE BofA 基準",
+            "note": "11/25 基準（11/26 休市，單位：bps）"
+          },
+          {
+            "category": "波動率",
+            "name": "Cboe VIX 恐慌指數",
+            "close": 28.29,
+            "daily_chg": "+7.32%",
+            "range_note": "11/26 美股休市，維持 11/25 收盤實數",
+            "note": "11/25 收盤（11/26 休市）"
+          },
+          {
+            "category": "外匯",
+            "name": "美元指數 (DXY)",
+            "close": 103.82,
+            "daily_chg": "-0.22%",
+            "range_note": "感恩節清淡市況下小幅回落至 103.8 附近（11/27 亞盤續於 103.7–103.8 整理）",
+            "note": "11/26 收盤（MacroMicro）"
+          },
+          {
+            "category": "外匯",
+            "name": "新台幣兌美元 (USD/TWD)",
+            "close": 32.947,
+            "daily_chg": "+0.54%（強升 1.79 角）",
+            "range_note": "重返 33 元內，台北外匯成交 17.87 億美元；11/27 08:30 尚未開盤",
+            "note": "11/26 中央銀行 16:00 銀行間收盤匯率"
+          },
+          {
+            "category": "大宗商品",
+            "name": "WTI 原油",
+            "close": 84.87,
+            "daily_chg": "+1.41% (+1.18)",
+            "range_note": "中東襲擊疑慮推升油價連兩日走揚，11/27 亞盤續測 $85.0–$85.4 區間",
+            "note": "11/26 報價（TradingEconomics，美元／桶；11/26 NYMEX 無正式結算）"
+          },
+          {
+            "category": "大宗商品",
+            "name": "布蘭特原油",
+            "close": 95.9,
+            "daily_chg": "+1.38% (+1.30)",
+            "range_note": "逼近 $96 關卡，11/27 亞盤續探 $96.3–$96.5 附近，增添通膨壓力",
+            "note": "11/26 報價（TradingEconomics，美元／桶）"
+          },
+          {
+            "category": "大宗商品",
+            "name": "美國亨利港天然氣",
+            "close": 3.59,
+            "daily_chg": "-1.80%",
+            "range_note": "EIA 庫存週降 24 bcf 支撐月線維持高檔，短線小幅拉回",
+            "note": "11/26 報價（TradingEconomics，美元／MMBtu）"
+          },
+          {
+            "category": "大宗商品",
+            "name": "COMEX 期銅",
+            "close": 5.3205,
+            "daily_chg": "-0.30%",
+            "range_note": "延續高利率壓抑下的金融端弱勢整理",
+            "note": "11/26 報價（TradingEconomics，美元／磅）"
+          },
+          {
+            "category": "避險與加密",
+            "name": "黃金現貨 (XAUUSD)",
+            "close": 3567.16,
+            "daily_chg": "-0.60%",
+            "range_note": "受鷹派 PCE 壓抑於近低震盪，11/27 亞盤回測 $3,580 附近",
+            "note": "11/26 報價（TradingEconomics）"
+          },
+          {
+            "category": "避險與加密",
+            "name": "比特幣 (BTC)",
+            "close": 60842,
+            "daily_chg": "+3.89%",
+            "range_note": "重返 6 萬美元關卡上方（11/27 亞盤於 $60,500–$60,850 整理）",
+            "note": "11/26 報價（MacroMicro，美元）"
+          }
         ],
         "macro_indicators": [
-          { "region": "美國", "indicator": "整體／核心 PCE 月增率", "period": "2026-10", "actual": "+0.32% / +0.29%", "prior_or_est": "年增 +3.8% / +3.3%（預期 3.8% / 3.2%）", "note": "11/25 BEA 公布；核心年增高於預期，較 9 月 3.1% 升溫" },
-          { "region": "美國", "indicator": "Q3 GDP 二修 (SAAR)", "period": "2026-Q3", "actual": "+4.3%", "prior_or_est": "初值 +3.4% / 預期 +3.5%", "note": "11/25 BEA 公布；上修 0.9 pp 創 2023 Q3 以來最快增速" },
-          { "region": "美國", "indicator": "ISM 製造業 PMI", "period": "2026-10", "actual": 55.5, "prior_or_est": "前值 54.5 / 預期 54.6", "note": "價格指數高達 75.2" },
-          { "region": "美國", "indicator": "ISM 服務業 PMI", "period": "2026-10", "actual": 54.5, "prior_or_est": "前值 54.9 / 預期 54.8", "note": "新訂單驟降 3.9 點至 55.9，價格指數 73.0" },
-          { "region": "美國", "indicator": "整體／核心 CPI 月增率", "period": "2026-10", "actual": "+0.4% / +0.3%", "prior_or_est": "預期 +0.3% / +0.2%", "note": "因 2025 年停擺缺樣本，BLS 未發布 10 月年增率" },
-          { "region": "美國", "indicator": "非農就業 (NFP)／失業率", "period": "2026-10", "actual": "+16.5 萬 / 4.1%", "prior_or_est": "預期 +6.5 萬 / 前值 4.2%", "note": "時薪月增 +0.4%（年增 +3.1%）；U-6 達 7.9%" },
-          { "region": "美國", "indicator": "國際貿易逆差", "period": "2026-09", "actual": -1050, "prior_or_est": "前值 -1057 億", "note": "單位：億美元；對台單月逆差擴至 219 億美元躍居第三大" },
-          { "region": "台灣", "indicator": "Q3 GDP 概估", "period": "2026-Q3", "actual": "+14.36%", "prior_or_est": "市場預期 +12.0%", "note": "創 48 年同季新高；今日（11/27）主計總處發布 Q4 預測、國發會發布 10 月景氣燈號" },
-          { "region": "台灣", "indicator": "海關出口／外銷訂單", "period": "2026-10", "actual": "967.6 億 / 1238.2 億美元", "prior_or_est": "年增 +58.9% / +78.3%", "note": "資通接單 +107.2%、電子 +89.8%" },
-          { "region": "台灣", "indicator": "CPI 年增率／NMI", "period": "2026-10", "actual": "+2.33% / 55.4%", "prior_or_est": "NMI 前值 56.9%", "note": "10 月台灣製造業 PMI 未取得／Unclear" }
+          {
+            "region": "美國",
+            "indicator": "整體／核心 PCE 月增率",
+            "period": "2026-10",
+            "actual": "+0.32% / +0.29%",
+            "prior_or_est": "年增 +3.8% / +3.3%（預期 3.8% / 3.2%）",
+            "note": "11/25 BEA 公布；核心年增高於預期，較 9 月 3.1% 升溫"
+          },
+          {
+            "region": "美國",
+            "indicator": "Q3 GDP 二修 (SAAR)",
+            "period": "2026-Q3",
+            "actual": "+4.3%",
+            "prior_or_est": "初值 +3.4% / 預期 +3.5%",
+            "note": "11/25 BEA 公布；上修 0.9 pp 創 2023 Q3 以來最快增速"
+          },
+          {
+            "region": "美國",
+            "indicator": "ISM 製造業 PMI",
+            "period": "2026-10",
+            "actual": 55.5,
+            "prior_or_est": "前值 54.5 / 預期 54.6",
+            "note": "價格指數高達 75.2"
+          },
+          {
+            "region": "美國",
+            "indicator": "ISM 服務業 PMI",
+            "period": "2026-10",
+            "actual": 54.5,
+            "prior_or_est": "前值 54.9 / 預期 54.8",
+            "note": "新訂單驟降 3.9 點至 55.9，價格指數 73.0"
+          },
+          {
+            "region": "美國",
+            "indicator": "整體／核心 CPI 月增率",
+            "period": "2026-10",
+            "actual": "+0.4% / +0.3%",
+            "prior_or_est": "預期 +0.3% / +0.2%",
+            "note": "因 2025 年停擺缺樣本，BLS 未發布 10 月年增率"
+          },
+          {
+            "region": "美國",
+            "indicator": "非農就業 (NFP)／失業率",
+            "period": "2026-10",
+            "actual": "+16.5 萬 / 4.1%",
+            "prior_or_est": "預期 +6.5 萬 / 前值 4.2%",
+            "note": "時薪月增 +0.4%（年增 +3.1%）；U-6 達 7.9%"
+          },
+          {
+            "region": "美國",
+            "indicator": "國際貿易逆差",
+            "period": "2026-09",
+            "actual": -1050,
+            "prior_or_est": "前值 -1057 億",
+            "note": "單位：億美元；對台單月逆差擴至 219 億美元躍居第三大"
+          },
+          {
+            "region": "台灣",
+            "indicator": "Q3 GDP 概估",
+            "period": "2026-Q3",
+            "actual": "+14.36%",
+            "prior_or_est": "市場預期 +12.0%",
+            "note": "創 48 年同季新高；今日（11/27）午後主計總處發布 Q4 預測、國發會發布 10 月景氣燈號"
+          },
+          {
+            "region": "台灣",
+            "indicator": "海關出口／外銷訂單",
+            "period": "2026-10",
+            "actual": "967.6 億 / 1238.2 億美元",
+            "prior_or_est": "年增 +58.9% / +78.3%",
+            "note": "資通接單 +107.2%、電子 +89.8%"
+          },
+          {
+            "region": "台灣",
+            "indicator": "CPI 年增率／製造業 PMI／NMI",
+            "period": "2026-10",
+            "actual": "+2.33% / 62.5% / 55.4%",
+            "prior_or_est": "PMI 連 13 月擴張（-0.9 pp）／NMI 前值 56.9%",
+            "note": "中經院 10 月製造業 PMI 價格指數 78.8%、交貨時間 68.4%，反映關鍵物料短缺與長短料錯置"
+          }
         ],
         "fed_policy": {
           "current_rate_range": "3.75%–4.00%",
@@ -741,20 +987,118 @@
           "market_implied_prob": "12 月升息 25 bps 機率近乎定價完成（理事 Waller 釋出可能支持 50 bps 鷹派訊號；11/26 休市無新報價）",
           "top_3_drivers": [
             "10 月核心 PCE 年增升至 3.3% 且 Q3 GDP 上修至 4.3%，強化 Fed 緊縮正當性",
-            "WTI 原油連漲至 $84.87、布蘭特逼近 $96，11/29 OPEC+ 會議成通膨關鍵變數",
+            "WTI 原油升至 $84.87（亞盤測試 $85+）、東京 11 月核心 CPI 加速至 2.9%，推升全球央行緊縮壓力",
             "美 301 條款對台 15% 不疊加且豁免半導體，短線緩解關稅推升科技通膨的最壞情境"
           ]
         }
       },
       "us_cashflow_penetration": {
         "companies": [
-          { "ticker": "MSFT", "period": "FY27 Q1", "revenue_bn": 92.3, "net_income_bn": 36.63, "da_bn": 11.74, "sbc_bn": 3.13, "wc_chg_bn": 2.12, "cfo_bn": 58.0, "capex_bn": 39.37, "fcf_bn": 18.63, "fcf_to_cfo_pct": 32.1, "fcf_ex_sbc_bn": 15.5, "alert": "含融資租賃總 CapEx $452 億；未起租資料中心租約 $3,646 億" },
-          { "ticker": "GOOGL", "period": "2026 Q3", "revenue_bn": 127.58, "net_income_bn": 26.47, "da_bn": 8.37, "sbc_bn": 8.63, "wc_chg_bn": -17.43, "cfo_bn": 42.29, "capex_bn": 51.36, "fcf_bn": -9.07, "fcf_to_cfo_pct": -21.4, "fcf_ex_sbc_bn": -17.7, "alert": "回購歸零；單季發債 $290 億＋ATM 增發普通股 $123.7 億" },
-          { "ticker": "META", "period": "2026 Q3", "revenue_bn": 64.6, "net_income_bn": 9.86, "da_bn": 7.15, "sbc_bn": 7.36, "wc_chg_bn": 6.6, "cfo_bn": 32.79, "capex_bn": 34.91, "fcf_bn": -2.12, "fcf_to_cfo_pct": -6.5, "fcf_ex_sbc_bn": -9.48, "alert": "前 9 月零回購；現金幾與總債打平；規劃 $375 億股權融資" },
-          { "ticker": "AMZN", "period": "2026 Q3", "revenue_bn": 201.94, "net_income_bn": 20.69, "da_bn": 20.95, "sbc_bn": 5.41, "wc_chg_bn": null, "cfo_bn": 42.42, "capex_bn": 75.9, "fcf_bn": -33.48, "fcf_to_cfo_pct": -78.9, "fcf_ex_sbc_bn": -38.88, "alert": "TTM FCF -$423.6 億；長債 9 個月飆至 $1,731 億（完整營運資金明細未取得／Unclear）" },
-          { "ticker": "NVDA", "period": "FY27 Q3", "revenue_bn": 115.84, "net_income_bn": 65.29, "da_bn": 1.25, "sbc_bn": 2.09, "wc_chg_bn": -19.59, "cfo_bn": 48.25, "capex_bn": 4.42, "fcf_bn": 43.83, "fcf_to_cfo_pct": 90.8, "fcf_ex_sbc_bn": 41.74, "alert": "應收帳款單季吸金 -$180.5 億；10-Q 延遲申報、SEC 審查與 12/1 國會聽證迫近" },
-          { "ticker": "PG", "period": "FY27 Q1", "revenue_bn": 23.3, "net_income_bn": 4.76, "da_bn": null, "sbc_bn": null, "wc_chg_bn": null, "cfo_bn": 5.77, "capex_bn": 1.37, "fcf_bn": 4.4, "fcf_to_cfo_pct": 76.3, "fcf_ex_sbc_bn": null, "alert": "FCF 生產力 93%，單季回饋股東 $39 億（D&A／SBC 細項未單獨揭露／Unclear）" },
-          { "ticker": "WMT", "period": "FY27 Q3 (9M)", "revenue_bn": 188.8, "net_income_bn": 4.95, "da_bn": null, "sbc_bn": null, "wc_chg_bn": null, "cfo_bn": 29.4, "capex_bn": null, "fcf_bn": 6.8, "fcf_to_cfo_pct": 23.1, "fcf_ex_sbc_bn": null, "alert": "上修全年財測，ROI 升至 15.4%（CFO／FCF 為 9M 累計口徑，單季明細未取得／Unclear）" }
+          {
+            "ticker": "MSFT",
+            "period": "FY27 Q1",
+            "revenue_bn": 92.3,
+            "net_income_bn": 36.63,
+            "da_bn": 11.74,
+            "sbc_bn": 3.13,
+            "wc_chg_bn": 2.12,
+            "cfo_bn": 58.0,
+            "capex_bn": 39.37,
+            "fcf_bn": 18.63,
+            "fcf_to_cfo_pct": 32.1,
+            "fcf_ex_sbc_bn": 15.5,
+            "alert": "含融資租賃總 CapEx $452 億；未起租資料中心租約 $3,646 億"
+          },
+          {
+            "ticker": "GOOGL",
+            "period": "2026 Q3",
+            "revenue_bn": 127.58,
+            "net_income_bn": 26.47,
+            "da_bn": 8.37,
+            "sbc_bn": 8.63,
+            "wc_chg_bn": -17.43,
+            "cfo_bn": 42.29,
+            "capex_bn": 51.36,
+            "fcf_bn": -9.07,
+            "fcf_to_cfo_pct": -21.4,
+            "fcf_ex_sbc_bn": -17.7,
+            "alert": "回購歸零；單季發債 $290 億＋ATM 增發普通股 $123.7 億"
+          },
+          {
+            "ticker": "META",
+            "period": "2026 Q3",
+            "revenue_bn": 64.6,
+            "net_income_bn": 9.86,
+            "da_bn": 7.15,
+            "sbc_bn": 7.36,
+            "wc_chg_bn": 6.6,
+            "cfo_bn": 32.79,
+            "capex_bn": 34.91,
+            "fcf_bn": -2.12,
+            "fcf_to_cfo_pct": -6.5,
+            "fcf_ex_sbc_bn": -9.48,
+            "alert": "前 9 月零回購；現金幾與總債打平；規劃 $375 億股權融資"
+          },
+          {
+            "ticker": "AMZN",
+            "period": "2026 Q3",
+            "revenue_bn": 201.94,
+            "net_income_bn": 20.69,
+            "da_bn": 20.95,
+            "sbc_bn": 5.41,
+            "wc_chg_bn": null,
+            "cfo_bn": 42.42,
+            "capex_bn": 75.9,
+            "fcf_bn": -33.48,
+            "fcf_to_cfo_pct": -78.9,
+            "fcf_ex_sbc_bn": -38.88,
+            "alert": "TTM FCF -$423.6 億；長債 9 個月飆至 $1,731 億（完整營運資金明細未取得／Unclear）"
+          },
+          {
+            "ticker": "NVDA",
+            "period": "FY27 Q3",
+            "revenue_bn": 115.84,
+            "net_income_bn": 65.29,
+            "da_bn": 1.25,
+            "sbc_bn": 2.09,
+            "wc_chg_bn": -19.59,
+            "cfo_bn": 48.25,
+            "capex_bn": 4.42,
+            "fcf_bn": 43.83,
+            "fcf_to_cfo_pct": 90.8,
+            "fcf_ex_sbc_bn": 41.74,
+            "alert": "應收帳款單季吸金 -$180.5 億；截至 11/26 仍未申報 10-Q、SEC 審查與 12/1 國會聽證迫近"
+          },
+          {
+            "ticker": "PG",
+            "period": "FY27 Q1",
+            "revenue_bn": 23.3,
+            "net_income_bn": 4.76,
+            "da_bn": null,
+            "sbc_bn": null,
+            "wc_chg_bn": null,
+            "cfo_bn": 5.77,
+            "capex_bn": 1.37,
+            "fcf_bn": 4.4,
+            "fcf_to_cfo_pct": 76.3,
+            "fcf_ex_sbc_bn": null,
+            "alert": "FCF 生產力 93%，單季回饋股東 $39 億（D&A／SBC 細項未單獨揭露／Unclear）"
+          },
+          {
+            "ticker": "WMT",
+            "period": "FY27 Q3 (9M)",
+            "revenue_bn": 188.8,
+            "net_income_bn": 4.95,
+            "da_bn": null,
+            "sbc_bn": null,
+            "wc_chg_bn": null,
+            "cfo_bn": 29.4,
+            "capex_bn": null,
+            "fcf_bn": 6.8,
+            "fcf_to_cfo_pct": 23.1,
+            "fcf_ex_sbc_bn": null,
+            "alert": "上修全年財測，ROI 升至 15.4%（CFO／FCF 為 9M 累計口徑，單季明細未取得／Unclear）"
+          }
         ],
         "sector_rotation": {
           "relative_price": "11/26 休市；11/25 S&P 500 原物料 (+1.84%) 與房地產 (+0.84%) 領漲，科技 (-0.97%) 領跌，價值防禦風格延續",
@@ -775,58 +1119,294 @@
           "foreign_txf_net_oi": -106275,
           "total_txf_oi": null,
           "options_pc_ratio_oi_pct": 52.53,
-          "txf_night_close": null,
+          "txf_night_close": 39492,
           "usd_twd_close": 32.947,
-          "note": "11/26 上市收 39,151.81（+956.38），成交 8,174.67 億（含盤後約 8,377 億）；三大法人賣超 132.65 億（外資連 9 賣 -492 億、投信 +231 億、自營商 +129 億）；上櫃收 289.84（+5.03%），成交 1,213.64 億，外資 -34.52 億；上市融資微增 3.46 億（餘額 4,344.84 億、維持率 159.66%）；台指期日盤收 39,455（+1,332 點、正價差 +303.19）；外資期貨淨空單擴至 106,275 口（投信淨多 104,920 口）；選擇權 P/C Ratio 升至 52.53%；新台幣強升 1.79 角收 32.947 元。11/27 05:00 夜盤終場收盤未取得／Unclear（17:58 參考價 39,304）"
+          "note": "11/26 上市收 39,151.81（+956.38），成交 8,174.67 億（含盤後約 8,377 億）；三大法人賣超 132.65 億（外資連 9 賣 -492 億、投信 +231 億、自營商 +129 億）；上櫃收 289.84（+5.03%），成交 1,213.64 億，外資 -34.52 億；上市融資微增 3.46 億（餘額 4,344.84 億、維持率 159.66%）；台指期日盤收 39,455（+1,332 點、正價差 +303.19）；外資期貨淨空單擴至 106,275 口（空單 115,358 口、多單 9,083 口；投信淨多 104,920 口）；選擇權 P/C Ratio 升至 52.53%；新台幣強升 1.79 角收 32.947 元；11/27 05:00 台指期夜盤收平盤 39,492 點（0.00%，盤中 39,008–39,559，台積電期貨夜盤 2,168 +9 元）。全市場台指期總未平倉口數未取得／Unclear"
         },
         "bottom_signals": [
-          { "id": 1, "signal": "融資餘額加速清洗", "status": "已達標（籌碼沉澱）", "latest": "11/26 大漲 956 點下融資僅微增 3.46 億（餘額 4,344.84 億、維持率 159.66%），無過度追價浮額", "target_gate": "反彈過程中融資維持穩定或續降" },
-          { "id": 2, "signal": "外資期貨淨空單回補", "status": "嚴重未達標（再惡化）", "latest": "11/26 外資現貨連 9 賣 (-492 億)，期貨淨空單擴至 106,275 口", "target_gate": "淨空單顯著回補並跌破 60,000 口" },
-          { "id": 3, "signal": "櫃買流動性修復", "status": "已達標（量價齊揚）", "latest": "11/26 櫃買勁揚 5.03% 收 289.84，成交額回升至 1,213.64 億元重返健康水位", "target_gate": "上櫃成交額穩守 1,200 億元以上" },
-          { "id": 4, "signal": "台積電爆量止跌", "status": "權值分化（守穩 5MA）", "latest": "11/26 台積電微跌 0.23% 收 2,145 元，大盤站穩 5MA (38,062) 並逼近 10MA (39,374)", "target_gate": "帶量站穩 10 日線（39,374）" },
-          { "id": 5, "signal": "2027 年企業獲利共識穩固", "status": "關稅風險緩解", "latest": "美 301 條款豁免半導體產品，外資維持 2026 +42%、2027 +37% 獲利共識", "target_gate": "12/9 博通與 12/17 美光財測未見下修" }
+          {
+            "id": 1,
+            "signal": "融資餘額加速清洗",
+            "status": "已達標（籌碼沉澱）",
+            "latest": "11/26 大漲 956 點下融資僅微增 3.46 億（餘額 4,344.84 億、維持率 159.66%），無過度追價浮額",
+            "target_gate": "反彈過程中融資維持穩定或續降"
+          },
+          {
+            "id": 2,
+            "signal": "外資期貨淨空單回補",
+            "status": "嚴重未達標（再惡化）",
+            "latest": "11/26 外資現貨連 9 賣 (-492 億)，期貨淨空單擴至 106,275 口",
+            "target_gate": "淨空單顯著回補並跌破 60,000 口"
+          },
+          {
+            "id": 3,
+            "signal": "櫃買流動性修復",
+            "status": "已達標（量價齊揚）",
+            "latest": "11/26 櫃買勁揚 5.03% 收 289.84，成交額回升至 1,213.64 億元重返健康水位",
+            "target_gate": "上櫃成交額穩守 1,200 億元以上"
+          },
+          {
+            "id": 4,
+            "signal": "台積電爆量止跌",
+            "status": "權值分化（守穩 5MA）",
+            "latest": "11/26 台積電收 2,145 元 (-0.23%)，台積電期貨夜盤漲 9 元收 2,168 元；大盤逼近 10MA (39,374)",
+            "target_gate": "帶量站穩 10 日線（39,374）"
+          },
+          {
+            "id": 5,
+            "signal": "2027 年企業獲利共識穩固",
+            "status": "關稅風險緩解",
+            "latest": "美 301 條款豁免半導體產品，外資維持 2026 +42%、2027 +37% 獲利共識",
+            "target_gate": "12/9 博通與 12/17 美光財測未見下修"
+          }
         ]
       },
       "ai_supply_chain": {
         "core_companies": [
-          { "ticker": "2330.TW", "name": "台積電", "oct_rev_twd_bn": 586.89, "oct_rev_yoy": "+59.7%", "q3_gm_pct": 66.4, "q3_opm_pct": 58.7, "cash_twd_bn": 4017.0, "ar_twd_bn": null, "dso_days": null, "inv_twd_bn": null, "dio_days": null, "contract_liab_twd_bn": null, "provisions_twd_bn": null, "q3_cfo_twd_bn": 919.77, "q3_capex_twd_bn": 443.21, "q3_fcf_twd_bn": 476.56, "comment": "11/26 收 2,145 元 (-0.23%)；美 301 豁免半導體＋12/4 亞利桑那廠擴建典禮、評估 2nm 落腳德州" },
-          { "ticker": "3131.TW", "name": "弘塑", "oct_rev_twd_bn": 0.753, "oct_rev_yoy": "+30.5%", "q3_gm_pct": 36.59, "q3_opm_pct": 21.96, "cash_twd_bn": 5.378, "ar_twd_bn": 0.702, "dso_days": null, "inv_twd_bn": 4.529, "dio_days": null, "contract_liab_twd_bn": 4.51, "provisions_twd_bn": 0.32, "q3_cfo_twd_bn": 1.38, "q3_capex_twd_bn": 0.062, "q3_fcf_twd_bn": 1.318, "comment": "合約負債季增 37.7%，CFO 由負強轉正，營運資金閉環優異" },
-          { "ticker": "3583.TW", "name": "辛耘", "oct_rev_twd_bn": 1.101, "oct_rev_yoy": "+25.5%", "q3_gm_pct": 41.28, "q3_opm_pct": 16.62, "cash_twd_bn": 10.306, "ar_twd_bn": 1.201, "dso_days": 31.45, "inv_twd_bn": 13.054, "dio_days": 640.42, "contract_liab_twd_bn": 16.464, "provisions_twd_bn": null, "q3_cfo_twd_bn": null, "q3_capex_twd_bn": null, "q3_fcf_twd_bn": null, "comment": "合約負債達單季營收 5.35 倍；Q3 完整單季 CFO 絕對值未取得／Unclear（現金季增 28.77 億佐證淨流入）" },
-          { "ticker": "3017.TW", "name": "奇鋐", "oct_rev_twd_bn": 22.103, "oct_rev_yoy": "前10月>65%", "q3_gm_pct": 33.86, "q3_opm_pct": 28.53, "cash_twd_bn": 80.031, "ar_twd_bn": 14.749, "dso_days": 23.0, "inv_twd_bn": 75.265, "dio_days": 160.0, "contract_liab_twd_bn": 0.001, "provisions_twd_bn": 0.0, "q3_cfo_twd_bn": 10.675, "q3_capex_twd_bn": 4.892, "q3_fcf_twd_bn": 5.783, "comment": "垂直整合推升毛利創高，收款僅 23 天，800 億現金足以自籌擴產" },
-          { "ticker": "3324.TW", "name": "雙鴻", "oct_rev_twd_bn": 3.372, "oct_rev_yoy": "+44.8%", "q3_gm_pct": 25.65, "q3_opm_pct": 13.92, "cash_twd_bn": 5.226, "ar_twd_bn": 12.332, "dso_days": 108.03, "inv_twd_bn": 8.865, "dio_days": 103.52, "contract_liab_twd_bn": 0.0, "provisions_twd_bn": 0.0, "q3_cfo_twd_bn": null, "q3_capex_twd_bn": 1.959, "q3_fcf_twd_bn": null, "comment": "毛利率季減 2.77 pp，AR 天數 108 天偏緊；Q3 單季 CFO 絕對值未取得／Unclear（現金流量比率 3.19%）" }
+          {
+            "ticker": "2330.TW",
+            "name": "台積電",
+            "oct_rev_twd_bn": 586.89,
+            "oct_rev_yoy": "+59.7%",
+            "q3_gm_pct": 66.4,
+            "q3_opm_pct": 58.7,
+            "cash_twd_bn": 4017.0,
+            "ar_twd_bn": null,
+            "dso_days": null,
+            "inv_twd_bn": null,
+            "dio_days": null,
+            "contract_liab_twd_bn": null,
+            "provisions_twd_bn": null,
+            "q3_cfo_twd_bn": 919.77,
+            "q3_capex_twd_bn": 443.21,
+            "q3_fcf_twd_bn": 476.56,
+            "comment": "11/26 收 2,145 元 (-0.23%)、期貨夜盤收 2,168 (+9 元)；美 301 豁免半導體＋12/4 亞利桑那廠擴建典禮、評估 2nm 落腳德州（AR／存貨細項未另列／Unclear）"
+          },
+          {
+            "ticker": "3131.TW",
+            "name": "弘塑",
+            "oct_rev_twd_bn": 0.753,
+            "oct_rev_yoy": "+30.5%",
+            "q3_gm_pct": 36.59,
+            "q3_opm_pct": 21.96,
+            "cash_twd_bn": 5.378,
+            "ar_twd_bn": 0.702,
+            "dso_days": null,
+            "inv_twd_bn": 4.529,
+            "dio_days": null,
+            "contract_liab_twd_bn": 4.51,
+            "provisions_twd_bn": 0.32,
+            "q3_cfo_twd_bn": 1.38,
+            "q3_capex_twd_bn": 0.062,
+            "q3_fcf_twd_bn": 1.318,
+            "comment": "合約負債季增 37.7%，CFO 由負強轉正，受惠 CoWoS/SoIC 擴產（DSO／DIO 天數未取得／Unclear）"
+          },
+          {
+            "ticker": "3583.TW",
+            "name": "辛耘",
+            "oct_rev_twd_bn": 1.101,
+            "oct_rev_yoy": "+25.5%",
+            "q3_gm_pct": 41.28,
+            "q3_opm_pct": 16.62,
+            "cash_twd_bn": 10.306,
+            "ar_twd_bn": 1.201,
+            "dso_days": 31.45,
+            "inv_twd_bn": 13.054,
+            "dio_days": 640.42,
+            "contract_liab_twd_bn": 16.464,
+            "provisions_twd_bn": null,
+            "q3_cfo_twd_bn": null,
+            "q3_capex_twd_bn": null,
+            "q3_fcf_twd_bn": null,
+            "comment": "合約負債達單季營收 5.35 倍；Q3 完整單季 CFO／CapEx 絕對值未取得／Unclear（現金季增 28.77 億佐證淨流入）"
+          },
+          {
+            "ticker": "3017.TW",
+            "name": "奇鋐",
+            "oct_rev_twd_bn": 22.103,
+            "oct_rev_yoy": "前10月>65%",
+            "q3_gm_pct": 33.86,
+            "q3_opm_pct": 28.53,
+            "cash_twd_bn": 80.031,
+            "ar_twd_bn": 14.749,
+            "dso_days": 23.0,
+            "inv_twd_bn": 75.265,
+            "dio_days": 160.0,
+            "contract_liab_twd_bn": 0.001,
+            "provisions_twd_bn": 0.0,
+            "q3_cfo_twd_bn": 10.675,
+            "q3_capex_twd_bn": 4.892,
+            "q3_fcf_twd_bn": 5.783,
+            "comment": "垂直整合推升毛利創高，收款僅 23 天，800 億現金足以自籌越南水冷擴產"
+          },
+          {
+            "ticker": "3324.TW",
+            "name": "雙鴻",
+            "oct_rev_twd_bn": 3.372,
+            "oct_rev_yoy": "+44.8%",
+            "q3_gm_pct": 25.65,
+            "q3_opm_pct": 13.92,
+            "cash_twd_bn": 5.226,
+            "ar_twd_bn": 12.332,
+            "dso_days": 108.03,
+            "inv_twd_bn": 8.865,
+            "dio_days": 103.52,
+            "contract_liab_twd_bn": 0.0,
+            "provisions_twd_bn": 0.0,
+            "q3_cfo_twd_bn": null,
+            "q3_capex_twd_bn": 1.959,
+            "q3_fcf_twd_bn": null,
+            "comment": "ASIC 水冷 Q4 底出貨、泰國廠彈性擴建；AR 天數 108 天偏緊；Q3 單季 CFO 絕對值未取得／Unclear"
+          }
         ],
         "spectrum_matrix": [
-          { "segment": "HBM", "timing": "領先／同步", "rank": 1, "status": "2027 HBM4 價估倍增至 $3.0–5.5/Gb 且供給傳售罄", "falsification": "良率過快解除致供給超車或客戶砍價" },
-          { "segment": "ABF 載板", "timing": "同步／略落後", "rank": 2, "status": "2027 缺口估擴至 26%，台廠 10 月營收全創高", "falsification": "T-Glass 斷鏈或傳統伺服器崩盤壓低稼動率" },
-          { "segment": "Server DDR5", "timing": "同步", "rank": 3, "status": "Q4 合約價估漲 10%–15%，2027 全年預期不跌", "falsification": "通用伺服器 CapEx 遭 AI 排擠致合約價轉負" },
-          { "segment": "一般 DRAM", "timing": "落後（產能外溢）", "rank": 4, "status": "蘋果傳洽簽罕見長期供貨保障協議；11/26 台股記憶體族群多檔漲停", "falsification": "消費性電子萎縮致現貨與合約價背離擴大" },
-          { "segment": "LPDDR", "timing": "落後（邊緣終端）", "rank": 5, "status": "綁定邊緣 AI 手機／PC 換機潮", "falsification": "AI 終端換機率低於預期，單機容量升級停滯" },
-          { "segment": "NAND / Enterprise SSD", "timing": "同步至落後", "rank": 6, "status": "11 月初 512Gb TLC 現貨週跌 4.33%，TrendForce 預警 2027 Q2 轉下行", "falsification": "原廠大幅減產扭轉供給過剩（反向證偽）" },
-          { "segment": "CPO（共同封裝光學）", "timing": "遠期", "rank": 7, "status": "DIGITIMES 預警混合鍵合良率瓶頸，大規模交付恐延至 2027 底", "falsification": "2027 H1 良率突破並提前放量（反向證偽）" },
-          { "segment": "Glass / TGV 玻璃基板", "timing": "遠期", "rank": 8, "status": "LIDE 通孔良率僅 75%–85%，台積電 CoPoS 量產落於 2028", "falsification": "良率快速突破 95% 提前取代 ABF（反向證偽）" }
+          {
+            "segment": "HBM",
+            "timing": "領先／同步",
+            "rank": 1,
+            "status": "2027 HBM4 價估倍增至 $3.0–5.5/Gb 且供給傳售罄",
+            "falsification": "良率過快解除致供給超車或客戶砍價"
+          },
+          {
+            "segment": "ABF 載板",
+            "timing": "同步／略落後",
+            "rank": 2,
+            "status": "2027 缺口估擴至 26%，台廠 10 月營收全創高",
+            "falsification": "T-Glass 斷鏈或傳統伺服器崩盤壓低稼動率"
+          },
+          {
+            "segment": "Server DDR5",
+            "timing": "同步",
+            "rank": 3,
+            "status": "Q4 合約價估漲 10%–15%，2027 全年預期不跌",
+            "falsification": "通用伺服器 CapEx 遭 AI 排擠致合約價轉負"
+          },
+          {
+            "segment": "一般 DRAM",
+            "timing": "落後（產能外溢）",
+            "rank": 4,
+            "status": "蘋果傳洽簽罕見長期供貨保障協議；11/26 台股記憶體族群多檔漲停",
+            "falsification": "消費性電子萎縮致現貨與合約價背離擴大"
+          },
+          {
+            "segment": "LPDDR",
+            "timing": "落後（邊緣終端）",
+            "rank": 5,
+            "status": "綁定邊緣 AI 手機／PC 換機潮",
+            "falsification": "AI 終端換機率低於預期，單機容量升級停滯"
+          },
+          {
+            "segment": "NAND / Enterprise SSD",
+            "timing": "同步至落後",
+            "rank": 6,
+            "status": "11 月初 512Gb TLC 現貨週跌 4.33%，TrendForce 預警 2027 Q2 轉下行",
+            "falsification": "原廠大幅減產扭轉供給過剩（反向證偽）"
+          },
+          {
+            "segment": "CPO（共同封裝光學）",
+            "timing": "遠期",
+            "rank": 7,
+            "status": "DIGITIMES 預警混合鍵合良率瓶頸，大規模交付恐延至 2027 底",
+            "falsification": "2027 H1 良率突破並提前放量（反向證偽）"
+          },
+          {
+            "segment": "Glass / TGV 玻璃基板",
+            "timing": "遠期",
+            "rank": 8,
+            "status": "LIDE 通孔良率僅 75%–85%，台積電 CoPoS 量產落於 2028",
+            "falsification": "良率快速突破 95% 提前取代 ABF（反向證偽）"
+          }
         ]
       },
       "commodities_sentiment_and_scenarios": {
         "energy_power_and_sentiment": {
-          "oil_and_opec": "11/26 WTI 續漲 1.41% 至 $84.87、布蘭特漲 1.38% 至 $95.90（連兩日走揚）；焦點鎖定 11/29 OPEC+ 全體部長級會議",
-          "copper_divergence": "11/26 COMEX 期銅收 $5.3205 (-0.30%)，延續金融端弱勢與實體洋山溢價背離",
-          "pjm_power_crunch": "PJM 董事會回覆結果未取得／Unclear（前次 2028/29 容量價觸 $325/MW-日上限仍缺 6.8 GW）",
-          "bofa_fms_sentiment": "65% 視 AI 泡沫／雲端發債為頭號尾部風險；52% 預期 6 個月內有雲端商砍 CapEx；機構現金僅 3.6%"
+          "oil_and_opec": "11/26 WTI 漲至 $84.87（11/27 亞盤續測 $85+）、布蘭特升至 $95.90（亞盤近 $96.3+）；市場鎖定 11/29 OPEC+ 全體部長級會議",
+          "copper_divergence": "11/26 COMEX 期銅收 $5.3205 (-0.30%)，延續高利率壓抑下的金融端弱勢與實體洋山溢價背離",
+          "pjm_power_crunch": "2028/29 容量拍賣觸 $325/MW-日上限仍缺 6,831 MW；11/12 IMM 示警且 11/18 七州正式致函要求延後 12/9–12/15 之 2029/30 拍賣，董事會最終決議尚未取得／Unclear",
+          "bofa_fms_sentiment": "合計 65% 視 AI 泡沫 (34%)／雲端商信用事件 (31%) 為頭號尾部風險；52% 預期 6 個月內有雲端商砍 CapEx；機構現金僅 3.6%"
         },
         "scenarios": [
-          { "name": "基準情境（Base）", "probability_pct": 55, "label": "高利率＋晶片關稅豁免後的箱型築底", "key_assumptions": "Fed 12/9 升 1 碼後停看聽；美 301 半導體豁免落地；油價於 $80–88 震盪", "allocation": { "cash_short_bond_pct": 25, "defensive_equity_pct": 40, "quality_ai_hardware_pct": 25, "commodities_intl_pct": 10 }, "trigger": "10Y 4.70%–5.05% 盤整，台股守穩 5MA 並待外資空單回補" },
-          { "name": "鷹派下行（Bear）", "probability_pct": 30, "label": "油價衝破 90＋Fed 升 50 bps 鷹派驚喜", "key_assumptions": "中東衝突推升 WTI >$90；Fed 12/9 升 50 bps 或暗示 2027 續升；雲端商縮減 CapEx", "allocation": { "cash_short_bond_pct": 45, "defensive_equity_pct": 40, "quality_ai_hardware_pct": 10, "commodities_intl_pct": 5 }, "trigger": "10Y >5.20%、WTI >$90、HY OAS >400 bps、外資期貨淨空單持續高掛 10 萬口" },
-          { "name": "溫和反轉（Bull）", "probability_pct": 15, "label": "OPEC+ 壓低油價破 80＋終點利率確認", "key_assumptions": "11/29 OPEC+ 推低油價破 $80；Fed 12/9 升 1 碼後明示近尾聲；10Y <4.50%", "allocation": { "cash_short_bond_pct": 10, "defensive_equity_pct": 20, "quality_ai_hardware_pct": 50, "commodities_intl_pct": 20 }, "trigger": "10Y <4.50%、WTI <$80、VIX <20、外資期貨淨空單 <6 萬口" }
+          {
+            "name": "基準情境（Base）",
+            "probability_pct": 55,
+            "label": "高利率＋晶片關稅豁免後的箱型築底",
+            "key_assumptions": "Fed 12/9 升 1 碼後停看聽；美 301 半導體豁免落地；油價於 $80–88 震盪",
+            "allocation": {
+              "cash_short_bond_pct": 25,
+              "defensive_equity_pct": 40,
+              "quality_ai_hardware_pct": 25,
+              "commodities_intl_pct": 10
+            },
+            "trigger": "10Y 4.70%–5.05% 盤整，台股守穩 5MA 並待外資空單回補"
+          },
+          {
+            "name": "鷹派下行（Bear）",
+            "probability_pct": 30,
+            "label": "油價衝破 90＋Fed 升 50 bps 鷹派驚喜",
+            "key_assumptions": "中東衝突推升 WTI >$90；Fed 12/9 升 50 bps 或暗示 2027 續升；雲端商縮減 CapEx",
+            "allocation": {
+              "cash_short_bond_pct": 45,
+              "defensive_equity_pct": 40,
+              "quality_ai_hardware_pct": 10,
+              "commodities_intl_pct": 5
+            },
+            "trigger": "10Y >5.20%、WTI >$90、HY OAS >400 bps、外資期貨淨空單持續高掛 10 萬口"
+          },
+          {
+            "name": "溫和反轉（Bull）",
+            "probability_pct": 15,
+            "label": "OPEC+ 壓低油價破 80＋終點利率確認",
+            "key_assumptions": "11/29 OPEC+ 推低油價破 $80；Fed 12/9 升 1 碼後明示近尾聲；10Y <4.50%",
+            "allocation": {
+              "cash_short_bond_pct": 10,
+              "defensive_equity_pct": 20,
+              "quality_ai_hardware_pct": 50,
+              "commodities_intl_pct": 20
+            },
+            "trigger": "10Y <4.50%、WTI <$80、VIX <20、外資期貨淨空單 <6 萬口"
+          }
         ],
         "catalysts_calendar": [
-          { "date": "2026-11-27", "event": "美國黑五提早收盤／台灣 10 月景氣燈號與 Q4 GDP 預測／東京 11 月 CPI", "threshold": "檢驗台股能否帶量站穩 10MA (39,374) 及日本通膨走勢" },
-          { "date": "2026-11-29", "event": "OPEC+ 全體部長級會議", "threshold": "2027 年配額是否推動 WTI 油價有效跌破 $80/bbl" },
-          { "date": "2026-12-01", "event": "黃仁勳出席美國眾議院三委員會閉門聽證會", "threshold": "晶片流向中國與國安揭露之監管衝擊" },
-          { "date": "2026-12-03", "event": "美國參議院銀行委員會公開聽證／11 月 ISM 服務業 PMI", "threshold": "服務業新訂單是否跌破 54、價格指數能否破 70" },
-          { "date": "2026-12-04", "event": "美國 11 月非農就業報告 (NFP)／台積電亞利桑那廠擴建典禮", "threshold": "檢驗 NFP 是否回落至 8–10 萬（低於 3 個月均值 13.7 萬）" },
-          { "date": "2026-12-09", "event": "FOMC 利率決策與 SEP 點陣圖／博通 (AVGO) 財報／台灣 11 月出口", "threshold": "是否升息 25 bps 抑或 50 bps；2027 點陣圖中位數與博通 ASIC 財測" },
-          { "date": "2026-12-10", "event": "美國 11 月 CPI／台積電 11 月營收", "threshold": "油價走揚對 CPI 傳導；台積電 Q4 財測達成進度" },
-          { "date": "2026-12-17", "event": "美光 (MU) FY27 Q1 財報／歐洲央行 (ECB) 決策", "threshold": "驗證 HBM4 報價翻倍與 DRAM／NAND 週期分化" }
+          {
+            "date": "2026-11-27",
+            "event": "東京 11 月核心 CPI (+2.9% 已公布)／美國黑五提早收盤／台灣 10 月景氣燈號與 Q4 GDP 預測",
+            "threshold": "東京 CPI 強化日銀 12 月升息；台股檢驗能否帶量站穩 10MA (39,374)"
+          },
+          {
+            "date": "2026-11-29",
+            "event": "OPEC+ 全體部長級會議",
+            "threshold": "2027 年配額是否推動 WTI 油價有效跌破 $80/bbl"
+          },
+          {
+            "date": "2026-12-01",
+            "event": "黃仁勳出席美國眾議院三委員會閉門聽證會",
+            "threshold": "晶片流向中國與國安揭露之監管衝擊"
+          },
+          {
+            "date": "2026-12-03",
+            "event": "美國參議院銀行委員會公開聽證／11 月 ISM 服務業 PMI",
+            "threshold": "服務業新訂單是否跌破 54、價格指數能否破 70"
+          },
+          {
+            "date": "2026-12-04",
+            "event": "美國 11 月非農就業報告 (NFP)／台積電亞利桑那廠擴建典禮",
+            "threshold": "檢驗 NFP 是否回落至 8–10 萬（低於 3 個月均值 13.7 萬）"
+          },
+          {
+            "date": "2026-12-09",
+            "event": "FOMC 利率決策與 SEP 點陣圖／博通 (AVGO) 財報／台灣 11 月出口",
+            "threshold": "是否升息 25 bps 抑或 50 bps；2027 點陣圖中位數與博通 ASIC 財測"
+          },
+          {
+            "date": "2026-12-10",
+            "event": "美國 11 月 CPI／台積電 11 月營收",
+            "threshold": "油價走揚對 CPI 傳導；台積電 Q4 財測達成進度"
+          },
+          {
+            "date": "2026-12-17",
+            "event": "美光 (MU) FY27 Q1 財報／歐洲央行 (ECB) 決策",
+            "threshold": "驗證 HBM4 報價翻倍與 DRAM／NAND 週期分化"
+          }
         ]
       }
     };
@@ -1144,7 +1724,7 @@
         { label: '台指期日盤價差 (TAIFEX)', val: sf.txf_day_spread !== null && sf.txf_day_spread !== undefined ? `${sf.txf_day_spread > 0 ? '+' : ''}${Number(sf.txf_day_spread).toFixed(2)} 點` : NULL_BADGE, sub: '日盤收 39,455 轉大幅正價差', tone: 'sky' },
         { label: '外資台指期淨未平倉', val: sf.foreign_txf_net_oi !== null && sf.foreign_txf_net_oi !== undefined ? `${Number(sf.foreign_txf_net_oi).toLocaleString()} 口` : NULL_BADGE, sub: '突破 10.6 萬口極端空單', tone: foreignOiAlert ? 'high-rose' : 'amber', alertTag: foreignOiAlert ? '高警戒' : '' },
         { label: '選擇權 P/C Ratio (OI)', val: sf.options_pc_ratio_oi_pct !== null && sf.options_pc_ratio_oi_pct !== undefined ? `${Number(sf.options_pc_ratio_oi_pct).toFixed(2)}%` : NULL_BADGE, sub: '未平倉口數比回升至 52.5%', tone: 'amber' },
-        { label: '台指期夜盤收盤 (11/27)', val: sf.txf_night_close !== null && sf.txf_night_close !== undefined ? `${Number(sf.txf_night_close).toLocaleString()} 點` : NULL_BADGE, sub: '17:58 參考價 39,304 (-188)', tone: 'slate' },
+        { label: '台指期夜盤收盤 (11/27)', val: sf.txf_night_close !== null && sf.txf_night_close !== undefined ? `${Number(sf.txf_night_close).toLocaleString()} 點` : NULL_BADGE, sub: '05:00 收平盤 0.00%（39,008–39,559）', tone: 'sky' },
         { label: '台北外匯 USD/TWD', val: sf.usd_twd_close !== null && sf.usd_twd_close !== undefined ? `${Number(sf.usd_twd_close).toFixed(3)} 元` : NULL_BADGE, sub: '強升 1.79 角重返 33 元內', tone: 'emerald' }
       ];
 
